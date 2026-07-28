@@ -1,499 +1,432 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Construction Tools · Rental Entry</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>Tool Rental</title>
     <!-- Font Awesome 6 (free) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
+        /* --- Your existing styles (same as before) --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
         }
-
         body {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(145deg, #eaf0f6 0%, #d5dde8 100%);
-            padding: 1.5rem;
+            padding: 1rem;
         }
-
         .parking-card {
-            max-width: 620px;
+            max-width: 600px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
-            border-radius: 44px;
-            padding: 2.2rem 2.2rem 2.5rem;
-            box-shadow: 0 20px 40px -12px rgba(0, 20, 30, 0.35),
-                        0 8px 24px -6px rgba(0, 0, 0, 0.08);
+            border-radius: 32px;
+            padding: 1.8rem 1.5rem 2rem;
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 30, 0.35), 0 8px 24px -6px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: all 0.2s ease;
         }
-
-        .parking-card:hover {
-            box-shadow: 0 28px 48px -16px rgba(0, 30, 50, 0.45);
-        }
-
         .form-header {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
+            gap: 0.6rem;
+            margin-bottom: 1.8rem;
             border-bottom: 2px dashed rgba(0, 60, 80, 0.13);
-            padding-bottom: 0.9rem;
+            padding-bottom: 0.8rem;
             flex-wrap: wrap;
         }
-
         .form-header i {
-            font-size: 2.2rem;
+            font-size: 2rem;
             color: #1a5f7a;
             background: rgba(26, 95, 122, 0.10);
-            padding: 0.5rem 0.7rem;
-            border-radius: 20px;
+            padding: 0.4rem 0.6rem;
+            border-radius: 16px;
         }
-
         .form-header h2 {
             font-weight: 600;
-            font-size: 1.7rem;
+            font-size: 1.5rem;
             letter-spacing: -0.3px;
             color: #103a4a;
         }
-
         .form-header .badge {
             margin-left: auto;
             font-weight: 400;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             background: #1f5f7a14;
-            padding: 0.3rem 1rem;
+            padding: 0.2rem 0.8rem;
             border-radius: 40px;
             color: #1f5f7a;
             border: 1px solid #1f5f7a20;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             white-space: nowrap;
             font-family: 'Courier New', monospace;
-            letter-spacing: 0.3px;
         }
-
         .form-header .badge i {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             background: none;
             padding: 0;
             width: auto;
             color: #1f5f7a;
         }
-
         .input-group {
-            margin-bottom: 1.6rem;
+            margin-bottom: 1.3rem;
             display: flex;
             flex-direction: column;
         }
-
         .input-group label {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #1a4457;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.35rem;
         }
-
         .input-group label i {
-            width: 1.3rem;
+            width: 1.2rem;
             color: #2b6c8a;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
-
-        /* ===== SEARCHABLE DROPDOWN ===== */
         .searchable-dropdown {
             position: relative;
             width: 100%;
         }
-
         .searchable-dropdown input {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.7rem 1rem;
             border: 1.5px solid #d7e2ed;
             border-radius: 30px;
             background: white;
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
             transition: all 0.15s;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
             color: #0f2e3b;
         }
-
         .searchable-dropdown input:focus {
             border-color: #2f7a9c;
             box-shadow: 0 0 0 4px rgba(31, 95, 122, 0.12);
         }
-
         .searchable-dropdown input::placeholder {
             color: #a7bccd;
             font-weight: 300;
         }
-
         .dropdown-list {
             position: absolute;
-            top: calc(100% + 6px);
+            top: calc(100% + 5px);
             left: 0;
             right: 0;
             background: white;
             border: 1.5px solid #d7e2ed;
-            border-radius: 24px;
-            max-height: 200px;
+            border-radius: 20px;
+            max-height: 180px;
             overflow-y: auto;
             z-index: 100;
             box-shadow: 0 12px 28px -8px rgba(0, 20, 30, 0.25);
             display: none;
-            padding: 0.3rem 0;
+            padding: 0.2rem 0;
         }
-
         .dropdown-list.show {
             display: block;
         }
-
         .dropdown-list .option-item {
-            padding: 0.6rem 1.2rem;
+            padding: 0.5rem 1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #103a4a;
-            transition: 0.08s;
             border-bottom: 1px solid #f0f5fa;
         }
-
         .dropdown-list .option-item:last-child {
             border-bottom: none;
         }
-
         .dropdown-list .option-item:hover {
             background: #eaf4fc;
         }
-
         .dropdown-list .option-item.selected {
             background: #d4e6f5;
             font-weight: 500;
         }
-
         .dropdown-list .option-item .add-icon {
             color: #1f6f8f;
             font-weight: 500;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             background: #e3f0f9;
-            padding: 0.1rem 0.6rem;
+            padding: 0.1rem 0.5rem;
             border-radius: 30px;
             margin-left: auto;
         }
-
-        .dropdown-list .option-item .emoji-suffix {
-            font-size: 1rem;
-            margin-left: auto;
-            opacity: 0.5;
-        }
-
         .dropdown-list .no-match {
-            padding: 0.8rem 1.2rem;
+            padding: 0.6rem 1rem;
             color: #5f7f92;
             font-style: italic;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
-
         .hint {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #4d7388;
-            margin-top: 0.3rem;
+            margin-top: 0.2rem;
             display: flex;
             align-items: center;
             gap: 0.3rem;
             opacity: 0.7;
         }
-
-        /* tool radio group - construction tools */
         .tool-radio-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.8rem 1.2rem;
+            gap: 0.5rem 0.8rem;
             background: #f2f7fc;
-            padding: 0.8rem 1.2rem;
-            border-radius: 40px;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
             border: 1px solid #d7e2ed;
+            max-height: 180px;
+            overflow-y: auto;
         }
-
         .tool-radio {
             display: flex;
             align-items: center;
-            gap: 0.35rem;
+            gap: 0.3rem;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #1a4052;
-            transition: 0.1s;
+            padding: 0.2rem 0.4rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.6);
         }
-
+        .tool-radio:hover {
+            background: #eaf4fc;
+        }
         .tool-radio input[type="radio"] {
             appearance: none;
             -webkit-appearance: none;
-            width: 1.1rem;
-            height: 1.1rem;
+            width: 1rem;
+            height: 1rem;
             border: 2px solid #b2cbd9;
             border-radius: 50%;
-            margin-right: 0.2rem;
+            margin-right: 0.1rem;
             position: relative;
             cursor: pointer;
             flex-shrink: 0;
-            transition: 0.1s;
         }
-
         .tool-radio input[type="radio"]:checked {
             border-color: #1f6f8f;
             background: #1f6f8f;
-            box-shadow: inset 0 0 0 4px white, 0 0 0 1px #1f6f8f;
+            box-shadow: inset 0 0 0 3px white, 0 0 0 1px #1f6f8f;
         }
-
         .tool-radio input[type="radio"]:focus {
             outline: 2px solid #1f6f8f60;
             outline-offset: 2px;
         }
-
         .tool-radio .emoji-big {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             line-height: 1;
             margin-right: 0.1rem;
         }
-
-        /* shift radio group */
         .shift-radio-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.8rem 1.2rem;
+            gap: 0.5rem 0.8rem;
             background: #f2f7fc;
-            padding: 0.8rem 1.2rem;
-            border-radius: 40px;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
             border: 1px solid #d7e2ed;
         }
-
         .shift-radio {
             display: flex;
             align-items: center;
-            gap: 0.35rem;
+            gap: 0.3rem;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #1a4052;
-            transition: 0.1s;
+            padding: 0.2rem 0.4rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.6);
         }
-
+        .shift-radio:hover {
+            background: #eaf4fc;
+        }
         .shift-radio input[type="radio"] {
             appearance: none;
             -webkit-appearance: none;
-            width: 1.1rem;
-            height: 1.1rem;
+            width: 1rem;
+            height: 1rem;
             border: 2px solid #b2cbd9;
             border-radius: 50%;
-            margin-right: 0.2rem;
+            margin-right: 0.1rem;
             position: relative;
             cursor: pointer;
             flex-shrink: 0;
-            transition: 0.1s;
         }
-
         .shift-radio input[type="radio"]:checked {
             border-color: #1f6f8f;
             background: #1f6f8f;
-            box-shadow: inset 0 0 0 4px white, 0 0 0 1px #1f6f8f;
+            box-shadow: inset 0 0 0 3px white, 0 0 0 1px #1f6f8f;
         }
-
         .shift-radio input[type="radio"]:focus {
             outline: 2px solid #1f6f8f60;
             outline-offset: 2px;
         }
-
         .shift-radio .emoji-big {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             line-height: 1;
             margin-right: 0.1rem;
         }
-
         .amount-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.8rem;
         }
-
         .amount-row .input-group {
             flex: 1 1 0;
-            min-width: 120px;
+            min-width: 100px;
         }
-
         .input-group input[type="number"] {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.7rem 1rem;
             border: 1.5px solid #d7e2ed;
             border-radius: 30px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             background: white;
             outline: none;
-            transition: 0.15s;
             -moz-appearance: textfield;
         }
-
         .input-group input[type="number"]::-webkit-outer-spin-button,
         .input-group input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
-
         .input-group input[type="number"]:focus {
             border-color: #2f7a9c;
             box-shadow: 0 0 0 4px rgba(31, 95, 122, 0.10);
         }
-
         .input-group input[type="date"] {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.7rem 1rem;
             border: 1.5px solid #d7e2ed;
             border-radius: 30px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             background: white;
             outline: none;
-            transition: 0.15s;
             color: #0f2e3b;
         }
-
         .input-group input[type="date"]:focus {
             border-color: #2f7a9c;
             box-shadow: 0 0 0 4px rgba(31, 95, 122, 0.10);
         }
-
-        /* checkbox for returned tool */
         .returned-checkbox {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.4rem 0;
+            gap: 0.6rem;
+            padding: 0.3rem 0;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #1a4457;
         }
-
         .returned-checkbox input[type="checkbox"] {
-            width: 1.2rem;
-            height: 1.2rem;
+            width: 1.1rem;
+            height: 1.1rem;
             accent-color: #1f6f8f;
             cursor: pointer;
-            border-radius: 4px;
-            border: 2px solid #b2cbd9;
-            transition: 0.15s;
         }
-
-        .returned-checkbox input[type="checkbox"]:checked {
-            accent-color: #1f6f8f;
-        }
-
         .returned-checkbox i {
             color: #2b6c8a;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
-
         .actions {
             display: flex;
             justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 2rem;
+            gap: 0.8rem;
+            margin-top: 1.8rem;
             flex-wrap: wrap;
         }
-
         .btn {
-            padding: 0.7rem 2.2rem;
+            padding: 0.6rem 1.8rem;
             border: none;
             border-radius: 40px;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
             background: white;
             color: #1f5f7a;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
             transition: 0.12s;
             cursor: pointer;
             border: 1px solid transparent;
+            flex: 1;
+            min-width: 100px;
         }
-
         .btn-primary {
             background: #1f5f7a;
             color: white;
             box-shadow: 0 8px 16px -6px #1f5f7a60;
         }
-
         .btn-primary:hover {
             background: #144a60;
             transform: scale(0.97);
-            box-shadow: 0 4px 12px -4px #1f5f7a90;
         }
-
         .btn-outline {
             background: transparent;
             border: 1px solid #b6cddd;
             color: #1f4d63;
         }
-
         .btn-outline:hover {
             background: #eaf1f8;
             border-color: #2f7a9c;
         }
-
         .timestamp-badge {
             display: flex;
             justify-content: flex-end;
-            margin-top: 1.2rem;
-            font-size: 0.7rem;
+            margin-top: 1rem;
+            font-size: 0.65rem;
             color: #3e6d84;
             opacity: 0.6;
             gap: 0.4rem;
             align-items: center;
             font-family: 'Courier New', monospace;
-            letter-spacing: 0.3px;
         }
-
         .timestamp-badge i {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
-
-        .dropdown-list::-webkit-scrollbar {
-            width: 5px;
+        .loading-tools {
+            text-align: center;
+            padding: 0.8rem;
+            color: #4d7388;
+            font-size: 0.9rem;
         }
-        .dropdown-list::-webkit-scrollbar-track {
+        .loading-tools i {
+            margin-right: 0.5rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .dropdown-list::-webkit-scrollbar,
+        .tool-radio-group::-webkit-scrollbar {
+            width: 4px;
+        }
+        .dropdown-list::-webkit-scrollbar-track,
+        .tool-radio-group::-webkit-scrollbar-track {
             background: #eef4f9;
             border-radius: 10px;
         }
-        .dropdown-list::-webkit-scrollbar-thumb {
+        .dropdown-list::-webkit-scrollbar-thumb,
+        .tool-radio-group::-webkit-scrollbar-thumb {
             background: #b6cddd;
             border-radius: 10px;
         }
-
-        @media (max-width: 500px) {
-            .parking-card { padding: 1.8rem 1.2rem; }
-            .form-header h2 { font-size: 1.3rem; }
-            .form-header .badge { font-size: 0.65rem; padding: 0.2rem 0.7rem; }
-            .tool-radio-group { gap: 0.6rem; }
-            .shift-radio-group { gap: 0.6rem; }
-            .actions { flex-direction: column-reverse; }
-            .btn { width: 100%; justify-content: center; }
-        }
-
-        /* ----- CONFIRMATION MODAL (custom) ----- */
         .confirm-modal-overlay {
             position: fixed;
             top: 0;
@@ -507,141 +440,135 @@
             align-items: center;
             justify-content: center;
             z-index: 999;
-            padding: 1.5rem;
+            padding: 1rem;
         }
-
         .confirm-modal-overlay.active {
             display: flex;
         }
-
         .confirm-modal {
             background: white;
-            border-radius: 40px;
-            max-width: 480px;
+            border-radius: 32px;
+            max-width: 440px;
             width: 100%;
-            padding: 2rem 2rem 1.8rem;
+            padding: 1.8rem 1.5rem 1.5rem;
             box-shadow: 0 32px 56px -16px rgba(0, 0, 0, 0.4);
-            animation: modalFade 0.2s ease;
+            animation: modalFade 0.25s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
-
         @keyframes modalFade {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
-
         .confirm-modal .modal-icon {
             text-align: center;
-            font-size: 2.8rem;
+            font-size: 2.4rem;
             color: #1f6f8f;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
-
         .confirm-modal h3 {
             text-align: center;
             font-weight: 600;
             color: #103a4a;
-            font-size: 1.4rem;
-            margin-bottom: 1.2rem;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
         }
-
         .confirm-modal .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 0.5rem 0;
+            padding: 0.4rem 0;
             border-bottom: 1px solid #eef4f9;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            gap: 0.5rem;
         }
-
         .confirm-modal .detail-row:last-of-type {
             border-bottom: none;
         }
-
         .confirm-modal .detail-label {
             color: #4d7388;
             font-weight: 400;
+            flex-shrink: 0;
         }
-
         .confirm-modal .detail-value {
             font-weight: 500;
             color: #103a4a;
+            text-align: right;
+            word-break: break-word;
         }
-
         .confirm-modal .modal-actions {
             display: flex;
-            gap: 0.8rem;
-            margin-top: 1.8rem;
+            gap: 0.6rem;
+            margin-top: 1.5rem;
             justify-content: center;
+            flex-wrap: wrap;
         }
-
         .confirm-modal .modal-actions .btn {
             flex: 1;
-            min-width: 100px;
+            min-width: 80px;
         }
-
         .btn-confirm {
             background: #d32f2f;
             color: white;
             box-shadow: 0 8px 16px -6px rgba(211, 47, 47, 0.5);
             border: none;
         }
-
         .btn-confirm:hover {
             background: #b71c1c;
             transform: scale(0.97);
-            box-shadow: 0 4px 12px -4px rgba(211, 47, 47, 0.6);
         }
-
         .btn-cancel-modal {
             background: #f0f5fa;
             color: #1f4d63;
             border: 1px solid #d7e2ed;
         }
-
         .btn-cancel-modal:hover {
             background: #e4ecf5;
         }
-
-        /* Toast notification */
         .toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
+            left: 20px;
             background: #1f5f7a;
             color: white;
-            padding: 1rem 1.8rem;
-            border-radius: 30px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            padding: 0.8rem 1.2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
             font-weight: 500;
             display: none;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.6rem;
             z-index: 1000;
-            max-width: 90%;
+            max-width: 400px;
+            margin: 0 auto;
             animation: slideUp 0.3s ease;
+            font-size: 0.9rem;
         }
-
         .toast.show {
             display: flex;
         }
-
         .toast.success {
             background: #2e7d32;
         }
-
         .toast.error {
             background: #c62828;
         }
-
         @keyframes slideUp {
             from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-
         @media (max-width: 480px) {
-            .confirm-modal { padding: 1.5rem; }
-            .confirm-modal .detail-row { flex-direction: column; gap: 0.1rem; }
-            .confirm-modal .detail-value { font-weight: 600; }
-            .toast { bottom: 15px; right: 15px; padding: 0.8rem 1.2rem; font-size: 0.9rem; }
+            .parking-card { padding: 1.2rem 1rem 1.5rem; border-radius: 24px; }
+            .form-header h2 { font-size: 1.2rem; }
+            .form-header .badge { font-size: 0.6rem; padding: 0.15rem 0.6rem; }
+            .tool-radio-group { gap: 0.4rem 0.6rem; padding: 0.5rem 0.7rem; }
+            .shift-radio-group { gap: 0.4rem 0.6rem; padding: 0.5rem 0.7rem; }
+            .btn { padding: 0.5rem 1rem; font-size: 0.8rem; min-width: 80px; }
+            .confirm-modal { padding: 1.2rem 1rem; border-radius: 24px; }
+            .confirm-modal .detail-row { flex-direction: column; gap: 0.1rem; padding: 0.3rem 0; }
+            .confirm-modal .detail-value { text-align: left; }
+            .confirm-modal h3 { font-size: 1.1rem; }
+            .toast { bottom: 10px; right: 10px; left: 10px; padding: 0.6rem 1rem; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -656,15 +583,11 @@
         </div>
 
         <form id="parkingForm" onsubmit="return false;">
-            <!-- ===== DATE ===== -->
             <div class="input-group">
-                <label for="entryDate">
-                    <i class="fas fa-calendar-day"></i> Date
-                </label>
+                <label for="entryDate"><i class="fas fa-calendar-day"></i> Date</label>
                 <input type="date" id="entryDate">
             </div>
 
-            <!-- ===== SHIFT RADIO ===== -->
             <div class="input-group">
                 <div class="shift-radio-group">
                     <label class="shift-radio">
@@ -678,11 +601,8 @@
                 </div>
             </div>
 
-            <!-- ===== SEARCHABLE DROPDOWN (Person name) ===== -->
             <div class="input-group">
-                <label for="searchInput">
-                    <i class="fas fa-user-circle"></i> Customer name
-                </label>
+                <label for="searchInput"><i class="fas fa-user-circle"></i> Customer name</label>
                 <div class="searchable-dropdown" id="searchableDropdown">
                     <input type="text" id="searchInput" placeholder="Search or type name..." autocomplete="off" value="Kabir">
                     <div class="dropdown-list" id="dropdownList"></div>
@@ -690,56 +610,13 @@
                 <div class="hint"><i class="fas fa-search"></i> type to filter · click to select · enter new name</div>
             </div>
 
-            <!-- ===== TOOL RADIO (construction tools - Sindh, Pakistan) ===== -->
             <div class="input-group">
-                <label>
-                    <i class="fas fa-hammer"></i> Tool / Equipment
-                </label>
-                <div class="tool-radio-group">
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Beldar (Spade)" checked>
-                        <span class="emoji-big">⛏️</span> Beldar (Spade)
-                    </label>
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Gandasa (Axe)">
-                        <span class="emoji-big">🪓</span> Gandasa (Axe)
-                    </label>
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Kudal (Pickaxe)">
-                        <span class="emoji-big">⛏️</span> Kudal (Pickaxe)
-                    </label>
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Trowel (Karahi)">
-                        <span class="emoji-big">🧱</span> Trowel (Karahi)
-                    </label>
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Mason's Hammer (Murgi)">
-                        <span class="emoji-big">🔨</span> Mason's Hammer
-                    </label>
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Chisel (Takra)">
-                        <span class="emoji-big">🔧</span> Chisel (Takra)
-                    </label>
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Plumb Bob (Shakul)">
-                        <span class="emoji-big">📏</span> Plumb Bob (Shakul)
-                    </label>
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Wheelbarrow (Thaila)">
-                        <span class="emoji-big">🛒</span> Wheelbarrow (Thaila)
-                    </label>
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Concrete Mixer">
-                        <span class="emoji-big">🧊</span> Concrete Mixer
-                    </label>
-                    <label class="tool-radio">
-                        <input type="radio" name="tool" value="Vibrator (Needle)">
-                        <span class="emoji-big">⚡</span> Vibrator (Needle)
-                    </label>
+                <label><i class="fas fa-hammer"></i> Tool / Equipment <span style="font-weight:400;font-size:0.75rem;color:#4d7388;margin-left:auto;" id="toolCount"></span></label>
+                <div class="tool-radio-group" id="toolRadioGroup">
+                    <div class="loading-tools"><i class="fas fa-spinner"></i> Loading tools...</div>
                 </div>
             </div>
 
-            <!-- ===== AMOUNT ===== -->
             <div class="amount-row">
                 <div class="input-group">
                     <label for="amountPaid"><i class="fas fa-coins"></i> Amount paid</label>
@@ -751,7 +628,6 @@
                 </div>
             </div>
 
-            <!-- ===== TOOL RETURNED CHECKBOX ===== -->
             <div class="input-group">
                 <label class="returned-checkbox">
                     <i class="fas fa-undo-alt"></i>
@@ -760,107 +636,70 @@
                 </label>
             </div>
 
-            <!-- actions -->
             <div class="actions">
-                <button type="reset" class="btn btn-outline" id="resetBtn">
-                    <i class="fas fa-undo-alt"></i> Clear
-                </button>
-                <button type="button" class="btn btn-primary" id="submitBtn">
-                    <i class="fas fa-check-circle"></i> Register Rental
-                </button>
+                <button type="reset" class="btn btn-outline" id="resetBtn"><i class="fas fa-undo-alt"></i> Clear</button>
+                <button type="button" class="btn btn-primary" id="submitBtn"><i class="fas fa-check-circle"></i> Register</button>
             </div>
 
-            <div class="timestamp-badge" id="footerTimestamp">
+            <div class="timestamp-badge">
                 <i class="fas fa-clock"></i> <span id="footerTimestampText">Loading...</span>
             </div>
         </form>
     </div>
 
-    <!-- ===== TOAST NOTIFICATION ===== -->
     <div class="toast" id="toast">
         <i class="fas fa-check-circle" id="toastIcon"></i>
         <span id="toastMessage">Saved!</span>
     </div>
 
-    <!-- ===== CONFIRMATION MODAL ===== -->
     <div class="confirm-modal-overlay" id="confirmModal">
         <div class="confirm-modal">
             <div class="modal-icon">📋</div>
             <h3>Confirm Rental</h3>
             <div id="confirmDetails">
-                <div class="detail-row">
-                    <span class="detail-label">📅 Date</span>
-                    <span class="detail-value" id="confirmDate">—</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">👤 Shift</span>
-                    <span class="detail-value" id="confirmShift">—</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">👤 Customer</span>
-                    <span class="detail-value" id="confirmName">—</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">🔧 Tool</span>
-                    <span class="detail-value" id="confirmTool">—</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">💰 Amount paid</span>
-                    <span class="detail-value" id="confirmPaid">0</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">⏳ Remain amount</span>
-                    <span class="detail-value" id="confirmRemain">0</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">↩️ Tool returned</span>
-                    <span class="detail-value" id="confirmReturned">—</span>
-                </div>
+                <div class="detail-row"><span class="detail-label">📅 Date</span><span class="detail-value" id="confirmDate">—</span></div>
+                <div class="detail-row"><span class="detail-label">👤 Shift</span><span class="detail-value" id="confirmShift">—</span></div>
+                <div class="detail-row"><span class="detail-label">👤 Customer</span><span class="detail-value" id="confirmName">—</span></div>
+                <div class="detail-row"><span class="detail-label">🔧 Tool</span><span class="detail-value" id="confirmTool">—</span></div>
+                <div class="detail-row"><span class="detail-label">💰 Paid</span><span class="detail-value" id="confirmPaid">0</span></div>
+                <div class="detail-row"><span class="detail-label">⏳ Remain</span><span class="detail-value" id="confirmRemain">0</span></div>
+                <div class="detail-row"><span class="detail-label">↩️ Returned</span><span class="detail-value" id="confirmReturned">—</span></div>
             </div>
             <div class="modal-actions">
-                <button class="btn btn-cancel-modal" id="modalCancelBtn">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-                <button class="btn btn-confirm" id="modalConfirmBtn">
-                    <i class="fas fa-check"></i> Confirm
-                </button>
+                <button class="btn btn-cancel-modal" id="modalCancelBtn"><i class="fas fa-times"></i> Cancel</button>
+                <button class="btn btn-confirm" id="modalConfirmBtn"><i class="fas fa-check"></i> Confirm</button>
             </div>
         </div>
     </div>
 
     <script>
         (function() {
-            // ============================================================
-            // CONFIGURATION - EDIT THESE VALUES
-            // ============================================================
-            // IMPORTANT: These are your GitHub credentials
-            // The token should have 'repo' or 'public_repo' scope
-            const GITHUB_USERNAME = 'shsangi';
-            const GITHUB_REPO = 'my_parking';
-            const GITHUB_TOKEN = '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';
-            const FILE_PATH = 'my_tools_rental.txt';
-            // ============================================================
+            // ===== CONFIG =====
+            // REPLACE THIS with your Google Apps Script Web App URL
+            const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+            
+            // Your published CSV URL (change to .csv for better compatibility)
+            const TOOLS_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzFXjoyRA9PzPVHQgIv2efU2H1bcns3Tjy1jUCRF8W5JwdP5YeCF-obCQYYS5EzqaBg_dT8xuEhGI1/pub?output=csv';
 
-            const GITHUB_API = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${FILE_PATH}`;
+            const FALLBACK_TOOLS = ['Beldar (Spade)', 'Gandasa (Axe)', 'Kudal (Pickaxe)', 'Trowel (Karahi)', "Mason's Hammer",
+                'Chisel', 'Plumb Bob', 'Wheelbarrow', 'Concrete Mixer', 'Vibrator'
+            ];
 
-            // DOM refs
+            // ===== DOM REFS =====
             const searchInput = document.getElementById('searchInput');
             const dropdownList = document.getElementById('dropdownList');
-            const form = document.getElementById('parkingForm');
             const submitBtn = document.getElementById('submitBtn');
             const resetBtn = document.getElementById('resetBtn');
-            const toolRadios = document.querySelectorAll('input[name="tool"]');
+            const toolRadioGroup = document.getElementById('toolRadioGroup');
+            const toolCount = document.getElementById('toolCount');
             const shiftRadios = document.querySelectorAll('input[name="shift"]');
             const amountPaid = document.getElementById('amountPaid');
             const remainAmount = document.getElementById('remainAmount');
             const entryDate = document.getElementById('entryDate');
             const toolReturned = document.getElementById('toolReturned');
-
-            // Timestamp elements
             const timestampText = document.getElementById('timestampText');
             const footerTimestampText = document.getElementById('footerTimestampText');
 
-            // Modal refs
             const modalOverlay = document.getElementById('confirmModal');
             const confirmDate = document.getElementById('confirmDate');
             const confirmShift = document.getElementById('confirmShift');
@@ -872,82 +711,72 @@
             const modalConfirmBtn = document.getElementById('modalConfirmBtn');
             const modalCancelBtn = document.getElementById('modalCancelBtn');
 
-            // Toast
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
             const toastIcon = document.getElementById('toastIcon');
 
+            // ===== STATE =====
             let selectedValue = 'Kabir';
             let isOpen = false;
             let pendingData = null;
+            let selectedTool = '';
 
-            // ----- Pakistan time helpers with AM/PM -----
+            // ===== PAKISTAN TIME =====
             function getPakistanTime() {
                 const now = new Date();
-                const pakistanOffset = 5 * 60;
+                const pakOffset = 5 * 60;
                 const localOffset = now.getTimezoneOffset();
-                return new Date(now.getTime() + (pakistanOffset + localOffset) * 60000);
+                return new Date(now.getTime() + (pakOffset + localOffset) * 60000);
             }
 
-            function formatPakistanTime(date) {
-                let hours = date.getHours();
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                const seconds = String(date.getSeconds()).padStart(2, '0');
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12;
-                const day = String(date.getDate()).padStart(2, '0');
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const year = date.getFullYear();
-                return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+            function formatTime(date) {
+                let h = date.getHours();
+                const m = String(date.getMinutes()).padStart(2, '0');
+                const s = String(date.getSeconds()).padStart(2, '0');
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12 || 12;
+                const d = String(date.getDate()).padStart(2, '0');
+                const mo = String(date.getMonth() + 1).padStart(2, '0');
+                const y = date.getFullYear();
+                return `${d}-${mo}-${y} ${h}:${m}:${s} ${ampm}`;
             }
 
             function updateTimestamps() {
-                const pkTime = getPakistanTime();
-                const formatted = formatPakistanTime(pkTime);
-                timestampText.textContent = formatted;
-                footerTimestampText.textContent = formatted;
+                const t = formatTime(getPakistanTime());
+                timestampText.textContent = t;
+                footerTimestampText.textContent = t;
             }
-
             updateTimestamps();
             setInterval(updateTimestamps, 1000);
 
-            // ----- set default date to Pakistan time -----
             function setDefaultDate() {
-                const pkTime = getPakistanTime();
-                const year = pkTime.getFullYear();
-                const month = String(pkTime.getMonth() + 1).padStart(2, '0');
-                const day = String(pkTime.getDate()).padStart(2, '0');
-                entryDate.value = `${year}-${month}-${day}`;
+                const d = getPakistanTime();
+                entryDate.value =
+                    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
             }
             setDefaultDate();
 
-            // ----- render dropdown -----
+            // ===== DROPDOWN =====
             const nameOptions = ['Kaif', 'Kabir', 'Jawad'];
 
             function renderOptions(filter = '') {
-                const filterLower = filter.toLowerCase().trim();
-                let matched = nameOptions.filter(name => 
-                    name.toLowerCase().includes(filterLower)
-                );
-                const exactMatch = nameOptions.some(name => name.toLowerCase() === filterLower);
-                const showAdd = filter.trim() !== '' && !exactMatch;
+                const f = filter.toLowerCase().trim();
+                let matched = nameOptions.filter(n => n.toLowerCase().includes(f));
+                const exact = nameOptions.some(n => n.toLowerCase() === f);
+                const showAdd = filter.trim() !== '' && !exact;
 
                 let html = '';
                 if (matched.length === 0 && !showAdd) {
                     html = `<div class="no-match">No matches found</div>`;
                 } else {
-                    matched.forEach(name => {
-                        const isSelected = (name === selectedValue);
-                        html += `<div class="option-item ${isSelected ? 'selected' : ''}" data-value="${name}">
-                            <span>${name}</span>
-                            <span class="emoji-suffix">👤</span>
-                        </div>`;
+                    matched.forEach(n => {
+                        html +=
+                            `<div class="option-item ${n === selectedValue ? 'selected' : ''}" data-value="${n}"><span>${n}</span><span class="emoji-suffix">👤</span></div>`;
                     });
                     if (showAdd) {
-                        const newName = filter.trim();
-                        html += `<div class="option-item" data-value="${newName}" style="background:#eef6fc; border-left:3px solid #1f6f8f;">
-                            <span><i class="fas fa-plus-circle" style="color:#1f6f8f; margin-right:6px;"></i>Add "${newName}"</span>
+                        html +=
+                            `<div class="option-item" data-value="${filter.trim()}" style="background:#eef6fc;border-left:3px solid #1f6f8f;">
+                            <span><i class="fas fa-plus-circle" style="color:#1f6f8f;margin-right:6px;"></i>Add "${filter.trim()}"</span>
                             <span class="add-icon">new</span>
                         </div>`;
                     }
@@ -966,237 +795,196 @@
                 dropdownList.classList.remove('show');
             }
 
-            function selectValue(value) {
-                selectedValue = value;
-                searchInput.value = value;
+            function selectValue(v) {
+                selectedValue = v;
+                searchInput.value = v;
                 closeDropdown();
-                renderOptions(searchInput.value);
+                renderOptions(v);
             }
 
-            // ----- input events -----
-            searchInput.addEventListener('input', function(e) {
-                const val = this.value;
-                const exactMatch = nameOptions.some(name => name.toLowerCase() === val.toLowerCase().trim());
-                if (exactMatch && val.trim() !== '') {
-                    const matchedName = nameOptions.find(name => name.toLowerCase() === val.toLowerCase().trim());
-                    if (matchedName) selectedValue = matchedName;
+            searchInput.addEventListener('input', function() {
+                const v = this.value;
+                const exact = nameOptions.some(n => n.toLowerCase() === v.toLowerCase().trim());
+                if (exact && v.trim()) {
+                    const m = nameOptions.find(n => n.toLowerCase() === v.toLowerCase().trim());
+                    if (m) selectedValue = m;
                 }
-                if (isOpen) {
-                    renderOptions(val);
-                } else {
-                    openDropdown();
-                }
+                if (isOpen) renderOptions(v);
+                else openDropdown();
             });
 
             dropdownList.addEventListener('click', function(e) {
-                const option = e.target.closest('.option-item');
-                if (!option) return;
-                const value = option.dataset.value;
-                if (value) {
-                    selectValue(value);
-                    if (!nameOptions.includes(value) && value.trim() !== '') {
-                        nameOptions.push(value);
-                    }
-                    searchInput.value = value;
-                    selectedValue = value;
+                const opt = e.target.closest('.option-item');
+                if (!opt) return;
+                const v = opt.dataset.value;
+                if (v) {
+                    selectValue(v);
+                    if (!nameOptions.includes(v) && v.trim()) nameOptions.push(v);
+                    searchInput.value = v;
+                    selectedValue = v;
                     closeDropdown();
                 }
             });
 
-            searchInput.addEventListener('focus', function() {
-                openDropdown();
-                this.select();
-            });
-
+            searchInput.addEventListener('focus', function() { openDropdown();
+                this.select(); });
             document.addEventListener('click', function(e) {
                 const container = document.getElementById('searchableDropdown');
-                if (container && !container.contains(e.target)) {
-                    closeDropdown();
-                }
+                if (container && !container.contains(e.target)) closeDropdown();
             });
 
             searchInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeDropdown();
-                    this.blur();
-                }
+                if (e.key === 'Escape') { closeDropdown();
+                    this.blur(); }
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    const firstOption = dropdownList.querySelector('.option-item');
-                    if (firstOption) {
-                        const val = firstOption.dataset.value;
-                        if (val) {
-                            selectValue(val);
-                            if (!nameOptions.includes(val) && val.trim() !== '') {
-                                nameOptions.push(val);
-                            }
-                            searchInput.value = val;
-                            selectedValue = val;
-                        }
+                    const first = dropdownList.querySelector('.option-item');
+                    if (first) {
+                        const v = first.dataset.value;
+                        if (v) { selectValue(v); if (!nameOptions.includes(v) && v.trim()) nameOptions.push(v);
+                            searchInput.value = v;
+                            selectedValue = v; }
                     } else {
-                        const val = searchInput.value.trim();
-                        if (val !== '') {
-                            selectValue(val);
-                            if (!nameOptions.includes(val)) {
-                                nameOptions.push(val);
-                            }
-                            searchInput.value = val;
-                            selectedValue = val;
-                        }
+                        const v = searchInput.value.trim();
+                        if (v) { selectValue(v); if (!nameOptions.includes(v)) nameOptions.push(v);
+                            searchInput.value = v;
+                            selectedValue = v; }
                     }
                     closeDropdown();
                 }
                 if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                     e.preventDefault();
                     const items = dropdownList.querySelectorAll('.option-item');
-                    if (items.length === 0) return;
-                    let currentIndex = -1;
-                    items.forEach((item, idx) => {
-                        if (item.classList.contains('selected')) currentIndex = idx;
-                    });
-                    let newIndex = (e.key === 'ArrowDown') ? currentIndex + 1 : currentIndex - 1;
-                    if (newIndex < 0) newIndex = items.length - 1;
-                    if (newIndex >= items.length) newIndex = 0;
-                    items.forEach(item => item.classList.remove('selected'));
-                    items[newIndex].classList.add('selected');
-                    items[newIndex].scrollIntoView({ block: 'nearest' });
+                    if (!items.length) return;
+                    let idx = -1;
+                    items.forEach((el, i) => { if (el.classList.contains('selected')) idx = i; });
+                    let newIdx = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
+                    if (newIdx < 0) newIdx = items.length - 1;
+                    if (newIdx >= items.length) newIdx = 0;
+                    items.forEach(el => el.classList.remove('selected'));
+                    items[newIdx].classList.add('selected');
+                    items[newIdx].scrollIntoView({ block: 'nearest' });
                 }
             });
 
-            // ----- helpers -----
-            function getFinalName() {
-                return selectedValue || searchInput.value.trim() || 'Unknown';
-            }
+            // ===== LOAD TOOLS FROM CSV =====
+            function loadTools() {
+                toolRadioGroup.innerHTML = `<div class="loading-tools"><i class="fas fa-spinner"></i> Loading tools...</div>`;
 
-            function getSelectedTool() {
-                let selectedText = 'Beldar (Spade)';
-                for (const radio of toolRadios) {
-                    if (radio.checked) {
-                        const parentLabel = radio.closest('.tool-radio');
-                        if (parentLabel) {
-                            const clone = parentLabel.cloneNode(true);
-                            const radioInside = clone.querySelector('input[type="radio"]');
-                            if (radioInside) radioInside.remove();
-                            selectedText = clone.textContent.trim() || radio.value;
-                        } else {
-                            selectedText = radio.value;
-                        }
-                        break;
-                    }
-                }
-                return selectedText;
-            }
-
-            function getSelectedShift() {
-                let selectedText = 'Day Shift';
-                for (const radio of shiftRadios) {
-                    if (radio.checked) {
-                        const parentLabel = radio.closest('.shift-radio');
-                        if (parentLabel) {
-                            const clone = parentLabel.cloneNode(true);
-                            const radioInside = clone.querySelector('input[type="radio"]');
-                            if (radioInside) radioInside.remove();
-                            selectedText = clone.textContent.trim() || radio.value;
-                        } else {
-                            selectedText = radio.value;
-                        }
-                        break;
-                    }
-                }
-                return selectedText;
-            }
-
-            function getCurrentTimestamp() {
-                const pkTime = getPakistanTime();
-                return formatPakistanTime(pkTime);
-            }
-
-            // ============================================================
-            // SIMPLE GITHUB APPEND FUNCTION
-            // ============================================================
-            function appendToGitHub(entryLine) {
-                const headers = {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                };
-
-                // Step 1: Get current file content and SHA
-                fetch(GITHUB_API, { headers: headers })
-                    .then(response => {
-                        if (response.status === 404) {
-                            // File doesn't exist - create it
-                            return { exists: false };
-                        }
-                        if (!response.ok) {
-                            throw new Error(`GitHub API error: ${response.status}`);
-                        }
-                        return response.json().then(data => ({ exists: true, data: data }));
+                fetch(TOOLS_CSV)
+                    .then(r => {
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.text();
                     })
-                    .then(result => {
-                        let content, sha;
-
-                        if (result.exists) {
-                            // File exists - append to it
-                            sha = result.data.sha;
-                            // Decode base64 content
-                            const decoded = atob(result.data.content);
-                            content = decoded + entryLine + '\n';
-                        } else {
-                            // File doesn't exist - create with this entry
-                            sha = null;
-                            content = entryLine + '\n';
+                    .then(csv => {
+                        const lines = csv.split('\n').filter(l => l.trim());
+                        let tools = [];
+                        // First row is header - skip it
+                        for (let i = 1; i < lines.length; i++) {
+                            const cols = lines[i].split(',').map(c => c.trim());
+                            if (cols.length && cols[0]) tools.push(cols[0]);
                         }
-
-                        // Encode to base64
-                        const encoded = btoa(unescape(encodeURIComponent(content)));
-
-                        // Step 2: Update or create the file
-                        const updateData = {
-                            message: `Add rental entry - ${getCurrentTimestamp()}`,
-                            content: encoded,
-                            branch: 'main'
-                        };
-
-                        if (sha) {
-                            updateData.sha = sha;
-                        }
-
-                        return fetch(GITHUB_API, {
-                            method: 'PUT',
-                            headers: headers,
-                            body: JSON.stringify(updateData)
-                        });
+                        if (!tools.length) throw new Error('No tools found');
+                        renderTools(tools);
+                        toolCount.textContent = `(${tools.length})`;
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`GitHub API error: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(() => {
-                        showToast('✅ Data saved to GitHub!', 'success');
-                    })
-                    .catch(error => {
-                        console.error('GitHub save error:', error);
-                        showToast('❌ Failed to save: ' + error.message, 'error');
-                        // Show the data in console as fallback
-                        console.log('📝 Entry data:', entryLine);
-                        console.log('📄 Full entry would be saved to: my_tools_rental.txt');
+                    .catch(err => {
+                        console.warn('CSV failed, using fallback:', err);
+                        renderTools(FALLBACK_TOOLS);
+                        toolCount.textContent = `(fallback: ${FALLBACK_TOOLS.length})`;
+                        showToast('⚠️ Using fallback tools', 'error');
                     });
             }
 
-            // ----- show toast -----
-            function showToast(message, type = 'success') {
-                toast.className = 'toast show ' + type;
-                toastMessage.textContent = message;
-                toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-                clearTimeout(toast._timeout);
-                toast._timeout = setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 4000);
+            function renderTools(tools) {
+                if (!tools || !tools.length) {
+                    toolRadioGroup.innerHTML = `<div style="padding:0.5rem;color:#c62828;">No tools available</div>`;
+                    return;
+                }
+                let html = '';
+                tools.forEach((t, i) => {
+                    let emoji = '🔧';
+                    const l = t.toLowerCase();
+                    if (l.includes('spade') || l.includes('beldar')) emoji = '⛏️';
+                    else if (l.includes('axe') || l.includes('gandasa')) emoji = '🪓';
+                    else if (l.includes('pickaxe') || l.includes('kudal')) emoji = '⛏️';
+                    else if (l.includes('trowel') || l.includes('karahi')) emoji = '🧱';
+                    else if (l.includes('hammer') || l.includes('murgi')) emoji = '🔨';
+                    else if (l.includes('chisel') || l.includes('takra')) emoji = '🔧';
+                    else if (l.includes('plumb') || l.includes('shakul')) emoji = '📏';
+                    else if (l.includes('wheelbarrow') || l.includes('thaila')) emoji = '🛒';
+                    else if (l.includes('mixer')) emoji = '🧊';
+                    else if (l.includes('vibrator')) emoji = '⚡';
+                    html += `<label class="tool-radio">
+                        <input type="radio" name="tool" value="${t.replace(/"/g,'&quot;')}" ${i===0?'checked':''}>
+                        <span class="emoji-big">${emoji}</span> ${t}
+                    </label>`;
+                });
+                toolRadioGroup.innerHTML = html;
+                const first = toolRadioGroup.querySelector('input[type="radio"]');
+                if (first) selectedTool = first.value;
             }
 
-            // ----- show confirmation modal -----
+            // ===== SAVE TO GOOGLE SHEETS via Apps Script =====
+            function saveToSheet(data) {
+                if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+                    // No Apps Script URL configured - just log
+                    console.log('📝 Data to save:', data);
+                    showToast('⚠️ Apps Script URL not configured. Data logged to console.', 'error');
+                    return Promise.resolve();
+                }
+
+                return fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(() => {
+                    showToast('✅ Data saved to Google Sheets!', 'success');
+                })
+                .catch(err => {
+                    console.error('Save error:', err);
+                    showToast('❌ Failed to save: ' + err.message, 'error');
+                });
+            }
+
+            // ===== HELPERS =====
+            function getFinalName() { return selectedValue || searchInput.value.trim() || 'Unknown'; }
+
+            function getSelectedTool() {
+                const checked = toolRadioGroup.querySelector('input[type="radio"]:checked');
+                if (checked) { selectedTool = checked.value; return selectedTool; }
+                const first = toolRadioGroup.querySelector('input[type="radio"]');
+                if (first) { selectedTool = first.value; return selectedTool; }
+                return 'No tool';
+            }
+
+            function getSelectedShift() {
+                for (const r of shiftRadios) {
+                    if (r.checked) {
+                        const label = r.closest('.shift-radio');
+                        if (label) return label.textContent.trim() || r.value;
+                        return r.value;
+                    }
+                }
+                return 'Day Shift';
+            }
+
+            function getTimestamp() { return formatTime(getPakistanTime()); }
+
+            // ===== TOAST =====
+            function showToast(msg, type = 'success') {
+                toast.className = 'toast show ' + type;
+                toastMessage.textContent = msg;
+                toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+                clearTimeout(toast._timeout);
+                toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+            }
+
+            // ===== CONFIRMATION =====
             function showConfirmation() {
                 const date = entryDate.value || 'Not set';
                 const shift = getSelectedShift();
@@ -1205,15 +993,13 @@
                 const paid = parseInt(amountPaid.value) || 0;
                 const remain = parseInt(remainAmount.value) || 0;
                 const returned = toolReturned.checked ? '✅ Yes' : '❌ No';
-                const timestamp = getCurrentTimestamp();
+                const ts = getTimestamp();
 
-                let displayDate = date;
-                if (date) {
-                    const parts = date.split('-');
-                    displayDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-                }
+                let d = date;
+                if (date) { const p = date.split('-');
+                    d = `${p[2]}-${p[1]}-${p[0]}`; }
 
-                confirmDate.textContent = displayDate;
+                confirmDate.textContent = d;
                 confirmShift.textContent = shift;
                 confirmName.textContent = name;
                 confirmTool.textContent = tool;
@@ -1221,100 +1007,88 @@
                 confirmRemain.textContent = remain;
                 confirmReturned.textContent = returned;
 
-                pendingData = { 
-                    date: displayDate, 
-                    shift, 
-                    name, 
-                    tool, 
-                    paid, 
-                    remain, 
+                pendingData = {
+                    date: d,
+                    shift: shift,
+                    customer: name,
+                    tool: tool,
+                    paid: paid,
+                    remain: remain,
                     returned: toolReturned.checked ? 'Yes' : 'No',
-                    timestamp: timestamp,
-                    entry: `[${timestamp}] Date: ${displayDate} | Shift: ${shift} | Customer: ${name} | Tool: ${tool} | Paid: ${paid} | Remain: ${remain} | Returned: ${toolReturned.checked ? 'Yes' : 'No'}`
+                    timestamp: ts
                 };
                 modalOverlay.classList.add('active');
             }
 
-            // ----- close modal -----
             function closeModal() {
                 modalOverlay.classList.remove('active');
                 pendingData = null;
             }
 
-            // ----- confirm & submit -----
             function confirmAndSubmit() {
                 if (!pendingData) return;
-                const { date, shift, name, tool, paid, remain, returned, timestamp, entry } = pendingData;
+                const data = pendingData;
 
+                // System confirmation message
                 alert(
                     `🔧 Tool rental confirmed\n\n` +
-                    `📅 Date: ${date}\n` +
-                    `👤 Shift: ${shift}\n` +
-                    `👤 Customer: ${name}\n` +
-                    `🔧 Tool: ${tool}\n` +
-                    `💰 Paid: ${paid}\n` +
-                    `⏳ Remain: ${remain}\n` +
-                    `↩️ Tool returned: ${returned}\n` +
-                    `🕐 Timestamp: ${timestamp}\n\n` +
+                    `📅 Date: ${data.date}\n` +
+                    `👤 Shift: ${data.shift}\n` +
+                    `👤 Customer: ${data.customer}\n` +
+                    `🔧 Tool: ${data.tool}\n` +
+                    `💰 Paid: ${data.paid}\n` +
+                    `⏳ Remain: ${data.remain}\n` +
+                    `↩️ Returned: ${data.returned}\n` +
+                    `🕐 Time: ${data.timestamp}\n\n` +
                     `✅ Rental registered.`
                 );
 
-                // Save to GitHub
-                appendToGitHub(entry);
-
+                // Save to Google Sheets
+                saveToSheet(data);
                 closeModal();
             }
 
-            // ----- event listeners -----
+            // ===== EVENTS =====
             submitBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+                const tool = getSelectedTool();
+                if (!tool || tool === 'No tool') {
+                    showToast('⚠️ Please select a tool', 'error');
+                    return;
+                }
                 showConfirmation();
             });
 
             modalConfirmBtn.addEventListener('click', confirmAndSubmit);
             modalCancelBtn.addEventListener('click', closeModal);
-
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === this) closeModal();
-            });
-
+            modalOverlay.addEventListener('click', function(e) { if (e.target === this) closeModal(); });
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-                    closeModal();
-                }
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
             });
 
-            // ----- reset -----
             resetBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 selectValue('Kabir');
                 searchInput.value = 'Kabir';
                 selectedValue = 'Kabir';
-                for (const radio of toolRadios) {
-                    if (radio.value === 'Beldar (Spade)') {
-                        radio.checked = true;
-                        break;
-                    }
-                }
-                for (const radio of shiftRadios) {
-                    if (radio.value === 'Day Shift') {
-                        radio.checked = true;
-                        break;
-                    }
-                }
+                const first = toolRadioGroup.querySelector('input[type="radio"]');
+                if (first) { first.checked = true;
+                    selectedTool = first.value; }
+                for (const r of shiftRadios) { if (r.value === 'Day Shift') r.checked = true; }
                 amountPaid.value = '0';
                 remainAmount.value = '0';
                 toolReturned.checked = false;
                 setDefaultDate();
                 closeDropdown();
                 closeModal();
+                showToast('🔄 Form cleared', 'success');
             });
 
-            // ----- init -----
+            // ===== INIT =====
             selectValue('Kabir');
             searchInput.value = 'Kabir';
-            selectedValue = 'Kabir';
             renderOptions('');
+            loadTools();
 
             form.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') {
@@ -1323,8 +1097,9 @@
                 }
             });
 
-            console.log('✅ Tool rental form ready');
-            console.log('📁 File will be saved to: ' + GITHUB_USERNAME + '/' + GITHUB_REPO + '/blob/main/' + FILE_PATH);
+            console.log('✅ Tool rental ready');
+            console.log('📊 Loading tools from: ' + TOOLS_CSV);
+            console.log('📝 Set APPS_SCRIPT_URL to enable saving');
         })();
     </script>
 </body>
