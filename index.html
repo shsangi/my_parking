@@ -9,127 +9,126 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
         body {
-            background: #f4f7fc;
+            background: #f2f6fc;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 12px;
+            padding: 10px;
         }
         .card {
             max-width: 600px;
             width: 100%;
-            background: white;
-            border-radius: 32px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-            padding: 20px 16px 28px;
-            transition: all 0.2s;
-            border: 1px solid rgba(0,20,40,0.04);
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+            padding: 16px 14px 22px;
+            border: 1px solid rgba(0,20,40,0.03);
         }
-        /* header / live status */
-        .live-bar {
+
+        /* ----- compact banner ----- */
+        .banner {
             background: #0b1e33;
             color: white;
             border-radius: 60px;
-            padding: 16px 18px;
+            padding: 8px 16px 8px 20px;
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 8px 12px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+            gap: 6px 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
         }
-        .live-activity {
+        .banner-activity {
             display: flex;
-            flex-direction: column;
-            flex: 2 1 180px;
+            align-items: center;
+            gap: 8px;
+            flex: 1 1 140px;
         }
-        .live-label {
-            font-size: 12px;
-            letter-spacing: 0.5px;
-            opacity: 0.7;
-            text-transform: uppercase;
-            font-weight: 500;
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #4ade80;
+            border-radius: 50%;
+            flex-shrink: 0;
+            animation: pulse 1.8s infinite;
         }
-        .live-subject {
-            font-weight: 700;
-            font-size: 1.1rem;
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0.5; transform: scale(0.95); }
+        }
+        .banner-subject {
+            font-weight: 600;
+            font-size: 0.95rem;
             line-height: 1.3;
+            letter-spacing: 0.2px;
             word-break: break-word;
         }
-        .live-timer {
+        .banner-timer {
+            background: rgba(255,255,255,0.08);
+            padding: 4px 14px;
+            border-radius: 40px;
             display: flex;
             align-items: baseline;
-            gap: 4px;
-            background: rgba(255,255,255,0.08);
-            padding: 8px 16px;
-            border-radius: 40px;
+            gap: 3px;
             white-space: nowrap;
-        }
-        .timer-numbers {
             font-feature-settings: "tnum";
-            font-weight: 700;
-            font-size: 1.6rem;
-            letter-spacing: 1px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
         }
-        .timer-unit {
+        .timer-seconds {
+            font-weight: 400;
             font-size: 0.8rem;
             opacity: 0.7;
             margin-left: 2px;
         }
-        .total-duration {
-            background: #eef3f9;
+        .banner-clock {
+            background: rgba(255,255,255,0.06);
+            padding: 4px 12px;
             border-radius: 40px;
-            padding: 8px 18px;
-            display: inline-flex;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
             align-items: center;
-            gap: 6px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #0b1e33;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            gap: 4px;
+            white-space: nowrap;
         }
-        .total-duration span {
-            background: #0b1e33;
-            color: white;
-            padding: 0 12px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 1rem;
-            line-height: 1.8;
-        }
+
+        /* schedule list */
         .schedule-grid {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
             margin-top: 6px;
         }
         .row {
             display: flex;
             align-items: center;
-            padding: 8px 10px;
+            padding: 6px 10px;
             border-radius: 40px;
             background: #fafcff;
             border: 1px solid #e9edf3;
             transition: 0.1s ease;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             gap: 6px;
         }
         .row.current {
-            background: #d7e6ff;
-            border-color: #1d4ed8;
-            box-shadow: 0 2px 6px rgba(29,78,216,0.08);
+            background: #dbeafe;
+            border-color: #2563eb;
+            box-shadow: 0 2px 6px rgba(37,99,235,0.06);
         }
         .row .time {
             font-weight: 600;
             color: #1e293b;
-            min-width: 62px;
-            font-size: 0.75rem;
+            min-width: 58px;
+            font-size: 0.7rem;
             letter-spacing: 0.2px;
         }
         .row .subject {
@@ -139,22 +138,22 @@
             padding: 0 4px;
         }
         .row .subj-small {
-            font-size: 0.7rem;
-            opacity: 0.7;
+            font-size: 0.65rem;
+            opacity: 0.6;
             font-weight: 400;
             margin-left: 4px;
         }
         .row .duration-badge {
             background: #e9edf3;
-            padding: 2px 12px;
+            padding: 1px 12px;
             border-radius: 40px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             color: #1e293b;
             white-space: nowrap;
         }
         .row.current .duration-badge {
-            background: #1d4ed8;
+            background: #2563eb;
             color: white;
         }
         .break-row {
@@ -162,16 +161,15 @@
             border-color: #d9e1ec;
         }
         .break-row .subject {
-            font-weight: 500;
             color: #334155;
         }
         .footnote {
-            margin-top: 20px;
-            font-size: 0.7rem;
+            margin-top: 16px;
+            font-size: 0.65rem;
             color: #5e6f8d;
             text-align: center;
             border-top: 1px solid #e2e8f0;
-            padding-top: 16px;
+            padding-top: 14px;
             letter-spacing: 0.2px;
         }
         .footnote i {
@@ -181,66 +179,46 @@
             border-radius: 20px;
         }
         @media (max-width: 480px) {
-            .card { padding: 14px 10px; }
-            .live-bar { flex-direction: column; align-items: stretch; gap: 6px; }
-            .live-timer { align-self: flex-start; }
-            .row { flex-wrap: wrap; padding: 8px 8px; }
-            .row .time { min-width: 54px; }
+            .card { padding: 12px 8px; }
+            .banner { padding: 6px 12px; gap: 4px; }
+            .banner-subject { font-size: 0.8rem; }
+            .banner-timer { font-size: 1rem; padding: 2px 10px; }
+            .banner-clock { font-size: 0.7rem; padding: 2px 8px; }
+            .row { padding: 5px 6px; font-size: 0.75rem; }
+            .row .time { min-width: 50px; font-size: 0.65rem; }
+            .row .duration-badge { font-size: 0.6rem; padding: 0 10px; }
         }
-        .status-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: #22c55e;
-            border-radius: 50%;
-            margin-right: 6px;
-            animation: pulse 1.6s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        .clock-pk {
-            background: #eef3f9;
-            border-radius: 30px;
-            padding: 4px 12px;
-            font-weight: 500;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #0b1e33;
+        .separator {
+            display: none;
         }
     </style>
 </head>
 <body>
 <div class="card" id="app">
-    <!-- live header -->
-    <div class="live-bar">
-        <div class="live-activity">
-            <div class="live-label"><span class="status-dot"></span> current activity</div>
-            <div class="live-subject" id="currentActivity">Loading …</div>
+    <!-- compact banner: activity + timer + clock -->
+    <div class="banner">
+        <div class="banner-activity">
+            <span class="status-dot"></span>
+            <span class="banner-subject" id="currentActivity">Loading …</span>
         </div>
-        <div class="live-timer">
-            <span class="timer-numbers" id="timerDisplay">--:--</span>
-            <span class="timer-unit">left</span>
+        <div class="banner-timer" id="timerDisplay">
+            <span id="timerMinutes">--</span>:<span id="timerSeconds">--</span>
+            <span class="timer-seconds">left</span>
         </div>
-    </div>
-
-    <!-- total duration & pk time -->
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin-bottom: 14px;">
-        <div class="total-duration">
-            ⏱ total <span id="totalDuration">16h 00m</span>
+        <div class="banner-clock" id="pkClock">
+            🇵🇰 <span id="pkTime">--:-- --</span>
         </div>
-        <div class="clock-pk" id="pkClock">🇵🇰 <span id="pkTime">--:--:--</span></div>
     </div>
 
     <!-- schedule list -->
     <div class="schedule-grid" id="scheduleContainer"></div>
     <div class="footnote">
-        <i>CSS 2027 · 16‑hour coverage</i> &nbsp;|&nbsp; Pakistan time (PKT)
+        <i>CSS 2027 · 16‑hour coverage</i> &nbsp;·&nbsp; PKT
     </div>
 </div>
 <script>
     (function() {
-        // ----- schedule data (based on the document) -----
+        // ----- schedule data (based on document) -----
         const schedule = [
             { from: "05:00", to: "08:00", duration: "3h", subject: "English Essay & Précis", type: "core" },
             { from: "08:00", to: "09:00", duration: "1h", subject: "GSA (General Science & Ability)", type: "compulsory" },
@@ -248,13 +226,13 @@
             { from: "10:00", to: "11:00", duration: "1h", subject: "Current Affairs", type: "compulsory" },
             { from: "11:00", to: "12:00", duration: "1h", subject: "Islamic Studies / Ethics", type: "compulsory" },
             { from: "12:00", to: "13:00", duration: "1h", subject: "Optional 1 (Pol Sci / IR – Paper I)", type: "optional" },
-            { from: "13:00", to: "14:00", duration: "1h", subject: "🕊️ Break · Lunch & Zohr", type: "break" },
+            { from: "13:00", to: "14:00", duration: "1h", subject: "☕ Break · Lunch & Zohr", type: "break" },
             { from: "14:00", to: "15:00", duration: "1h", subject: "Optional 2 (Pol Sci / IR – Paper II)", type: "optional" },
             { from: "15:00", to: "16:00", duration: "1h", subject: "Optional 3 (Public Ad / Governance)", type: "optional" },
             { from: "16:00", to: "17:00", duration: "1h", subject: "Optional 4 (Criminology / History)", type: "optional" },
             { from: "17:00", to: "18:00", duration: "1h", subject: "Optional 5 (Gender / Env Sci)", type: "optional" },
             { from: "18:00", to: "19:00", duration: "1h", subject: "Optional 6 (Sindhi / Intl Law)", type: "optional" },
-            { from: "19:00", to: "20:00", duration: "1h", subject: "🕊️ Break · Dinner & Isha", type: "break" },
+            { from: "19:00", to: "20:00", duration: "1h", subject: "☕ Break · Dinner & Isha", type: "break" },
             { from: "20:00", to: "22:00", duration: "2h", subject: "MPT Practice & Revision (MCQs)", type: "mpt" },
             { from: "22:00", to: "23:00", duration: "1h", subject: "Review · Note consolidation", type: "review" },
             { from: "23:00", to: "05:00", duration: "6h", subject: "🌙 Sleep · Night rest", type: "sleep" }
@@ -263,47 +241,28 @@
         // ----- DOM refs -----
         const container = document.getElementById('scheduleContainer');
         const currentActivityEl = document.getElementById('currentActivity');
-        const timerDisplay = document.getElementById('timerDisplay');
-        const totalDurationEl = document.getElementById('totalDuration');
-        const pkClockEl = document.getElementById('pkTime');
+        const timerMinutesEl = document.getElementById('timerMinutes');
+        const timerSecondsEl = document.getElementById('timerSeconds');
+        const pkTimeEl = document.getElementById('pkTime');
 
         // ----- helpers (PK time) -----
         function getPakistanTime() {
             const now = new Date();
-            // Pakistan Standard Time (UTC+5) no DST
-            const pkOffset = 5 * 60; // minutes
+            const pkOffset = 5 * 60; // UTC+5
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             return new Date(utc + (pkOffset * 60000));
         }
 
-        function formatTime(d) {
-            return d.toTimeString().slice(0, 8);
-        }
-
-        function formatTimeShort(d) {
-            return d.toTimeString().slice(0, 5);
+        function formatTime12(d) {
+            let hours = d.getHours();
+            const minutes = d.getMinutes().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            return `${hours}:${minutes} ${ampm}`;
         }
 
         function getMinutesFromMidnight(d) {
             return d.getHours() * 60 + d.getMinutes();
-        }
-
-        // ----- total duration (sum of all durations in minutes) -----
-        function calcTotalMinutes() {
-            let total = 0;
-            for (let s of schedule) {
-                const [h, m] = s.duration.replace('h','').split('h').map(Number);
-                if (!isNaN(h) && !isNaN(m)) total += (h * 60 + m);
-                else if (!isNaN(h)) total += h * 60;
-                else if (!isNaN(m)) total += m;
-            }
-            return total;
-        }
-
-        function formatTotal(minutes) {
-            const h = Math.floor(minutes / 60);
-            const m = minutes % 60;
-            return `${h}h ${m.toString().padStart(2,'0')}m`;
         }
 
         // ----- render schedule rows with current highlight -----
@@ -316,15 +275,13 @@
                 let rowClass = 'row';
                 if (isCurrent) rowClass += ' current';
                 if (isBreak) rowClass += ' break-row';
-                // time display
                 const timeLabel = `${s.from} – ${s.to}`;
-                // subject with optional small label
                 let subjectDisplay = s.subject;
                 if (s.type === 'core') subjectDisplay += ' <span class="subj-small">✏️</span>';
                 else if (s.type === 'mpt') subjectDisplay += ' <span class="subj-small">📝</span>';
                 else if (s.type === 'review') subjectDisplay += ' <span class="subj-small">📘</span>';
                 else if (s.type === 'sleep') subjectDisplay = '🌙 ' + s.subject;
-                else if (s.type === 'break') subjectDisplay = '☕ ' + s.subject;
+                else if (s.type === 'break') subjectDisplay = '☕ ' + s.subject.replace('☕ ', '');
 
                 html += `<div class="${rowClass}">
                     <span class="time">${timeLabel}</span>
@@ -335,14 +292,12 @@
             container.innerHTML = html;
         }
 
-        // ----- determine current activity index and timer -----
+        // ----- determine current activity index and remaining seconds -----
         function getCurrentIndexAndRemaining(nowPK) {
             const nowMinutes = getMinutesFromMidnight(nowPK);
             let currentIdx = -1;
-            let nextIdx = -1;
             let remainingSeconds = 0;
 
-            // find current or next
             for (let i = 0; i < schedule.length; i++) {
                 const s = schedule[i];
                 const fromParts = s.from.split(':').map(Number);
@@ -350,13 +305,12 @@
                 const fromMin = fromParts[0] * 60 + fromParts[1];
                 const toMin = toParts[0] * 60 + toParts[1];
 
-                // handle overnight (23:00-05:00)
                 let isActive = false;
                 let endMin = toMin;
-                if (toMin < fromMin) { // overnight
+                if (toMin < fromMin) { // overnight (e.g., 23:00–05:00)
                     if (nowMinutes >= fromMin || nowMinutes < toMin) {
                         isActive = true;
-                        endMin = toMin + 1440; // add 24h for calculation
+                        endMin = toMin + 1440;
                     }
                 } else {
                     if (nowMinutes >= fromMin && nowMinutes < toMin) {
@@ -366,18 +320,17 @@
 
                 if (isActive) {
                     currentIdx = i;
-                    // calculate remaining
                     let end = toMin;
-                    if (end < fromMin) end += 1440; // overnight
+                    if (end < fromMin) end += 1440;
                     let nowAdj = nowMinutes;
-                    if (nowAdj < fromMin && toMin < fromMin) nowAdj += 1440; // adjust for overnight
+                    if (nowAdj < fromMin && toMin < fromMin) nowAdj += 1440;
                     const diffMinutes = end - nowAdj;
                     remainingSeconds = Math.max(0, diffMinutes * 60);
                     break;
                 }
             }
 
-            // if no current, find the next upcoming (or first if after midnight)
+            // if no current, find next upcoming
             if (currentIdx === -1) {
                 let minDiff = Infinity;
                 let candidate = -1;
@@ -394,7 +347,6 @@
                 }
                 if (candidate !== -1) {
                     currentIdx = candidate;
-                    // remaining until that session starts
                     const s = schedule[currentIdx];
                     const fromParts = s.from.split(':').map(Number);
                     let fromMin = fromParts[0] * 60 + fromParts[1];
@@ -402,59 +354,47 @@
                     if (diff < 0) diff += 1440;
                     remainingSeconds = diff * 60;
                 } else {
-                    // fallback
                     currentIdx = 0;
                     remainingSeconds = 0;
                 }
             }
-
             return { currentIdx, remainingSeconds };
         }
 
-        // ----- update UI (activity, timer, clock, total) -----
+        // ----- update UI (activity, timer, clock) -----
         function updateUI() {
             const nowPK = getPakistanTime();
-            // update clock
-            pkClockEl.textContent = formatTime(nowPK);
+            // update 12h clock
+            pkTimeEl.textContent = formatTime12(nowPK);
 
             const { currentIdx, remainingSeconds } = getCurrentIndexAndRemaining(nowPK);
             const currentItem = schedule[currentIdx] || schedule[0];
-            const subject = currentItem.subject;
 
-            // update activity
-            let activityText = subject;
+            // activity text
+            let activityText = currentItem.subject;
             if (currentItem.type === 'break' || currentItem.type === 'sleep') {
-                activityText = '🕊️ ' + subject;
+                activityText = '☕ ' + currentItem.subject.replace('☕ ', '');
             } else {
-                // add type hint
-                const typeMap = {
+                const prefixMap = {
                     'core': '📘 ',
                     'compulsory': '📖 ',
                     'optional': '📚 ',
                     'mpt': '📝 ',
                     'review': '📋 '
                 };
-                const prefix = typeMap[currentItem.type] || '';
-                activityText = prefix + subject;
+                const prefix = prefixMap[currentItem.type] || '';
+                activityText = prefix + currentItem.subject;
             }
             currentActivityEl.textContent = activityText;
 
-            // timer
-            const hrs = Math.floor(remainingSeconds / 3600);
-            const mins = Math.floor((remainingSeconds % 3600) / 60);
+            // timer: minutes and seconds
+            const mins = Math.floor(remainingSeconds / 60);
             const secs = Math.floor(remainingSeconds % 60);
-            if (remainingSeconds > 0) {
-                timerDisplay.textContent = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-            } else {
-                timerDisplay.textContent = '00:00:00';
-            }
+            timerMinutesEl.textContent = String(mins).padStart(2, '0');
+            timerSecondsEl.textContent = String(secs).padStart(2, '0');
 
             // re-render schedule with highlight
             renderSchedule(currentIdx);
-
-            // total duration (fixed)
-            const totalMin = calcTotalMinutes();
-            totalDurationEl.textContent = formatTotal(totalMin);
         }
 
         // ----- initial render & interval -----
@@ -463,7 +403,6 @@
             setInterval(updateUI, 1000);
         }
 
-        // set total duration once
         document.addEventListener('DOMContentLoaded', init);
     })();
 </script>
