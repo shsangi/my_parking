@@ -5,301 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>CSS 2027 · Dynamic Schedule</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-        }
-        body {
-            background: #f2f6fc;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-        }
-        .card {
-            max-width: 640px;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-            padding: 16px 14px 18px;
-            border: 1px solid rgba(0,20,40,0.03);
-        }
-        .banner {
-            background: #0b1e33;
-            color: white;
-            border-radius: 60px;
-            padding: 8px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-            min-height: 48px;
-        }
-        .banner-activity {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-        }
-        .status-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: #4ade80;
-            border-radius: 50%;
-            flex-shrink: 0;
-            animation: pulse 1.8s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.5; transform: scale(0.95); }
-            50% { opacity: 1; transform: scale(1.1); }
-            100% { opacity: 0.5; transform: scale(0.95); }
-        }
-        .banner-subject {
-            font-weight: 600;
-            font-size: 0.95rem;
-            line-height: 1.3;
-            letter-spacing: 0.2px;
-            word-break: break-word;
-        }
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            background: #f1f5f9;
-            padding: 6px 14px;
-            border-radius: 40px;
-            margin-bottom: 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #1e293b;
-            flex-wrap: wrap;
-        }
-        .status-bar .done-count {
-            color: #1a4b8c;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .status-bar .done-count span {
-            background: #b3d0ff;
-            padding: 0 10px;
-            border-radius: 20px;
-            color: #0b2b5e;
-            font-weight: 700;
-        }
-        .status-bar .remaining-time {
-            color: #b91c1c;
-            font-weight: 700;
-            background: #fee9e7;
-            padding: 0 14px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            white-space: nowrap;
-        }
-        .status-bar .remaining-time .time-num {
-            font-feature-settings: "tnum";
-        }
-        .status-bar .remaining-count {
-            color: #b91c1c;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .status-bar .remaining-count span {
-            background: #fee9e7;
-            padding: 0 10px;
-            border-radius: 20px;
-            color: #b91c1c;
-            font-weight: 700;
-        }
-        .schedule-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            margin-top: 4px;
-        }
-        .row {
-            display: flex;
-            align-items: center;
-            padding: 6px 10px;
-            border-radius: 40px;
-            background: #fafcff;
-            border: 1px solid #e9edf3;
-            transition: 0.1s ease;
-            font-size: 0.82rem;
-            gap: 4px;
-        }
-        .row .srno {
-            font-weight: 600;
-            color: #475569;
-            min-width: 28px;
-            font-size: 0.7rem;
-            text-align: center;
-        }
-        .row .time {
-            font-weight: 600;
-            color: #1e293b;
-            min-width: 62px;
-            font-size: 0.7rem;
-            letter-spacing: 0.2px;
-        }
-        .row .subject {
-            flex: 1;
-            font-weight: 500;
-            color: #0b1e33;
-            padding: 0 4px;
-            font-size: 0.8rem;
-        }
-        .row .duration-badge {
-            background: #e9edf3;
-            padding: 1px 12px;
-            border-radius: 40px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #1e293b;
-            white-space: nowrap;
-        }
-        .row.done {
-            background: #e6f0ff;
-            border-color: #b3d0ff;
-        }
-        .row.done .subject {
-            color: #1a4b8c;
-        }
-        .row.done .duration-badge {
-            background: #b3d0ff;
-            color: #0b2b5e;
-        }
-        .row.current {
-            background: #fee9e7;
-            border-color: #e53e3e;
-            box-shadow: 0 2px 8px rgba(229,62,62,0.08);
-        }
-        .row.current .subject {
-            color: #b91c1c;
-            font-weight: 600;
-        }
-        .row.current .duration-badge {
-            background: #e53e3e;
-            color: white;
-        }
-        .row.current .srno {
-            color: #b91c1c;
-        }
-        .row.current .time {
-            color: #b91c1c;
-        }
-        .row.upcoming {
-            background: #fafcff;
-            border-color: #e9edf3;
-        }
-        .row.break-row {
-            background: #f1f5f9;
-            border-color: #d9e1ec;
-        }
-        .row.break-row .subject {
-            color: #334155;
-        }
-        .row.break-row.done {
-            background: #e2e8f0;
-            border-color: #cbd5e1;
-        }
-        .row.break-row.current {
-            background: #fee9e7;
-            border-color: #e53e3e;
-        }
-        .footer {
-            margin-top: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.7rem;
-            color: #5e6f8d;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 12px;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .footer .pkt-clock {
-            background: #eef2f6;
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-weight: 500;
-            color: #1e293b;
-        }
-        .footer .exam-dates {
-            display: flex;
-            gap: 12px;
-            font-weight: 500;
-            color: #0b1e33;
-            flex-wrap: wrap;
-        }
-        .footer .exam-dates .mpt-date {
-            background: #dbeafe;
-            padding: 2px 12px;
-            border-radius: 20px;
-            color: #1a4b8c;
-        }
-        .footer .exam-dates .written-date {
-            background: #fee9e7;
-            padding: 2px 12px;
-            border-radius: 20px;
-            color: #b91c1c;
-        }
-        .footer .exam-dates .count-days {
-            font-weight: 700;
-            margin-left: 2px;
-        }
-        .loading-text {
-            text-align: center;
-            padding: 20px;
-            color: #5e6f8d;
-            font-size: 0.9rem;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.6rem;
-            font-weight: 600;
-            margin-left: 6px;
-        }
-        .status-badge.loaded {
-            background: #4ade80;
-            color: #0b1e33;
-        }
-        .status-badge.fallback {
-            background: #fbbf24;
-            color: #0b1e33;
-        }
-        .status-badge.error {
-            background: #ef4444;
-            color: white;
-        }
-        @media (max-width: 480px) {
-            .card { padding: 12px 8px; }
-            .banner { padding: 6px 14px; min-height: 40px; }
-            .banner-subject { font-size: 0.8rem; }
-            .row { padding: 5px 6px; font-size: 0.72rem; }
-            .row .srno { min-width: 22px; font-size: 0.65rem; }
-            .row .time { min-width: 52px; font-size: 0.65rem; }
-            .row .duration-badge { font-size: 0.6rem; padding: 0 10px; }
-            .row .subject { font-size: 0.7rem; }
-            .status-bar { font-size: 0.7rem; padding: 4px 10px; gap: 4px; }
-            .status-bar .remaining-time { font-size: 0.75rem; padding: 0 10px; }
-            .footer { font-size: 0.6rem; flex-direction: column; align-items: stretch; gap: 4px; }
-            .footer .exam-dates { justify-content: center; }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; }
+        body { background: #f2f6fc; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; }
+        .card { max-width: 640px; width: 100%; background: #ffffff; border-radius: 28px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04); padding: 16px 14px 18px; border: 1px solid rgba(0,20,40,0.03); }
+        .banner { background: #0b1e33; color: white; border-radius: 60px; padding: 8px 20px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; min-height: 48px; }
+        .banner-activity { display: flex; align-items: center; gap: 10px; flex: 1; }
+        .status-dot { display: inline-block; width: 10px; height: 10px; background: #4ade80; border-radius: 50%; flex-shrink: 0; animation: pulse 1.8s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.5; transform: scale(0.95); } }
+        .banner-subject { font-weight: 600; font-size: 0.95rem; line-height: 1.3; letter-spacing: 0.2px; word-break: break-word; }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: #f1f5f9; padding: 6px 14px; border-radius: 40px; margin-bottom: 12px; font-size: 0.8rem; font-weight: 500; color: #1e293b; flex-wrap: wrap; }
+        .status-bar .done-count { color: #1a4b8c; display: flex; align-items: center; gap: 4px; }
+        .status-bar .done-count span { background: #b3d0ff; padding: 0 10px; border-radius: 20px; color: #0b2b5e; font-weight: 700; }
+        .status-bar .remaining-time { color: #b91c1c; font-weight: 700; background: #fee9e7; padding: 0 14px; border-radius: 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .status-bar .remaining-time .time-num { font-feature-settings: "tnum"; }
+        .status-bar .remaining-count { color: #b91c1c; display: flex; align-items: center; gap: 4px; }
+        .status-bar .remaining-count span { background: #fee9e7; padding: 0 10px; border-radius: 20px; color: #b91c1c; font-weight: 700; }
+        .schedule-grid { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+        .row { display: flex; align-items: center; padding: 6px 10px; border-radius: 40px; background: #fafcff; border: 1px solid #e9edf3; transition: 0.1s ease; font-size: 0.82rem; gap: 4px; }
+        .row .srno { font-weight: 600; color: #475569; min-width: 28px; font-size: 0.7rem; text-align: center; }
+        .row .time { font-weight: 600; color: #1e293b; min-width: 62px; font-size: 0.7rem; letter-spacing: 0.2px; }
+        .row .subject { flex: 1; font-weight: 500; color: #0b1e33; padding: 0 4px; font-size: 0.8rem; }
+        .row .duration-badge { background: #e9edf3; padding: 1px 12px; border-radius: 40px; font-size: 0.65rem; font-weight: 600; color: #1e293b; white-space: nowrap; }
+        .row.done { background: #e6f0ff; border-color: #b3d0ff; }
+        .row.done .subject { color: #1a4b8c; }
+        .row.done .duration-badge { background: #b3d0ff; color: #0b2b5e; }
+        .row.current { background: #fee9e7; border-color: #e53e3e; box-shadow: 0 2px 8px rgba(229,62,62,0.08); }
+        .row.current .subject { color: #b91c1c; font-weight: 600; }
+        .row.current .duration-badge { background: #e53e3e; color: white; }
+        .row.current .srno { color: #b91c1c; }
+        .row.current .time { color: #b91c1c; }
+        .row.upcoming { background: #fafcff; border-color: #e9edf3; }
+        .row.break-row { background: #f1f5f9; border-color: #d9e1ec; }
+        .row.break-row .subject { color: #334155; }
+        .row.break-row.done { background: #e2e8f0; border-color: #cbd5e1; }
+        .row.break-row.current { background: #fee9e7; border-color: #e53e3e; }
+        .footer { margin-top: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: #5e6f8d; border-top: 1px solid #e2e8f0; padding-top: 12px; flex-wrap: wrap; gap: 6px; }
+        .footer .pkt-clock { background: #eef2f6; padding: 2px 12px; border-radius: 20px; font-weight: 500; color: #1e293b; }
+        .footer .exam-dates { display: flex; gap: 12px; font-weight: 500; color: #0b1e33; flex-wrap: wrap; }
+        .footer .exam-dates .mpt-date { background: #dbeafe; padding: 2px 12px; border-radius: 20px; color: #1a4b8c; }
+        .footer .exam-dates .written-date { background: #fee9e7; padding: 2px 12px; border-radius: 20px; color: #b91c1c; }
+        .footer .exam-dates .count-days { font-weight: 700; margin-left: 2px; }
+        .loading-text { text-align: center; padding: 20px; color: #5e6f8d; font-size: 0.9rem; }
+        .loading-text small { color: #94a3b8; font-size: 0.75rem; display: block; margin-top: 4px; }
+        @media (max-width: 480px) { .card { padding: 12px 8px; } .banner { padding: 6px 14px; min-height: 40px; } .banner-subject { font-size: 0.8rem; } .row { padding: 5px 6px; font-size: 0.72rem; } .row .srno { min-width: 22px; font-size: 0.65rem; } .row .time { min-width: 52px; font-size: 0.65rem; } .row .duration-badge { font-size: 0.6rem; padding: 0 10px; } .row .subject { font-size: 0.7rem; } .status-bar { font-size: 0.7rem; padding: 4px 10px; gap: 4px; } .status-bar .remaining-time { font-size: 0.75rem; padding: 0 10px; } .footer { font-size: 0.6rem; flex-direction: column; align-items: stretch; gap: 4px; } .footer .exam-dates { justify-content: center; } }
     </style>
 </head>
 <body>
@@ -332,7 +80,7 @@
 
 <script>
     (function() {
-        // ----- FALLBACK SCHEDULE (used if Google Sheet fails to load) -----
+        // ----- FALLBACK SCHEDULE -----
         const FALLBACK_SCHEDULE = [
             { from: "05:00", to: "08:00", duration: "3h", subject: "English Essay & Précis", type: "core" },
             { from: "08:00", to: "09:00", duration: "1h", subject: "GSA (General Science & Ability)", type: "compulsory" },
@@ -352,9 +100,8 @@
             { from: "23:00", to: "05:00", duration: "6h", subject: "🌙 Sleep · Night rest", type: "sleep" }
         ];
 
-        // Default exam dates (from your sheet format)
-        let mptDateStr = "27 Sep 2026";
-        let writtenDateStr = "27 Jan 2027";
+        let mptDate = new Date(2026, 8, 27);
+        let writtenDate = new Date(2027, 0, 27);
 
         // ----- DOM refs -----
         const container = document.getElementById('scheduleContainer');
@@ -369,48 +116,33 @@
         const mptDateDisplayEl = document.getElementById('mptDateDisplay');
         const writtenDateDisplayEl = document.getElementById('writtenDateDisplay');
 
-        // ----- Global schedule variable -----
         let schedule = [...FALLBACK_SCHEDULE];
-        let mptDate = new Date(2026, 8, 27);
-        let writtenDate = new Date(2027, 0, 27);
-        let dataLoaded = false;
 
-        // ----- Google Sheet CSV URL -----
-        // REPLACE THIS WITH YOUR PUBLISHED CSV URL
-        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQy7Z8X9wA2bC3dE4fG5hI6jK7lM8nO9pQ0rS1tU2vW3xY4zA5B6C7D8E9F0G/export?format=csv&gid=0';
+        // ----- YOUR PUBLISHED CSV URL (already inserted) -----
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTX16x-Eeh1mguy6se1B25x0hkRIzIme4pX71KlxpML_vZAD34mtlITIqFs8MCAVycXFFft82j1RZDc/pub?output=csv';
 
         // ----- Parse date string like "27 Sep 2026" to Date object -----
         function parseDateString(dateStr) {
             if (!dateStr || dateStr.trim() === '') return null;
             const parts = dateStr.trim().split(' ');
             if (parts.length !== 3) return null;
-            
             const day = parseInt(parts[0]);
-            const monthMap = {
-                'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5,
-                'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
-            };
+            const monthMap = { 'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5, 'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11 };
             const month = monthMap[parts[1].toLowerCase().substring(0, 3)];
             if (month === undefined) return null;
             const year = parseInt(parts[2]);
             if (isNaN(day) || isNaN(year)) return null;
-            
             return new Date(year, month, day);
         }
 
-        // ----- Parse CSV with your exact column structure -----
+        // ----- Parse CSV -----
         function parseCSVToSchedule(csvText) {
             const lines = csvText.split('\n').filter(line => line.trim() !== '');
             if (lines.length < 2) return null;
 
-            // Try to detect header row - look for your column names
-            const headerLine = lines[0].toLowerCase();
-            
-            // Check if this matches your format: ActivityType, From, To, Duration, etc.
-            // Your columns: ActivityType, From, To, Duration, mpt test date, written test date
+            console.log('📄 CSV Headers:', lines[0]);
             const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
             
-            // Find column indices
             const activityIdx = headers.findIndex(h => h.includes('activity') || h.includes('subject'));
             const fromIdx = headers.findIndex(h => h === 'from' || h === 'start');
             const toIdx = headers.findIndex(h => h === 'to' || h === 'end');
@@ -419,235 +151,86 @@
             const mptDateIdx = headers.findIndex(h => h.includes('mpt') || h.includes('test date'));
             const writtenDateIdx = headers.findIndex(h => h.includes('written') || h.includes('exam'));
 
-            // If we can't find required columns, try a simpler approach
-            if (fromIdx === -1 || toIdx === -1 || durationIdx === -1) {
-                // Try to parse based on position (if columns are in fixed order)
-                // Assume order: ActivityType, From, To, Duration, mpt date, written date
-                console.log('Attempting to parse by column position...');
-                
-                const parsed = [];
-                let mptDateFound = null;
-                let writtenDateFound = null;
-                
-                for (let i = 1; i < lines.length; i++) {
-                    const cols = lines[i].split(',').map(c => c.trim());
-                    if (cols.length < 4) continue;
-                    
-                    // Try to identify if this row contains dates (for the header row)
-                    if (cols.length >= 6) {
-                        // Check if cols[4] looks like a date
-                        const possibleDate = cols[4];
-                        if (possibleDate && possibleDate.match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) {
-                            mptDateFound = possibleDate;
-                        }
-                        if (cols.length >= 6 && cols[5] && cols[5].match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) {
-                            writtenDateFound = cols[5];
-                        }
-                    }
-                    
-                    // Extract subject and type from first column
-                    let subject = cols[0] || '';
-                    let type = 'core';
-                    
-                    // Determine type from subject or separate column if available
-                    const subjectLower = subject.toLowerCase();
-                    if (subjectLower.includes('break') || subjectLower.includes('lunch') || subjectLower.includes('dinner')) {
-                        type = 'break';
-                    } else if (subjectLower.includes('sleep') || subjectLower.includes('rest')) {
-                        type = 'sleep';
-                    } else if (subjectLower.includes('mpt') || subjectLower.includes('practice') || subjectLower.includes('mcq')) {
-                        type = 'mpt';
-                    } else if (subjectLower.includes('review') || subjectLower.includes('consolidation')) {
-                        type = 'review';
-                    } else if (subjectLower.includes('essay') || subjectLower.includes('precis')) {
-                        type = 'core';
-                    } else if (subjectLower.includes('optional')) {
-                        type = 'optional';
-                    } else {
-                        type = 'compulsory';
-                    }
-                    
-                    // If we have a separate type column, use it
-                    if (typeIdx !== -1 && cols.length > typeIdx) {
-                        const typeVal = cols[typeIdx].toLowerCase();
-                        if (['core', 'compulsory', 'optional', 'mpt', 'review', 'break', 'sleep'].includes(typeVal)) {
-                            type = typeVal;
-                        }
-                    }
-                    
-                    // Get from/to/duration
-                    let from = cols[fromIdx !== -1 ? fromIdx : 1] || '';
-                    let to = cols[toIdx !== -1 ? toIdx : 2] || '';
-                    let duration = cols[durationIdx !== -1 ? durationIdx : 3] || '';
-                    
-                    // Clean up time formats
-                    from = from.replace(/\s/g, '');
-                    to = to.replace(/\s/g, '');
-                    
-                    // Validate time format
-                    if (!/^\d{2}:\d{2}$/.test(from) || !/^\d{2}:\d{2}$/.test(to)) {
-                        // Try to fix common formats
-                        if (from.match(/^\d{1,2}:\d{2}$/)) from = '0' + from;
-                        if (to.match(/^\d{1,2}:\d{2}$/)) to = '0' + to;
-                        if (!/^\d{2}:\d{2}$/.test(from) || !/^\d{2}:\d{2}$/.test(to)) {
-                            console.warn('Skipping row with invalid time format:', from, to);
-                            continue;
-                        }
-                    }
-                    
-                    // Clean up duration
-                    duration = duration.replace(/\s/g, '');
-                    if (!duration.match(/^\d+[hm]/i)) {
-                        // Try to infer duration from times
-                        const fromH = parseInt(from.split(':')[0]);
-                        const toH = parseInt(to.split(':')[0]);
-                        const diff = toH - fromH;
-                        if (diff > 0 && diff <= 24) {
-                            duration = diff + 'h';
-                        } else {
-                            duration = '1h';
-                        }
-                    }
-                    
-                    parsed.push({ from, to, duration, subject, type });
-                }
-                
-                // Update exam dates if found
-                if (mptDateFound || writtenDateFound) {
-                    if (mptDateFound) {
-                        const parsedMpt = parseDateString(mptDateFound);
-                        if (parsedMpt) {
-                            mptDate = parsedMpt;
-                            mptDateStr = mptDateFound;
-                            mptDateDisplayEl.textContent = mptDateFound;
-                        }
-                    }
-                    if (writtenDateFound) {
-                        const parsedWritten = parseDateString(writtenDateFound);
-                        if (parsedWritten) {
-                            writtenDate = parsedWritten;
-                            writtenDateStr = writtenDateFound;
-                            writtenDateDisplayEl.textContent = writtenDateFound;
-                        }
-                    }
-                }
-                
-                return parsed.length > 0 ? parsed : null;
-            }
-            
-            // Standard parsing with named columns
             const parsed = [];
             let mptDateFound = null;
             let writtenDateFound = null;
-            
+
             for (let i = 1; i < lines.length; i++) {
                 const cols = lines[i].split(',').map(c => c.trim());
-                if (cols.length < Math.max(fromIdx, toIdx, durationIdx) + 1) continue;
-                
-                const subject = activityIdx !== -1 ? cols[activityIdx] : cols[0] || '';
-                const from = cols[fromIdx].replace(/\s/g, '');
-                const to = cols[toIdx].replace(/\s/g, '');
-                const duration = cols[durationIdx].replace(/\s/g, '');
-                
-                // Check for date columns
+                if (cols.length < 4) continue;
+                if (cols.every(c => c === '')) continue;
+
+                let subject = activityIdx !== -1 ? cols[activityIdx] : cols[0] || '';
+                let from = (fromIdx !== -1 ? cols[fromIdx] : cols[1] || '').replace(/\s/g, '');
+                let to = (toIdx !== -1 ? cols[toIdx] : cols[2] || '').replace(/\s/g, '');
+                let duration = (durationIdx !== -1 ? cols[durationIdx] : cols[3] || '').replace(/\s/g, '');
+
                 if (mptDateIdx !== -1 && cols.length > mptDateIdx && cols[mptDateIdx]) {
                     const dateStr = cols[mptDateIdx].trim();
-                    if (dateStr.match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) {
-                        mptDateFound = dateStr;
-                    }
+                    if (dateStr.match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) mptDateFound = dateStr;
                 }
                 if (writtenDateIdx !== -1 && cols.length > writtenDateIdx && cols[writtenDateIdx]) {
                     const dateStr = cols[writtenDateIdx].trim();
-                    if (dateStr.match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) {
-                        writtenDateFound = dateStr;
-                    }
+                    if (dateStr.match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) writtenDateFound = dateStr;
                 }
-                
-                // Skip rows with missing data
-                if (!from || !to || !duration || !subject) continue;
-                
-                // Validate time format
+
+                if (!from || !to || !subject) continue;
+                if (from.length === 4) from = '0' + from;
+                if (to.length === 4) to = '0' + to;
                 if (!/^\d{2}:\d{2}$/.test(from) || !/^\d{2}:\d{2}$/.test(to)) continue;
-                
-                // Determine type
+
+                if (!duration || !duration.match(/^\d+[hm]/i)) {
+                    const fromH = parseInt(from.split(':')[0]);
+                    const toH = parseInt(to.split(':')[0]);
+                    const diff = toH - fromH;
+                    duration = (diff > 0 && diff <= 24) ? diff + 'h' : '1h';
+                }
+
                 let type = 'compulsory';
                 if (typeIdx !== -1 && cols.length > typeIdx) {
                     const typeVal = cols[typeIdx].toLowerCase();
-                    if (['core', 'compulsory', 'optional', 'mpt', 'review', 'break', 'sleep'].includes(typeVal)) {
-                        type = typeVal;
-                    }
+                    if (['core', 'compulsory', 'optional', 'mpt', 'review', 'break', 'sleep'].includes(typeVal)) type = typeVal;
                 } else {
-                    // Infer from subject
                     const subjectLower = subject.toLowerCase();
                     if (subjectLower.includes('break') || subjectLower.includes('lunch') || subjectLower.includes('dinner')) type = 'break';
-                    else if (subjectLower.includes('sleep') || subjectLower.includes('rest')) type = 'sleep';
+                    else if (subjectLower.includes('sleep') || subjectLower.includes('rest') || subjectLower.includes('night')) type = 'sleep';
                     else if (subjectLower.includes('mpt') || subjectLower.includes('practice') || subjectLower.includes('mcq')) type = 'mpt';
                     else if (subjectLower.includes('review') || subjectLower.includes('consolidation')) type = 'review';
                     else if (subjectLower.includes('essay') || subjectLower.includes('precis')) type = 'core';
                     else if (subjectLower.includes('optional')) type = 'optional';
                 }
-                
+
                 parsed.push({ from, to, duration, subject, type });
             }
-            
-            // Update exam dates
-            if (mptDateFound) {
-                const parsedMpt = parseDateString(mptDateFound);
-                if (parsedMpt) {
-                    mptDate = parsedMpt;
-                    mptDateStr = mptDateFound;
-                    mptDateDisplayEl.textContent = mptDateFound;
-                }
-            }
-            if (writtenDateFound) {
-                const parsedWritten = parseDateString(writtenDateFound);
-                if (parsedWritten) {
-                    writtenDate = parsedWritten;
-                    writtenDateStr = writtenDateFound;
-                    writtenDateDisplayEl.textContent = writtenDateFound;
-                }
-            }
-            
+
+            if (mptDateFound) { const d = parseDateString(mptDateFound); if (d) { mptDate = d; mptDateDisplayEl.textContent = mptDateFound; } }
+            if (writtenDateFound) { const d = parseDateString(writtenDateFound); if (d) { writtenDate = d; writtenDateDisplayEl.textContent = writtenDateFound; } }
+
             return parsed.length > 0 ? parsed : null;
         }
 
-        // ----- Load schedule from Google Sheet -----
+        // ----- Load schedule -----
         async function loadScheduleFromSheet() {
             try {
-                console.log('📡 Fetching schedule from:', SHEET_CSV_URL);
-                
-                const response = await fetch(SHEET_CSV_URL, {
-                    cache: 'no-store',
-                    headers: { 'Cache-Control': 'no-cache' }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
+                console.log('📡 Fetching from:', SHEET_CSV_URL);
+                const response = await fetch(SHEET_CSV_URL, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const csvText = await response.text();
-                console.log('📄 Raw CSV length:', csvText.length, 'characters');
-                console.log('📄 First 200 chars:', csvText.substring(0, 200));
-                
+                console.log('📄 CSV length:', csvText.length);
                 const parsed = parseCSVToSchedule(csvText);
-
                 if (parsed && parsed.length > 0) {
                     schedule = parsed;
-                    dataLoaded = true;
-                    console.log('✅ Schedule loaded from Google Sheet:', schedule.length, 'entries');
+                    console.log('✅ Loaded', schedule.length, 'entries');
                     return true;
-                } else {
-                    console.warn('⚠️ Failed to parse CSV, using fallback schedule');
-                    return false;
                 }
+                return false;
             } catch (error) {
-                console.error('❌ Error loading schedule from sheet:', error.message);
-                console.log('📋 Using fallback schedule');
+                console.error('❌ Error:', error.message);
                 return false;
             }
         }
 
-        // ----- Pakistan Time helpers -----
+        // ----- Pakistan Time -----
         function getPakistanTime() {
             const now = new Date();
             const pkOffset = 5 * 60;
@@ -689,11 +272,8 @@
                 if (toSec < fromSec) {
                     if (nowSecondsInDay >= fromSec || nowSecondsInDay < toSec) {
                         isActive = true;
-                        if (nowSecondsInDay >= fromSec) {
-                            remainingSeconds = (86400 - nowSecondsInDay) + toSec;
-                        } else {
-                            remainingSeconds = toSec - nowSecondsInDay;
-                        }
+                        if (nowSecondsInDay >= fromSec) remainingSeconds = (86400 - nowSecondsInDay) + toSec;
+                        else remainingSeconds = toSec - nowSecondsInDay;
                     }
                 } else {
                     if (nowSecondsInDay >= fromSec && nowSecondsInDay < toSec) {
@@ -701,11 +281,7 @@
                         remainingSeconds = toSec - nowSecondsInDay;
                     }
                 }
-
-                if (isActive) {
-                    currentIdx = i;
-                    break;
-                }
+                if (isActive) { currentIdx = i; break; }
             }
 
             if (currentIdx === -1) {
@@ -717,18 +293,10 @@
                     const fromSec = (fromParts[0] * 3600) + (fromParts[1] * 60);
                     let diff = fromSec - nowSecondsInDay;
                     if (diff < 0) diff += 86400;
-                    if (diff < minDiff) {
-                        minDiff = diff;
-                        candidate = i;
-                    }
+                    if (diff < minDiff) { minDiff = diff; candidate = i; }
                 }
-                if (candidate !== -1) {
-                    currentIdx = candidate;
-                    remainingSeconds = minDiff;
-                } else {
-                    currentIdx = 0;
-                    remainingSeconds = 0;
-                }
+                if (candidate !== -1) { currentIdx = candidate; remainingSeconds = minDiff; }
+                else { currentIdx = 0; remainingSeconds = 0; }
             }
             return { currentIdx, remainingSeconds };
         }
@@ -743,37 +311,19 @@
                 const s = schedule[i];
                 const isBreak = s.type === 'break' || s.type === 'sleep';
                 let rowClass = 'row';
-
                 let status = 'upcoming';
                 if (i < currentIdx) status = 'done';
                 else if (i === currentIdx) status = 'current';
 
-                if (status === 'done') {
-                    rowClass += ' done';
-                    doneCount++;
-                } else if (status === 'current') {
-                    rowClass += ' current';
-                    remainingCount++;
-                } else {
-                    remainingCount++;
-                }
+                if (status === 'done') { rowClass += ' done'; doneCount++; }
+                else if (status === 'current') { rowClass += ' current'; remainingCount++; }
+                else { remainingCount++; }
                 if (isBreak) rowClass += ' break-row';
 
                 const srno = i + 1;
                 const timeLabel = `${s.from} – ${s.to}`;
                 let subjectDisplay = s.subject;
-                if (s.type === 'break') subjectDisplay = s.subject.replace('☕ ', '');
-                else if (s.type === 'sleep') subjectDisplay = s.subject.replace('🌙 ', '');
-
-                const typeEmoji = {
-                    'core': ' ✏️',
-                    'compulsory': ' 📖',
-                    'optional': ' 📚',
-                    'mpt': ' 📝',
-                    'review': ' 📘',
-                    'break': '',
-                    'sleep': ' 🌙'
-                };
+                const typeEmoji = { 'core': ' ✏️', 'compulsory': ' 📖', 'optional': ' 📚', 'mpt': ' 📝', 'review': ' 📘', 'break': '', 'sleep': ' 🌙' };
                 subjectDisplay += typeEmoji[s.type] || '';
 
                 html += `<div class="${rowClass}">
@@ -793,31 +343,17 @@
         function updateUI() {
             const nowPK = getPakistanTime();
             pkTimeEl.textContent = formatTime12(nowPK);
-
-            const mptDays = getDaysUntil(mptDate, nowPK);
-            const writtenDays = getDaysUntil(writtenDate, nowPK);
-            mptDaysEl.textContent = mptDays >= 0 ? mptDays : '0';
-            writtenDaysEl.textContent = writtenDays >= 0 ? writtenDays : '0';
+            mptDaysEl.textContent = Math.max(0, getDaysUntil(mptDate, nowPK));
+            writtenDaysEl.textContent = Math.max(0, getDaysUntil(writtenDate, nowPK));
 
             const { currentIdx, remainingSeconds } = getCurrentIndexAndRemaining(nowPK);
             const currentItem = schedule[currentIdx] || schedule[0];
 
             let activityText = currentItem.subject;
-            const prefixMap = {
-                'core': '📘 ',
-                'compulsory': '📖 ',
-                'optional': '📚 ',
-                'mpt': '📝 ',
-                'review': '📋 '
-            };
-            if (currentItem.type === 'break') {
-                activityText = '☕ ' + currentItem.subject.replace('☕ ', '');
-            } else if (currentItem.type === 'sleep') {
-                activityText = '🌙 ' + currentItem.subject.replace('🌙 ', '');
-            } else {
-                const prefix = prefixMap[currentItem.type] || '';
-                activityText = prefix + currentItem.subject;
-            }
+            const prefixMap = { 'core': '📘 ', 'compulsory': '📖 ', 'optional': '📚 ', 'mpt': '📝 ', 'review': '📋 ' };
+            if (currentItem.type === 'break') activityText = '☕ ' + currentItem.subject.replace('☕ ', '');
+            else if (currentItem.type === 'sleep') activityText = '🌙 ' + currentItem.subject.replace('🌙 ', '');
+            else { const prefix = prefixMap[currentItem.type] || ''; activityText = prefix + currentItem.subject; }
             currentActivityEl.textContent = activityText;
 
             const mins = Math.floor(remainingSeconds / 60);
@@ -828,28 +364,16 @@
             renderSchedule(currentIdx);
         }
 
-        // ----- Initialization -----
+        // ----- Init -----
         async function init() {
-            // Show loading state with debug info
-            container.innerHTML = `<div class="loading-text">⏳ Loading schedule from Google Sheet…<br><small style="color:#94a3b8;">Checking: ${SHEET_CSV_URL.substring(0, 60)}...</small></div>`;
-            
-            // Try to load from sheet
+            container.innerHTML = '<div class="loading-text">⏳ Loading schedule from Google Sheet…<br><small>URL: ' + SHEET_CSV_URL.substring(0, 60) + '…</small></div>';
             const loaded = await loadScheduleFromSheet();
-            
             if (!loaded) {
-                container.innerHTML = `<div class="loading-text">⚠️ Using default schedule (sheet unavailable)<br><small style="color:#94a3b8;">Check console for errors</small></div>`;
-                // Wait a moment to show the message, then update
-                setTimeout(() => {
-                    updateUI();
-                    setInterval(updateUI, 1000);
-                }, 1500);
+                container.innerHTML = '<div class="loading-text">⚠️ Using fallback schedule (sheet unavailable)<br><small>Check console for details</small></div>';
+                setTimeout(() => { updateUI(); setInterval(updateUI, 1000); }, 1500);
             } else {
-                // Schedule loaded successfully
-                container.innerHTML = `<div class="loading-text">✅ Schedule loaded!<br><small style="color:#94a3b8;">${schedule.length} activities loaded from Google Sheet</small></div>`;
-                setTimeout(() => {
-                    updateUI();
-                    setInterval(updateUI, 1000);
-                }, 800);
+                container.innerHTML = '<div class="loading-text">✅ Schedule loaded!<br><small>' + schedule.length + ' activities from Google Sheet</small></div>';
+                setTimeout(() => { updateUI(); setInterval(updateUI, 1000); }, 800);
             }
         }
 
