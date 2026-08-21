@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>CSS 2027 · 16‑Hour Schedule</title>
+    <title>CSS 2027 · Dynamic Schedule</title>
     <style>
         * {
             margin: 0;
@@ -28,7 +28,6 @@
             padding: 16px 14px 18px;
             border: 1px solid rgba(0,20,40,0.03);
         }
-
         .banner {
             background: #0b1e33;
             color: white;
@@ -68,7 +67,6 @@
             letter-spacing: 0.2px;
             word-break: break-word;
         }
-
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -124,7 +122,6 @@
             color: #b91c1c;
             font-weight: 700;
         }
-
         .schedule-grid {
             display: flex;
             flex-direction: column;
@@ -172,7 +169,6 @@
             color: #1e293b;
             white-space: nowrap;
         }
-
         .row.done {
             background: #e6f0ff;
             border-color: #b3d0ff;
@@ -184,7 +180,6 @@
             background: #b3d0ff;
             color: #0b2b5e;
         }
-
         .row.current {
             background: #fee9e7;
             border-color: #e53e3e;
@@ -204,7 +199,6 @@
         .row.current .time {
             color: #b91c1c;
         }
-
         .row.upcoming {
             background: #fafcff;
             border-color: #e9edf3;
@@ -224,7 +218,6 @@
             background: #fee9e7;
             border-color: #e53e3e;
         }
-
         .footer {
             margin-top: 14px;
             display: flex;
@@ -267,7 +260,12 @@
             font-weight: 700;
             margin-left: 2px;
         }
-
+        .loading-text {
+            text-align: center;
+            padding: 20px;
+            color: #5e6f8d;
+            font-size: 0.9rem;
+        }
         @media (max-width: 480px) {
             .card { padding: 12px 8px; }
             .banner { padding: 6px 14px; min-height: 40px; }
@@ -289,7 +287,7 @@
     <div class="banner">
         <div class="banner-activity">
             <span class="status-dot"></span>
-            <span class="banner-subject" id="currentActivity">Loading …</span>
+            <span class="banner-subject" id="currentActivity">Loading schedule…</span>
         </div>
     </div>
 
@@ -299,7 +297,9 @@
         <span class="remaining-count">⏳ Left: <span id="remainingCount">0</span></span>
     </div>
 
-    <div class="schedule-grid" id="scheduleContainer"></div>
+    <div class="schedule-grid" id="scheduleContainer">
+        <div class="loading-text">⏳ Loading schedule from Google Sheet…</div>
+    </div>
 
     <div class="footer">
         <div class="exam-dates">
@@ -309,9 +309,11 @@
         <span class="pkt-clock">🇵🇰 <span id="pkTime">--:-- --</span></span>
     </div>
 </div>
+
 <script>
     (function() {
-        const schedule = [
+        // ----- FALLBACK SCHEDULE (used if Google Sheet fails to load) -----
+        const FALLBACK_SCHEDULE = [
             { from: "05:00", to: "08:00", duration: "3h", subject: "English Essay & Précis", type: "core" },
             { from: "08:00", to: "09:00", duration: "1h", subject: "GSA (General Science & Ability)", type: "compulsory" },
             { from: "09:00", to: "10:00", duration: "1h", subject: "Pakistan Affairs", type: "compulsory" },
@@ -330,6 +332,7 @@
             { from: "23:00", to: "05:00", duration: "6h", subject: "🌙 Sleep · Night rest", type: "sleep" }
         ];
 
+        // ----- DOM refs -----
         const container = document.getElementById('scheduleContainer');
         const currentActivityEl = document.getElementById('currentActivity');
         const remainingTimeMinutesEl = document.getElementById('remainingTimeMinutes');
@@ -340,9 +343,91 @@
         const mptDaysEl = document.getElementById('mptDays');
         const writtenDaysEl = document.getElementById('writtenDays');
 
+        // ----- exam dates -----
         const MPT_DATE = new Date(2026, 8, 27);
         const WRITTEN_DATE = new Date(2027, 0, 27);
 
+        // ----- Global schedule variable (populated from sheet or fallback) -----
+        let schedule = [...FALLBACK_SCHEDULE];
+
+        // ----- Google Sheet CSV URL (Published as CSV) -----
+        // IMPORTANT: You must publish your sheet as CSV first:
+        // File > Share > Publish to web > Select "CSV" > Publish
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQy7Z8X9wA2bC3dE4fG5hI6jK7lM8nO9pQ0rS1tU2vW3xY4zA5B6C7D8E9F0G/export?format=csv&gid=0';
+
+        // ----- Helper: Parse CSV to schedule array -----
+        function parseCSVToSchedule(csvText) {
+            const lines = csvText.split('\n').filter(line => line.trim() !== '');
+            if (lines.length < 2) return null; // Need header + at least 1 row
+
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+            const fromIdx = headers.indexOf('from');
+            const toIdx = headers.indexOf('to');
+            const durationIdx = headers.indexOf('duration');
+            const subjectIdx = headers.indexOf('subject');
+            const typeIdx = headers.indexOf('type');
+
+            // Validate required columns
+            if (fromIdx === -1 || toIdx === -1 || durationIdx === -1 || subjectIdx === -1 || typeIdx === -1) {
+                console.error('CSV missing required columns: from, to, duration, subject, type');
+                return null;
+            }
+
+            const parsed = [];
+            for (let i = 1; i < lines.length; i++) {
+                const cols = lines[i].split(',').map(c => c.trim());
+                if (cols.length < Math.max(fromIdx, toIdx, durationIdx, subjectIdx, typeIdx) + 1) continue;
+
+                const from = cols[fromIdx];
+                const to = cols[toIdx];
+                const duration = cols[durationIdx];
+                const subject = cols[subjectIdx];
+                const type = cols[typeIdx];
+
+                // Skip rows with missing data
+                if (!from || !to || !duration || !subject || !type) continue;
+
+                // Validate time format (HH:MM)
+                if (!/^\d{2}:\d{2}$/.test(from) || !/^\d{2}:\d{2}$/.test(to)) continue;
+
+                parsed.push({ from, to, duration, subject, type });
+            }
+
+            return parsed.length > 0 ? parsed : null;
+        }
+
+        // ----- Load schedule from Google Sheet -----
+        async function loadScheduleFromSheet() {
+            try {
+                const response = await fetch(SHEET_CSV_URL, {
+                    // Add cache control to avoid stale data
+                    cache: 'no-store',
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const csvText = await response.text();
+                const parsed = parseCSVToSchedule(csvText);
+
+                if (parsed && parsed.length > 0) {
+                    schedule = parsed;
+                    console.log('✅ Schedule loaded from Google Sheet:', schedule.length, 'entries');
+                    return true;
+                } else {
+                    console.warn('⚠️ Failed to parse CSV, using fallback schedule');
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Error loading schedule from sheet:', error.message);
+                console.log('📋 Using fallback schedule');
+                return false;
+            }
+        }
+
+        // ----- Pakistan Time helpers -----
         function getPakistanTime() {
             const now = new Date();
             const pkOffset = 5 * 60;
@@ -367,6 +452,7 @@
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
+        // ----- Get current index & remaining seconds -----
         function getCurrentIndexAndRemaining(nowPK) {
             const nowSecondsInDay = (nowPK.getHours() * 3600) + (nowPK.getMinutes() * 60) + nowPK.getSeconds();
             let currentIdx = -1;
@@ -427,6 +513,7 @@
             return { currentIdx, remainingSeconds };
         }
 
+        // ----- Render schedule -----
         function renderSchedule(currentIdx) {
             let html = '';
             let doneCount = 0;
@@ -458,11 +545,17 @@
                 if (s.type === 'break') subjectDisplay = s.subject.replace('☕ ', '');
                 else if (s.type === 'sleep') subjectDisplay = s.subject.replace('🌙 ', '');
 
-                if (s.type === 'core') subjectDisplay += ' ✏️';
-                else if (s.type === 'mpt') subjectDisplay += ' 📝';
-                else if (s.type === 'review') subjectDisplay += ' 📘';
-                else if (s.type === 'optional') subjectDisplay += ' 📚';
-                else if (s.type === 'compulsory') subjectDisplay += ' 📖';
+                // Add emoji indicators based on type
+                const typeEmoji = {
+                    'core': ' ✏️',
+                    'compulsory': ' 📖',
+                    'optional': ' 📚',
+                    'mpt': ' 📝',
+                    'review': ' 📘',
+                    'break': '',
+                    'sleep': ' 🌙'
+                };
+                subjectDisplay += typeEmoji[s.type] || '';
 
                 html += `<div class="${rowClass}">
                     <span class="srno">${srno}</span>
@@ -477,6 +570,7 @@
             remainingCountEl.textContent = remainingCount;
         }
 
+        // ----- Update UI -----
         function updateUI() {
             const nowPK = getPakistanTime();
             pkTimeEl.textContent = formatTime12(nowPK);
@@ -489,17 +583,20 @@
             const { currentIdx, remainingSeconds } = getCurrentIndexAndRemaining(nowPK);
             const currentItem = schedule[currentIdx] || schedule[0];
 
+            // Activity text with emoji prefix
             let activityText = currentItem.subject;
-            if (currentItem.type === 'break' || currentItem.type === 'sleep') {
+            const prefixMap = {
+                'core': '📘 ',
+                'compulsory': '📖 ',
+                'optional': '📚 ',
+                'mpt': '📝 ',
+                'review': '📋 '
+            };
+            if (currentItem.type === 'break') {
                 activityText = '☕ ' + currentItem.subject.replace('☕ ', '');
+            } else if (currentItem.type === 'sleep') {
+                activityText = '🌙 ' + currentItem.subject.replace('🌙 ', '');
             } else {
-                const prefixMap = {
-                    'core': '📘 ',
-                    'compulsory': '📖 ',
-                    'optional': '📚 ',
-                    'mpt': '📝 ',
-                    'review': '📋 '
-                };
                 const prefix = prefixMap[currentItem.type] || '';
                 activityText = prefix + currentItem.subject;
             }
@@ -513,9 +610,27 @@
             renderSchedule(currentIdx);
         }
 
-        function init() {
-            updateUI();
-            setInterval(updateUI, 1000);
+        // ----- Initialization -----
+        async function init() {
+            // Show loading state
+            container.innerHTML = '<div class="loading-text">⏳ Loading schedule from Google Sheet…</div>';
+            
+            // Try to load from sheet
+            const loaded = await loadScheduleFromSheet();
+            
+            if (!loaded) {
+                console.log('📋 Using fallback schedule');
+                container.innerHTML = '<div class="loading-text">⚠️ Using default schedule (sheet unavailable)</div>';
+                // Wait a moment to show the message, then update
+                setTimeout(() => {
+                    updateUI();
+                    setInterval(updateUI, 1000);
+                }, 1000);
+            } else {
+                // Schedule loaded successfully
+                updateUI();
+                setInterval(updateUI, 1000);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', init);
