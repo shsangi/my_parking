@@ -266,6 +266,26 @@
             color: #5e6f8d;
             font-size: 0.9rem;
         }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        .status-badge.loaded {
+            background: #4ade80;
+            color: #0b1e33;
+        }
+        .status-badge.fallback {
+            background: #fbbf24;
+            color: #0b1e33;
+        }
+        .status-badge.error {
+            background: #ef4444;
+            color: white;
+        }
         @media (max-width: 480px) {
             .card { padding: 12px 8px; }
             .banner { padding: 6px 14px; min-height: 40px; }
@@ -303,8 +323,8 @@
 
     <div class="footer">
         <div class="exam-dates">
-            <span class="mpt-date">📝 MPT: Sun 27 Sep 2026 <span class="count-days" id="mptDays">--</span>d</span>
-            <span class="written-date">✍️ Written: 27 Jan 2027 <span class="count-days" id="writtenDays">--</span>d</span>
+            <span class="mpt-date">📝 MPT: <span id="mptDateDisplay">27 Sep 2026</span> <span class="count-days" id="mptDays">--</span>d</span>
+            <span class="written-date">✍️ Written: <span id="writtenDateDisplay">27 Jan 2027</span> <span class="count-days" id="writtenDays">--</span>d</span>
         </div>
         <span class="pkt-clock">🇵🇰 <span id="pkTime">--:-- --</span></span>
     </div>
@@ -332,6 +352,10 @@
             { from: "23:00", to: "05:00", duration: "6h", subject: "🌙 Sleep · Night rest", type: "sleep" }
         ];
 
+        // Default exam dates (from your sheet format)
+        let mptDateStr = "27 Sep 2026";
+        let writtenDateStr = "27 Jan 2027";
+
         // ----- DOM refs -----
         const container = document.getElementById('scheduleContainer');
         const currentActivityEl = document.getElementById('currentActivity');
@@ -342,65 +366,257 @@
         const remainingCountEl = document.getElementById('remainingCount');
         const mptDaysEl = document.getElementById('mptDays');
         const writtenDaysEl = document.getElementById('writtenDays');
+        const mptDateDisplayEl = document.getElementById('mptDateDisplay');
+        const writtenDateDisplayEl = document.getElementById('writtenDateDisplay');
 
-        // ----- exam dates -----
-        const MPT_DATE = new Date(2026, 8, 27);
-        const WRITTEN_DATE = new Date(2027, 0, 27);
-
-        // ----- Global schedule variable (populated from sheet or fallback) -----
+        // ----- Global schedule variable -----
         let schedule = [...FALLBACK_SCHEDULE];
+        let mptDate = new Date(2026, 8, 27);
+        let writtenDate = new Date(2027, 0, 27);
+        let dataLoaded = false;
 
-        // ----- Google Sheet CSV URL (Published as CSV) -----
-        // IMPORTANT: You must publish your sheet as CSV first:
-        // File > Share > Publish to web > Select "CSV" > Publish
+        // ----- Google Sheet CSV URL -----
+        // REPLACE THIS WITH YOUR PUBLISHED CSV URL
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQy7Z8X9wA2bC3dE4fG5hI6jK7lM8nO9pQ0rS1tU2vW3xY4zA5B6C7D8E9F0G/export?format=csv&gid=0';
 
-        // ----- Helper: Parse CSV to schedule array -----
+        // ----- Parse date string like "27 Sep 2026" to Date object -----
+        function parseDateString(dateStr) {
+            if (!dateStr || dateStr.trim() === '') return null;
+            const parts = dateStr.trim().split(' ');
+            if (parts.length !== 3) return null;
+            
+            const day = parseInt(parts[0]);
+            const monthMap = {
+                'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5,
+                'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
+            };
+            const month = monthMap[parts[1].toLowerCase().substring(0, 3)];
+            if (month === undefined) return null;
+            const year = parseInt(parts[2]);
+            if (isNaN(day) || isNaN(year)) return null;
+            
+            return new Date(year, month, day);
+        }
+
+        // ----- Parse CSV with your exact column structure -----
         function parseCSVToSchedule(csvText) {
             const lines = csvText.split('\n').filter(line => line.trim() !== '');
-            if (lines.length < 2) return null; // Need header + at least 1 row
+            if (lines.length < 2) return null;
 
+            // Try to detect header row - look for your column names
+            const headerLine = lines[0].toLowerCase();
+            
+            // Check if this matches your format: ActivityType, From, To, Duration, etc.
+            // Your columns: ActivityType, From, To, Duration, mpt test date, written test date
             const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-            const fromIdx = headers.indexOf('from');
-            const toIdx = headers.indexOf('to');
-            const durationIdx = headers.indexOf('duration');
-            const subjectIdx = headers.indexOf('subject');
-            const typeIdx = headers.indexOf('type');
+            
+            // Find column indices
+            const activityIdx = headers.findIndex(h => h.includes('activity') || h.includes('subject'));
+            const fromIdx = headers.findIndex(h => h === 'from' || h === 'start');
+            const toIdx = headers.findIndex(h => h === 'to' || h === 'end');
+            const durationIdx = headers.findIndex(h => h === 'duration' || h === 'time');
+            const typeIdx = headers.findIndex(h => h === 'type' || h === 'activitytype');
+            const mptDateIdx = headers.findIndex(h => h.includes('mpt') || h.includes('test date'));
+            const writtenDateIdx = headers.findIndex(h => h.includes('written') || h.includes('exam'));
 
-            // Validate required columns
-            if (fromIdx === -1 || toIdx === -1 || durationIdx === -1 || subjectIdx === -1 || typeIdx === -1) {
-                console.error('CSV missing required columns: from, to, duration, subject, type');
-                return null;
+            // If we can't find required columns, try a simpler approach
+            if (fromIdx === -1 || toIdx === -1 || durationIdx === -1) {
+                // Try to parse based on position (if columns are in fixed order)
+                // Assume order: ActivityType, From, To, Duration, mpt date, written date
+                console.log('Attempting to parse by column position...');
+                
+                const parsed = [];
+                let mptDateFound = null;
+                let writtenDateFound = null;
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = lines[i].split(',').map(c => c.trim());
+                    if (cols.length < 4) continue;
+                    
+                    // Try to identify if this row contains dates (for the header row)
+                    if (cols.length >= 6) {
+                        // Check if cols[4] looks like a date
+                        const possibleDate = cols[4];
+                        if (possibleDate && possibleDate.match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) {
+                            mptDateFound = possibleDate;
+                        }
+                        if (cols.length >= 6 && cols[5] && cols[5].match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) {
+                            writtenDateFound = cols[5];
+                        }
+                    }
+                    
+                    // Extract subject and type from first column
+                    let subject = cols[0] || '';
+                    let type = 'core';
+                    
+                    // Determine type from subject or separate column if available
+                    const subjectLower = subject.toLowerCase();
+                    if (subjectLower.includes('break') || subjectLower.includes('lunch') || subjectLower.includes('dinner')) {
+                        type = 'break';
+                    } else if (subjectLower.includes('sleep') || subjectLower.includes('rest')) {
+                        type = 'sleep';
+                    } else if (subjectLower.includes('mpt') || subjectLower.includes('practice') || subjectLower.includes('mcq')) {
+                        type = 'mpt';
+                    } else if (subjectLower.includes('review') || subjectLower.includes('consolidation')) {
+                        type = 'review';
+                    } else if (subjectLower.includes('essay') || subjectLower.includes('precis')) {
+                        type = 'core';
+                    } else if (subjectLower.includes('optional')) {
+                        type = 'optional';
+                    } else {
+                        type = 'compulsory';
+                    }
+                    
+                    // If we have a separate type column, use it
+                    if (typeIdx !== -1 && cols.length > typeIdx) {
+                        const typeVal = cols[typeIdx].toLowerCase();
+                        if (['core', 'compulsory', 'optional', 'mpt', 'review', 'break', 'sleep'].includes(typeVal)) {
+                            type = typeVal;
+                        }
+                    }
+                    
+                    // Get from/to/duration
+                    let from = cols[fromIdx !== -1 ? fromIdx : 1] || '';
+                    let to = cols[toIdx !== -1 ? toIdx : 2] || '';
+                    let duration = cols[durationIdx !== -1 ? durationIdx : 3] || '';
+                    
+                    // Clean up time formats
+                    from = from.replace(/\s/g, '');
+                    to = to.replace(/\s/g, '');
+                    
+                    // Validate time format
+                    if (!/^\d{2}:\d{2}$/.test(from) || !/^\d{2}:\d{2}$/.test(to)) {
+                        // Try to fix common formats
+                        if (from.match(/^\d{1,2}:\d{2}$/)) from = '0' + from;
+                        if (to.match(/^\d{1,2}:\d{2}$/)) to = '0' + to;
+                        if (!/^\d{2}:\d{2}$/.test(from) || !/^\d{2}:\d{2}$/.test(to)) {
+                            console.warn('Skipping row with invalid time format:', from, to);
+                            continue;
+                        }
+                    }
+                    
+                    // Clean up duration
+                    duration = duration.replace(/\s/g, '');
+                    if (!duration.match(/^\d+[hm]/i)) {
+                        // Try to infer duration from times
+                        const fromH = parseInt(from.split(':')[0]);
+                        const toH = parseInt(to.split(':')[0]);
+                        const diff = toH - fromH;
+                        if (diff > 0 && diff <= 24) {
+                            duration = diff + 'h';
+                        } else {
+                            duration = '1h';
+                        }
+                    }
+                    
+                    parsed.push({ from, to, duration, subject, type });
+                }
+                
+                // Update exam dates if found
+                if (mptDateFound || writtenDateFound) {
+                    if (mptDateFound) {
+                        const parsedMpt = parseDateString(mptDateFound);
+                        if (parsedMpt) {
+                            mptDate = parsedMpt;
+                            mptDateStr = mptDateFound;
+                            mptDateDisplayEl.textContent = mptDateFound;
+                        }
+                    }
+                    if (writtenDateFound) {
+                        const parsedWritten = parseDateString(writtenDateFound);
+                        if (parsedWritten) {
+                            writtenDate = parsedWritten;
+                            writtenDateStr = writtenDateFound;
+                            writtenDateDisplayEl.textContent = writtenDateFound;
+                        }
+                    }
+                }
+                
+                return parsed.length > 0 ? parsed : null;
             }
-
+            
+            // Standard parsing with named columns
             const parsed = [];
+            let mptDateFound = null;
+            let writtenDateFound = null;
+            
             for (let i = 1; i < lines.length; i++) {
                 const cols = lines[i].split(',').map(c => c.trim());
-                if (cols.length < Math.max(fromIdx, toIdx, durationIdx, subjectIdx, typeIdx) + 1) continue;
-
-                const from = cols[fromIdx];
-                const to = cols[toIdx];
-                const duration = cols[durationIdx];
-                const subject = cols[subjectIdx];
-                const type = cols[typeIdx];
-
+                if (cols.length < Math.max(fromIdx, toIdx, durationIdx) + 1) continue;
+                
+                const subject = activityIdx !== -1 ? cols[activityIdx] : cols[0] || '';
+                const from = cols[fromIdx].replace(/\s/g, '');
+                const to = cols[toIdx].replace(/\s/g, '');
+                const duration = cols[durationIdx].replace(/\s/g, '');
+                
+                // Check for date columns
+                if (mptDateIdx !== -1 && cols.length > mptDateIdx && cols[mptDateIdx]) {
+                    const dateStr = cols[mptDateIdx].trim();
+                    if (dateStr.match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) {
+                        mptDateFound = dateStr;
+                    }
+                }
+                if (writtenDateIdx !== -1 && cols.length > writtenDateIdx && cols[writtenDateIdx]) {
+                    const dateStr = cols[writtenDateIdx].trim();
+                    if (dateStr.match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/)) {
+                        writtenDateFound = dateStr;
+                    }
+                }
+                
                 // Skip rows with missing data
-                if (!from || !to || !duration || !subject || !type) continue;
-
-                // Validate time format (HH:MM)
+                if (!from || !to || !duration || !subject) continue;
+                
+                // Validate time format
                 if (!/^\d{2}:\d{2}$/.test(from) || !/^\d{2}:\d{2}$/.test(to)) continue;
-
+                
+                // Determine type
+                let type = 'compulsory';
+                if (typeIdx !== -1 && cols.length > typeIdx) {
+                    const typeVal = cols[typeIdx].toLowerCase();
+                    if (['core', 'compulsory', 'optional', 'mpt', 'review', 'break', 'sleep'].includes(typeVal)) {
+                        type = typeVal;
+                    }
+                } else {
+                    // Infer from subject
+                    const subjectLower = subject.toLowerCase();
+                    if (subjectLower.includes('break') || subjectLower.includes('lunch') || subjectLower.includes('dinner')) type = 'break';
+                    else if (subjectLower.includes('sleep') || subjectLower.includes('rest')) type = 'sleep';
+                    else if (subjectLower.includes('mpt') || subjectLower.includes('practice') || subjectLower.includes('mcq')) type = 'mpt';
+                    else if (subjectLower.includes('review') || subjectLower.includes('consolidation')) type = 'review';
+                    else if (subjectLower.includes('essay') || subjectLower.includes('precis')) type = 'core';
+                    else if (subjectLower.includes('optional')) type = 'optional';
+                }
+                
                 parsed.push({ from, to, duration, subject, type });
             }
-
+            
+            // Update exam dates
+            if (mptDateFound) {
+                const parsedMpt = parseDateString(mptDateFound);
+                if (parsedMpt) {
+                    mptDate = parsedMpt;
+                    mptDateStr = mptDateFound;
+                    mptDateDisplayEl.textContent = mptDateFound;
+                }
+            }
+            if (writtenDateFound) {
+                const parsedWritten = parseDateString(writtenDateFound);
+                if (parsedWritten) {
+                    writtenDate = parsedWritten;
+                    writtenDateStr = writtenDateFound;
+                    writtenDateDisplayEl.textContent = writtenDateFound;
+                }
+            }
+            
             return parsed.length > 0 ? parsed : null;
         }
 
         // ----- Load schedule from Google Sheet -----
         async function loadScheduleFromSheet() {
             try {
+                console.log('📡 Fetching schedule from:', SHEET_CSV_URL);
+                
                 const response = await fetch(SHEET_CSV_URL, {
-                    // Add cache control to avoid stale data
                     cache: 'no-store',
                     headers: { 'Cache-Control': 'no-cache' }
                 });
@@ -410,10 +626,14 @@
                 }
 
                 const csvText = await response.text();
+                console.log('📄 Raw CSV length:', csvText.length, 'characters');
+                console.log('📄 First 200 chars:', csvText.substring(0, 200));
+                
                 const parsed = parseCSVToSchedule(csvText);
 
                 if (parsed && parsed.length > 0) {
                     schedule = parsed;
+                    dataLoaded = true;
                     console.log('✅ Schedule loaded from Google Sheet:', schedule.length, 'entries');
                     return true;
                 } else {
@@ -545,7 +765,6 @@
                 if (s.type === 'break') subjectDisplay = s.subject.replace('☕ ', '');
                 else if (s.type === 'sleep') subjectDisplay = s.subject.replace('🌙 ', '');
 
-                // Add emoji indicators based on type
                 const typeEmoji = {
                     'core': ' ✏️',
                     'compulsory': ' 📖',
@@ -575,15 +794,14 @@
             const nowPK = getPakistanTime();
             pkTimeEl.textContent = formatTime12(nowPK);
 
-            const mptDays = getDaysUntil(MPT_DATE, nowPK);
-            const writtenDays = getDaysUntil(WRITTEN_DATE, nowPK);
+            const mptDays = getDaysUntil(mptDate, nowPK);
+            const writtenDays = getDaysUntil(writtenDate, nowPK);
             mptDaysEl.textContent = mptDays >= 0 ? mptDays : '0';
             writtenDaysEl.textContent = writtenDays >= 0 ? writtenDays : '0';
 
             const { currentIdx, remainingSeconds } = getCurrentIndexAndRemaining(nowPK);
             const currentItem = schedule[currentIdx] || schedule[0];
 
-            // Activity text with emoji prefix
             let activityText = currentItem.subject;
             const prefixMap = {
                 'core': '📘 ',
@@ -612,24 +830,26 @@
 
         // ----- Initialization -----
         async function init() {
-            // Show loading state
-            container.innerHTML = '<div class="loading-text">⏳ Loading schedule from Google Sheet…</div>';
+            // Show loading state with debug info
+            container.innerHTML = `<div class="loading-text">⏳ Loading schedule from Google Sheet…<br><small style="color:#94a3b8;">Checking: ${SHEET_CSV_URL.substring(0, 60)}...</small></div>`;
             
             // Try to load from sheet
             const loaded = await loadScheduleFromSheet();
             
             if (!loaded) {
-                console.log('📋 Using fallback schedule');
-                container.innerHTML = '<div class="loading-text">⚠️ Using default schedule (sheet unavailable)</div>';
+                container.innerHTML = `<div class="loading-text">⚠️ Using default schedule (sheet unavailable)<br><small style="color:#94a3b8;">Check console for errors</small></div>`;
                 // Wait a moment to show the message, then update
                 setTimeout(() => {
                     updateUI();
                     setInterval(updateUI, 1000);
-                }, 1000);
+                }, 1500);
             } else {
                 // Schedule loaded successfully
-                updateUI();
-                setInterval(updateUI, 1000);
+                container.innerHTML = `<div class="loading-text">✅ Schedule loaded!<br><small style="color:#94a3b8;">${schedule.length} activities loaded from Google Sheet</small></div>`;
+                setTimeout(() => {
+                    updateUI();
+                    setInterval(updateUI, 1000);
+                }, 800);
             }
         }
 
