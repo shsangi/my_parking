@@ -268,8 +268,24 @@
             font-weight: 500;
             color: #1e293b;
         }
-        .footer .hint {
-            opacity: 0.7;
+        .footer .exam-dates {
+            display: flex;
+            gap: 12px;
+            font-weight: 500;
+            color: #0b1e33;
+            flex-wrap: wrap;
+        }
+        .footer .exam-dates .mpt-date {
+            background: #dbeafe;
+            padding: 2px 12px;
+            border-radius: 20px;
+            color: #1a4b8c;
+        }
+        .footer .exam-dates .written-date {
+            background: #fee9e7;
+            padding: 2px 12px;
+            border-radius: 20px;
+            color: #b91c1c;
         }
 
         @media (max-width: 480px) {
@@ -284,7 +300,8 @@
             .row .subject { font-size: 0.7rem; }
             .status-bar { font-size: 0.7rem; padding: 4px 10px; gap: 4px; }
             .status-bar .remaining-time { font-size: 0.75rem; padding: 0 10px; }
-            .footer { font-size: 0.65rem; }
+            .footer { font-size: 0.6rem; flex-direction: column; align-items: stretch; gap: 4px; }
+            .footer .exam-dates { justify-content: center; }
         }
     </style>
 </head>
@@ -312,9 +329,12 @@
     <!-- schedule list -->
     <div class="schedule-grid" id="scheduleContainer"></div>
 
-    <!-- footer: PKT time & hint -->
+    <!-- footer: exam dates + PKT clock -->
     <div class="footer">
-        <span class="hint">⏱️ red = current · blue = done</span>
+        <div class="exam-dates">
+            <span class="mpt-date">📝 MPT: Sun 27 Sep 2026</span>
+            <span class="written-date">✍️ Written: 27 Jan 2027</span>
+        </div>
         <span class="pkt-clock">🇵🇰 <span id="pkTime">--:-- --</span></span>
     </div>
 </div>
