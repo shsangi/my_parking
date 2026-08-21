@@ -20,7 +20,7 @@
             padding: 10px;
         }
         .card {
-            max-width: 600px;
+            max-width: 640px;
             width: 100%;
             background: #ffffff;
             border-radius: 28px;
@@ -101,12 +101,12 @@
             white-space: nowrap;
         }
 
-        /* schedule grid */
+        /* schedule list - table-like */
         .schedule-grid {
             display: flex;
             flex-direction: column;
             gap: 3px;
-            margin-top: 6px;
+            margin-top: 8px;
         }
         .row {
             display: flex;
@@ -117,35 +117,19 @@
             border: 1px solid #e9edf3;
             transition: 0.1s ease;
             font-size: 0.82rem;
-            gap: 6px;
+            gap: 4px;
         }
-        /* current (active) = blue */
-        .row.current {
-            background: #dbeafe;
-            border-color: #2563eb;
-            box-shadow: 0 2px 6px rgba(37,99,235,0.06);
-        }
-        /* done = blue (soft) */
-        .row.done {
-            background: #e6f0ff;
-            border-color: #93b5e8;
-            opacity: 0.85;
-        }
-        .row.done .subject {
-            color: #1a4b8c;
-        }
-        /* remaining = red */
-        .row.remaining {
-            background: #ffeaea;
-            border-color: #f8a3a3;
-        }
-        .row.remaining .subject {
-            color: #a11f1f;
+        .row .srno {
+            font-weight: 600;
+            color: #475569;
+            min-width: 28px;
+            font-size: 0.7rem;
+            text-align: center;
         }
         .row .time {
             font-weight: 600;
             color: #1e293b;
-            min-width: 58px;
+            min-width: 62px;
             font-size: 0.7rem;
             letter-spacing: 0.2px;
         }
@@ -154,12 +138,7 @@
             font-weight: 500;
             color: #0b1e33;
             padding: 0 4px;
-        }
-        .row .subj-small {
-            font-size: 0.65rem;
-            opacity: 0.6;
-            font-weight: 400;
-            margin-left: 4px;
+            font-size: 0.8rem;
         }
         .row .duration-badge {
             background: #e9edf3;
@@ -170,36 +149,58 @@
             color: #1e293b;
             white-space: nowrap;
         }
-        .row.current .duration-badge {
-            background: #2563eb;
-            color: white;
+
+        /* status colors */
+        .row.done {
+            background: #e6f0ff;
+            border-color: #b3d0ff;
+        }
+        .row.done .subject {
+            color: #1a4b8c;
         }
         .row.done .duration-badge {
-            background: #b3cff5;
-            color: #0f3b6e;
+            background: #b3d0ff;
+            color: #0b2b5e;
         }
-        .row.remaining .duration-badge {
-            background: #f7c8c8;
-            color: #8f1f1f;
+
+        .row.current {
+            background: #fee9e7;
+            border-color: #e53e3e;
+            box-shadow: 0 2px 8px rgba(229,62,62,0.08);
         }
-        .break-row {
+        .row.current .subject {
+            color: #b91c1c;
+            font-weight: 600;
+        }
+        .row.current .duration-badge {
+            background: #e53e3e;
+            color: white;
+        }
+        .row.current .srno {
+            color: #b91c1c;
+        }
+        .row.current .time {
+            color: #b91c1c;
+        }
+
+        .row.upcoming {
+            background: #fafcff;
+            border-color: #e9edf3;
+        }
+        .row.break-row {
             background: #f1f5f9;
             border-color: #d9e1ec;
         }
-        .break-row .subject {
+        .row.break-row .subject {
             color: #334155;
         }
-        /* override for break rows: keep neutral */
-        .break-row.done, .break-row.remaining {
-            background: #f1f5f9 !important;
-            border-color: #d9e1ec !important;
+        .row.break-row.done {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
         }
-        .break-row.done .subject, .break-row.remaining .subject {
-            color: #334155 !important;
-        }
-        .break-row.done .duration-badge, .break-row.remaining .duration-badge {
-            background: #e9edf3 !important;
-            color: #1e293b !important;
+        .row.break-row.current {
+            background: #fee9e7;
+            border-color: #e53e3e;
         }
 
         .footnote {
@@ -217,15 +218,18 @@
             padding: 2px 10px;
             border-radius: 20px;
         }
+
         @media (max-width: 480px) {
             .card { padding: 12px 8px; }
             .banner { padding: 6px 12px; gap: 4px; }
             .banner-subject { font-size: 0.8rem; }
             .banner-timer { font-size: 1rem; padding: 2px 10px; }
             .banner-clock { font-size: 0.7rem; padding: 2px 8px; }
-            .row { padding: 5px 6px; font-size: 0.75rem; }
-            .row .time { min-width: 50px; font-size: 0.65rem; }
+            .row { padding: 5px 6px; font-size: 0.72rem; }
+            .row .srno { min-width: 22px; font-size: 0.65rem; }
+            .row .time { min-width: 52px; font-size: 0.65rem; }
             .row .duration-badge { font-size: 0.6rem; padding: 0 10px; }
+            .row .subject { font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -246,15 +250,15 @@
         </div>
     </div>
 
-    <!-- schedule list -->
+    <!-- schedule list with srno, activity, from–to, duration -->
     <div class="schedule-grid" id="scheduleContainer"></div>
     <div class="footnote">
-        <i>CSS 2027 · 16‑hour coverage</i> &nbsp;·&nbsp; <span style="color:#a11f1f;">● remaining</span> &nbsp; <span style="color:#1a4b8c;">● done</span> &nbsp; <span style="color:#2563eb;">● active</span>
+        <i>⏳ red = current/remaining · blue = done</i> &nbsp;·&nbsp; PKT
     </div>
 </div>
 <script>
     (function() {
-        // ----- schedule data (based on document) -----
+        // ----- schedule data -----
         const schedule = [
             { from: "05:00", to: "08:00", duration: "3h", subject: "English Essay & Précis", type: "core" },
             { from: "08:00", to: "09:00", duration: "1h", subject: "GSA (General Science & Ability)", type: "compulsory" },
@@ -284,7 +288,7 @@
         // ----- helpers (PK time) -----
         function getPakistanTime() {
             const now = new Date();
-            const pkOffset = 5 * 60; // UTC+5
+            const pkOffset = 5 * 60;
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             return new Date(utc + (pkOffset * 60000));
         }
@@ -301,12 +305,11 @@
             return d.getHours() * 60 + d.getMinutes();
         }
 
-        // ----- determine which items are done, current, remaining -----
-        function getItemStates(nowPK) {
+        // ----- get current index & remaining seconds -----
+        function getCurrentIndexAndRemaining(nowPK) {
             const nowMinutes = getMinutesFromMidnight(nowPK);
-            const states = [];
-            let foundCurrent = false;
             let currentIdx = -1;
+            let remainingSeconds = 0;
 
             for (let i = 0; i < schedule.length; i++) {
                 const s = schedule[i];
@@ -317,7 +320,7 @@
 
                 let isActive = false;
                 let endMin = toMin;
-                if (toMin < fromMin) { // overnight
+                if (toMin < fromMin) {
                     if (nowMinutes >= fromMin || nowMinutes < toMin) {
                         isActive = true;
                         endMin = toMin + 1440;
@@ -328,33 +331,20 @@
                     }
                 }
 
-                let state = 'remaining'; // default
                 if (isActive) {
-                    state = 'current';
-                    foundCurrent = true;
                     currentIdx = i;
-                } else {
-                    // if current not found yet, and we are past this item's end time → done
-                    // but careful with overnight: we consider "done" if the item ended before now
-                    let itemEnd = toMin;
-                    if (itemEnd < fromMin) itemEnd += 1440; // overnight end
+                    let end = toMin;
+                    if (end < fromMin) end += 1440;
                     let nowAdj = nowMinutes;
                     if (nowAdj < fromMin && toMin < fromMin) nowAdj += 1440;
-
-                    if (nowAdj >= itemEnd) {
-                        state = 'done';
-                    } else {
-                        state = 'remaining';
-                    }
+                    const diffMinutes = end - nowAdj;
+                    remainingSeconds = Math.max(0, diffMinutes * 60);
+                    break;
                 }
-                states.push({ state, index: i, isBreak: (s.type === 'break' || s.type === 'sleep') });
             }
 
-            // special: if no current found, find the next upcoming and mark as 'current' (but we use state 'current' for active only)
-            // however we want to show blue for current, red for remaining, blue for done.
-            // if no current, all before next are done, next is current? but we prefer to keep 'current' only if active.
-            // if no active, we treat the next upcoming as 'current' to highlight it.
-            if (!foundCurrent) {
+            // if no current, find next upcoming
+            if (currentIdx === -1) {
                 let minDiff = Infinity;
                 let candidate = -1;
                 for (let i = 0; i < schedule.length; i++) {
@@ -369,38 +359,54 @@
                     }
                 }
                 if (candidate !== -1) {
-                    // mark candidate as 'current' (so it gets blue highlight)
-                    states[candidate].state = 'current';
                     currentIdx = candidate;
+                    const s = schedule[currentIdx];
+                    const fromParts = s.from.split(':').map(Number);
+                    let fromMin = fromParts[0] * 60 + fromParts[1];
+                    let diff = fromMin - nowMinutes;
+                    if (diff < 0) diff += 1440;
+                    remainingSeconds = diff * 60;
+                } else {
+                    currentIdx = 0;
+                    remainingSeconds = 0;
                 }
             }
-
-            return { states, currentIdx };
+            return { currentIdx, remainingSeconds };
         }
 
-        // ----- render schedule with done/remaining colors -----
-        function renderSchedule(states, currentIdx) {
+        // ----- render schedule with srno, time, subject, duration & color status -----
+        function renderSchedule(currentIdx) {
             let html = '';
             for (let i = 0; i < schedule.length; i++) {
                 const s = schedule[i];
-                const state = states[i].state;
-                const isBreak = states[i].isBreak;
-
+                const isBreak = s.type === 'break' || s.type === 'sleep';
                 let rowClass = 'row';
-                if (isBreak) rowClass += ' break-row';
-                if (state === 'current') rowClass += ' current';
-                else if (state === 'done') rowClass += ' done';
-                else if (state === 'remaining') rowClass += ' remaining';
 
+                // determine status: done, current, upcoming
+                let status = 'upcoming';
+                if (i < currentIdx) status = 'done';
+                else if (i === currentIdx) status = 'current';
+
+                if (status === 'done') rowClass += ' done';
+                else if (status === 'current') rowClass += ' current';
+                if (isBreak) rowClass += ' break-row';
+
+                const srno = i + 1;
                 const timeLabel = `${s.from} – ${s.to}`;
                 let subjectDisplay = s.subject;
-                if (s.type === 'core') subjectDisplay += ' <span class="subj-small">✏️</span>';
-                else if (s.type === 'mpt') subjectDisplay += ' <span class="subj-small">📝</span>';
-                else if (s.type === 'review') subjectDisplay += ' <span class="subj-small">📘</span>';
-                else if (s.type === 'sleep') subjectDisplay = '🌙 ' + s.subject;
-                else if (s.type === 'break') subjectDisplay = '☕ ' + s.subject.replace('☕ ', '');
+                // clean up break icons for display
+                if (s.type === 'break') subjectDisplay = s.subject.replace('☕ ', '');
+                else if (s.type === 'sleep') subjectDisplay = s.subject.replace('🌙 ', '');
+
+                // add small emoji for type (optional)
+                if (s.type === 'core') subjectDisplay += ' ✏️';
+                else if (s.type === 'mpt') subjectDisplay += ' 📝';
+                else if (s.type === 'review') subjectDisplay += ' 📘';
+                else if (s.type === 'optional') subjectDisplay += ' 📚';
+                else if (s.type === 'compulsory') subjectDisplay += ' 📖';
 
                 html += `<div class="${rowClass}">
+                    <span class="srno">${srno}</span>
                     <span class="time">${timeLabel}</span>
                     <span class="subject">${subjectDisplay}</span>
                     <span class="duration-badge">${s.duration}</span>
@@ -409,60 +415,39 @@
             container.innerHTML = html;
         }
 
-        // ----- get remaining seconds for current activity -----
-        function getRemainingSeconds(nowPK, currentIdx) {
-            if (currentIdx === -1) return 0;
-            const s = schedule[currentIdx];
-            const fromParts = s.from.split(':').map(Number);
-            const toParts = s.to.split(':').map(Number);
-            const fromMin = fromParts[0] * 60 + fromParts[1];
-            const toMin = toParts[0] * 60 + toParts[1];
-            const nowMinutes = getMinutesFromMidnight(nowPK);
-
-            let endMin = toMin;
-            if (toMin < fromMin) endMin += 1440;
-            let nowAdj = nowMinutes;
-            if (nowAdj < fromMin && toMin < fromMin) nowAdj += 1440;
-            const diffMinutes = endMin - nowAdj;
-            return Math.max(0, diffMinutes * 60);
-        }
-
         // ----- update UI -----
         function updateUI() {
             const nowPK = getPakistanTime();
             pkTimeEl.textContent = formatTime12(nowPK);
 
-            const { states, currentIdx } = getItemStates(nowPK);
-            const currentItem = (currentIdx !== -1) ? schedule[currentIdx] : schedule[0];
+            const { currentIdx, remainingSeconds } = getCurrentIndexAndRemaining(nowPK);
+            const currentItem = schedule[currentIdx] || schedule[0];
 
-            // activity text
-            let activityText = currentItem ? currentItem.subject : '—';
-            if (currentItem) {
-                if (currentItem.type === 'break' || currentItem.type === 'sleep') {
-                    activityText = '☕ ' + currentItem.subject.replace('☕ ', '');
-                } else {
-                    const prefixMap = {
-                        'core': '📘 ',
-                        'compulsory': '📖 ',
-                        'optional': '📚 ',
-                        'mpt': '📝 ',
-                        'review': '📋 '
-                    };
-                    const prefix = prefixMap[currentItem.type] || '';
-                    activityText = prefix + currentItem.subject;
-                }
+            // activity text (banner)
+            let activityText = currentItem.subject;
+            if (currentItem.type === 'break' || currentItem.type === 'sleep') {
+                activityText = '☕ ' + currentItem.subject.replace('☕ ', '');
+            } else {
+                const prefixMap = {
+                    'core': '📘 ',
+                    'compulsory': '📖 ',
+                    'optional': '📚 ',
+                    'mpt': '📝 ',
+                    'review': '📋 '
+                };
+                const prefix = prefixMap[currentItem.type] || '';
+                activityText = prefix + currentItem.subject;
             }
             currentActivityEl.textContent = activityText;
 
             // timer
-            const remainingSec = getRemainingSeconds(nowPK, currentIdx);
-            const mins = Math.floor(remainingSec / 60);
-            const secs = Math.floor(remainingSec % 60);
+            const mins = Math.floor(remainingSeconds / 60);
+            const secs = Math.floor(remainingSeconds % 60);
             timerMinutesEl.textContent = String(mins).padStart(2, '0');
             timerSecondsEl.textContent = String(secs).padStart(2, '0');
 
-            // render schedule with states
-            renderSchedule(states, currentIdx);
+            // render schedule with status
+            renderSchedule(currentIdx);
         }
 
         // ----- init -----
