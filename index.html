@@ -29,7 +29,6 @@
             border: 1px solid rgba(0,20,40,0.03);
         }
 
-        /* compact banner — no timer */
         .banner {
             background: #0b1e33;
             color: white;
@@ -70,7 +69,6 @@
             word-break: break-word;
         }
 
-        /* status bar: done | remaining time | remaining count */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -127,7 +125,6 @@
             font-weight: 700;
         }
 
-        /* schedule list */
         .schedule-grid {
             display: flex;
             flex-direction: column;
@@ -176,7 +173,6 @@
             white-space: nowrap;
         }
 
-        /* status colors */
         .row.done {
             background: #e6f0ff;
             border-color: #b3d0ff;
@@ -290,7 +286,6 @@
 </head>
 <body>
 <div class="card" id="app">
-    <!-- banner: activity only (no timer) -->
     <div class="banner">
         <div class="banner-activity">
             <span class="status-dot"></span>
@@ -298,17 +293,14 @@
         </div>
     </div>
 
-    <!-- status bar: done | remaining time | remaining count -->
     <div class="status-bar">
         <span class="done-count">✅ Done: <span id="doneCount">0</span></span>
         <span class="remaining-time" id="remainingTimeDisplay">⏳ <span class="time-num" id="remainingTimeMinutes">--</span>:<span class="time-num" id="remainingTimeSeconds">--</span></span>
         <span class="remaining-count">⏳ Left: <span id="remainingCount">0</span></span>
     </div>
 
-    <!-- schedule list -->
     <div class="schedule-grid" id="scheduleContainer"></div>
 
-    <!-- footer: exam dates with countdown + PKT clock -->
     <div class="footer">
         <div class="exam-dates">
             <span class="mpt-date">📝 MPT: Sun 27 Sep 2026 <span class="count-days" id="mptDays">--</span>d</span>
@@ -319,7 +311,6 @@
 </div>
 <script>
     (function() {
-        // ----- schedule data -----
         const schedule = [
             { from: "05:00", to: "08:00", duration: "3h", subject: "English Essay & Précis", type: "core" },
             { from: "08:00", to: "09:00", duration: "1h", subject: "GSA (General Science & Ability)", type: "compulsory" },
@@ -339,7 +330,6 @@
             { from: "23:00", to: "05:00", duration: "6h", subject: "🌙 Sleep · Night rest", type: "sleep" }
         ];
 
-        // ----- DOM refs -----
         const container = document.getElementById('scheduleContainer');
         const currentActivityEl = document.getElementById('currentActivity');
         const remainingTimeMinutesEl = document.getElementById('remainingTimeMinutes');
@@ -350,11 +340,9 @@
         const mptDaysEl = document.getElementById('mptDays');
         const writtenDaysEl = document.getElementById('writtenDays');
 
-        // ----- exam dates -----
-        const MPT_DATE = new Date(2026, 8, 27); // Sep 27, 2026 (month is 0-indexed)
-        const WRITTEN_DATE = new Date(2027, 0, 27); // Jan 27, 2027
+        const MPT_DATE = new Date(2026, 8, 27);
+        const WRITTEN_DATE = new Date(2027, 0, 27);
 
-        // ----- helpers (PK time) -----
         function getPakistanTime() {
             const now = new Date();
             const pkOffset = 5 * 60;
@@ -379,9 +367,7 @@
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
-        // ----- get current index & precise remaining seconds -----
         function getCurrentIndexAndRemaining(nowPK) {
-            // Get current time in seconds elapsed since midnight
             const nowSecondsInDay = (nowPK.getHours() * 3600) + (nowPK.getMinutes() * 60) + nowPK.getSeconds();
             let currentIdx = -1;
             let remainingSeconds = 0;
@@ -394,7 +380,7 @@
                 let toSec = (toParts[0] * 3600) + (toParts[1] * 60);
 
                 let isActive = false;
-                if (toSec < fromSec) { // Overnight slot (e.g. 23:00 to 05:00)
+                if (toSec < fromSec) {
                     if (nowSecondsInDay >= fromSec || nowSecondsInDay < toSec) {
                         isActive = true;
                         if (nowSecondsInDay >= fromSec) {
@@ -403,7 +389,7 @@
                             remainingSeconds = toSec - nowSecondsInDay;
                         }
                     }
-                } else { // Standard slot
+                } else {
                     if (nowSecondsInDay >= fromSec && nowSecondsInDay < toSec) {
                         isActive = true;
                         remainingSeconds = toSec - nowSecondsInDay;
@@ -416,7 +402,6 @@
                 }
             }
 
-            // If no current slot is found, determine upcoming
             if (currentIdx === -1) {
                 let minDiff = Infinity;
                 let candidate = -1;
@@ -442,7 +427,6 @@
             return { currentIdx, remainingSeconds };
         }
 
-        // ----- render schedule with srno, time, subject, duration & color status -----
         function renderSchedule(currentIdx) {
             let html = '';
             let doneCount = 0;
@@ -493,7 +477,6 @@
             remainingCountEl.textContent = remainingCount;
         }
 
-        // ----- update UI -----
         function updateUI() {
             const nowPK = getPakistanTime();
             pkTimeEl.textContent = formatTime12(nowPK);
@@ -522,7 +505,6 @@
             }
             currentActivityEl.textContent = activityText;
 
-            // Display remaining time down to the exact second
             const mins = Math.floor(remainingSeconds / 60);
             const secs = Math.floor(remainingSeconds % 60);
             remainingTimeMinutesEl.textContent = String(mins).padStart(2, '0');
@@ -531,7 +513,6 @@
             renderSchedule(currentIdx);
         }
 
-        // ----- init -----
         function init() {
             updateUI();
             setInterval(updateUI, 1000);
