@@ -298,7 +298,7 @@
         </div>
     </div>
 
-    <!-- status bar: done | remaining time (mm:ss) | remaining count -->
+    <!-- status bar: done | remaining time | remaining count -->
     <div class="status-bar">
         <span class="done-count">✅ Done: <span id="doneCount">0</span></span>
         <span class="remaining-time" id="remainingTimeDisplay">⏳ <span class="time-num" id="remainingTimeMinutes">--</span>:<span class="time-num" id="remainingTimeSeconds">--</span></span>
@@ -351,7 +351,7 @@
         const writtenDaysEl = document.getElementById('writtenDays');
 
         // ----- exam dates -----
-        const MPT_DATE = new Date(2026, 8, 27); // Sep 27, 2026
+        const MPT_DATE = new Date(2026, 8, 27); // Sep 27, 2026 (month is 0-indexed)
         const WRITTEN_DATE = new Date(2027, 0, 27); // Jan 27, 2027
 
         // ----- helpers (PK time) -----
@@ -370,10 +370,6 @@
             return `${hours}:${minutes} ${ampm}`;
         }
 
-        function getMinutesFromMidnight(d) {
-            return d.getHours() * 60 + d.getMinutes();
-        }
-
         function getDaysUntil(targetDate, nowPK) {
             const target = new Date(targetDate);
             target.setHours(0, 0, 0, 0);
@@ -383,9 +379,10 @@
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
-        // ----- get current index & remaining seconds (UPDATED: seconds run down) -----
+        // ----- get current index & precise remaining seconds -----
         function getCurrentIndexAndRemaining(nowPK) {
-            const nowMinutes = getMinutesFromMidnight(nowPK);
+            // Get current time in seconds elapsed since midnight
+            const nowSecondsInDay = (nowPK.getHours() * 3600) + (nowPK.getMinutes() * 60) + nowPK.getSeconds();
             let currentIdx = -1;
             let remainingSeconds = 0;
 
@@ -393,45 +390,42 @@
                 const s = schedule[i];
                 const fromParts = s.from.split(':').map(Number);
                 const toParts = s.to.split(':').map(Number);
-                const fromMin = fromParts[0] * 60 + fromParts[1];
-                const toMin = toParts[0] * 60 + toParts[1];
+                const fromSec = (fromParts[0] * 3600) + (fromParts[1] * 60);
+                let toSec = (toParts[0] * 3600) + (toParts[1] * 60);
 
                 let isActive = false;
-                let endMin = toMin;
-                if (toMin < fromMin) {
-                    // crosses midnight
-                    if (nowMinutes >= fromMin || nowMinutes < toMin) {
+                if (toSec < fromSec) { // Overnight slot (e.g. 23:00 to 05:00)
+                    if (nowSecondsInDay >= fromSec || nowSecondsInDay < toSec) {
                         isActive = true;
-                        endMin = toMin + 1440;
+                        if (nowSecondsInDay >= fromSec) {
+                            remainingSeconds = (86400 - nowSecondsInDay) + toSec;
+                        } else {
+                            remainingSeconds = toSec - nowSecondsInDay;
+                        }
                     }
-                } else {
-                    if (nowMinutes >= fromMin && nowMinutes < toMin) {
+                } else { // Standard slot
+                    if (nowSecondsInDay >= fromSec && nowSecondsInDay < toSec) {
                         isActive = true;
+                        remainingSeconds = toSec - nowSecondsInDay;
                     }
                 }
 
                 if (isActive) {
                     currentIdx = i;
-                    let end = toMin;
-                    if (end < fromMin) end += 1440;
-                    let nowAdj = nowMinutes;
-                    if (nowAdj < fromMin && toMin < fromMin) nowAdj += 1440;
-                    const diffMinutes = end - nowAdj;
-                    remainingSeconds = Math.max(0, diffMinutes * 60);
                     break;
                 }
             }
 
-            // if no current, find next upcoming (and set remaining seconds until start)
+            // If no current slot is found, determine upcoming
             if (currentIdx === -1) {
                 let minDiff = Infinity;
                 let candidate = -1;
                 for (let i = 0; i < schedule.length; i++) {
                     const s = schedule[i];
                     const fromParts = s.from.split(':').map(Number);
-                    const fromMin = fromParts[0] * 60 + fromParts[1];
-                    let diff = fromMin - nowMinutes;
-                    if (diff < 0) diff += 1440;
+                    const fromSec = (fromParts[0] * 3600) + (fromParts[1] * 60);
+                    let diff = fromSec - nowSecondsInDay;
+                    if (diff < 0) diff += 86400;
                     if (diff < minDiff) {
                         minDiff = diff;
                         candidate = i;
@@ -439,12 +433,7 @@
                 }
                 if (candidate !== -1) {
                     currentIdx = candidate;
-                    const s = schedule[currentIdx];
-                    const fromParts = s.from.split(':').map(Number);
-                    let fromMin = fromParts[0] * 60 + fromParts[1];
-                    let diff = fromMin - nowMinutes;
-                    if (diff < 0) diff += 1440;
-                    remainingSeconds = diff * 60;
+                    remainingSeconds = minDiff;
                 } else {
                     currentIdx = 0;
                     remainingSeconds = 0;
@@ -485,7 +474,6 @@
                 if (s.type === 'break') subjectDisplay = s.subject.replace('☕ ', '');
                 else if (s.type === 'sleep') subjectDisplay = s.subject.replace('🌙 ', '');
 
-                // small emoji for type
                 if (s.type === 'core') subjectDisplay += ' ✏️';
                 else if (s.type === 'mpt') subjectDisplay += ' 📝';
                 else if (s.type === 'review') subjectDisplay += ' 📘';
@@ -505,12 +493,11 @@
             remainingCountEl.textContent = remainingCount;
         }
 
-        // ----- update UI (called every second) -----
+        // ----- update UI -----
         function updateUI() {
             const nowPK = getPakistanTime();
             pkTimeEl.textContent = formatTime12(nowPK);
 
-            // Update exam day counts
             const mptDays = getDaysUntil(MPT_DATE, nowPK);
             const writtenDays = getDaysUntil(WRITTEN_DATE, nowPK);
             mptDaysEl.textContent = mptDays >= 0 ? mptDays : '0';
@@ -519,7 +506,6 @@
             const { currentIdx, remainingSeconds } = getCurrentIndexAndRemaining(nowPK);
             const currentItem = schedule[currentIdx] || schedule[0];
 
-            // activity text (banner)
             let activityText = currentItem.subject;
             if (currentItem.type === 'break' || currentItem.type === 'sleep') {
                 activityText = '☕ ' + currentItem.subject.replace('☕ ', '');
@@ -536,13 +522,12 @@
             }
             currentActivityEl.textContent = activityText;
 
-            // remaining time in status bar (mm:ss)
+            // Display remaining time down to the exact second
             const mins = Math.floor(remainingSeconds / 60);
             const secs = Math.floor(remainingSeconds % 60);
             remainingTimeMinutesEl.textContent = String(mins).padStart(2, '0');
             remainingTimeSecondsEl.textContent = String(secs).padStart(2, '0');
 
-            // render schedule with status
             renderSchedule(currentIdx);
         }
 
