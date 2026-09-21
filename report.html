@@ -42,41 +42,34 @@
   .counts .c1 { color: #1565c0; }
   .counts .c2 { color: #2e7d32; }
 
-  /* Month headers (sticky) */
+  /* Header row: SR | Month1 | Month2 */
   .months {
-    display: grid; grid-template-columns: 30px 1fr 30px 1fr;
+    display: grid;
+    grid-template-columns: 34px 1fr 1fr;
     background: #f7f9fc; border-bottom: 2px solid #e0e4ea;
     position: sticky; top: 0; z-index: 5;
     font-size: 12px; font-weight: 700;
   }
   .months .hd {
-    padding: 10px 4px; text-align: center;
+    padding: 10px 6px; text-align: center;
     border-right: 1px solid #e0e4ea;
   }
   .months .hd:last-child { border-right: none; }
   .months .m1 { color: #1565c0; }
   .months .m2 { color: #2e7d32; }
-  .months .sr-h { color: #999; font-size: 10px; }
+  .months .sr-h { color: #999; font-size: 11px; }
 
-  /* Section divider */
-  .sec {
-    background: #eef1f5; padding: 6px 12px;
-    font-size: 11px; font-weight: 700; color: #666;
-    text-transform: uppercase; letter-spacing: 0.6px;
-    border-top: 1px solid #e0e4ea;
-    border-bottom: 1px solid #e0e4ea;
-  }
-  .sec.ok  { background: #e8f5e9; color: #2e7d32; }
-  .sec.warn{ background: #fff3e0; color: #e65100; }
-
-  /* Item row — 4 columns: SR1 | M1 | SR2 | M2 */
+  /* Item row: SR | M1 cell | M2 cell */
   .item {
     display: grid;
-    grid-template-columns: 30px 1fr 30px 1fr;
+    grid-template-columns: 34px 1fr 1fr;
     border-bottom: 1px dashed #e5e8ee;
   }
+  .item.matched { background: #fbfdfa; }
+  .item.unmatched { background: #fffdf7; }
+
   .item > div {
-    padding: 8px 6px; min-height: 48px;
+    padding: 9px 8px; min-height: 48px;
     display: flex; flex-direction: column; justify-content: center;
     border-right: 1px solid #f0f2f6;
     overflow: hidden;
@@ -84,8 +77,8 @@
   .item > div:last-child { border-right: none; }
 
   .sr-cell {
-    font-size: 11px; font-weight: 700; color: #9aa3af;
-    text-align: center; background: #fafbfd;
+    font-size: 11px; font-weight: 700; color: #6b7280;
+    text-align: center; background: #f4f6f9;
   }
 
   .name-line {
@@ -117,7 +110,7 @@
   /* Totals row */
   .total-row {
     display: grid;
-    grid-template-columns: 30px 1fr 30px 1fr;
+    grid-template-columns: 34px 1fr 1fr;
     background: #f7f9fc; border-top: 2px solid #e0e4ea;
     font-weight: 700;
   }
@@ -130,7 +123,7 @@
   .total-row .val { font-size: 15px; margin-top: 3px; }
   .total-row .v1 { color: #1565c0; }
   .total-row .v2 { color: #2e7d32; }
-  .total-row .sr-blank { background: #fafbfd; }
+  .total-row .sr-blank { background: #f4f6f9; }
 
   /* Grand total */
   .grand {
@@ -177,7 +170,6 @@
   <div class="months">
     <div class="hd sr-h">#</div>
     <div class="hd m1" id="h1">—</div>
-    <div class="hd sr-h">#</div>
     <div class="hd m2" id="h2">—</div>
   </div>
 
@@ -190,12 +182,11 @@
 
 <script>
 /* ============================================================
-   CONFIG — paste your CSV export URLs here
+   CONFIG
    ============================================================ */
 const SHEET1_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pub?output=csv";
 const SHEET2_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
 
-/* Column header aliases */
 const COL = {
   name:   ["name/item", "name", "item", "person", "party"],
   amount: ["amount", "amt", "value"],
@@ -332,7 +323,7 @@ function render(records) {
   document.getElementById("h1").textContent = monthLabel(prevRecs[0]);
   document.getElementById("h2").textContent = monthLabel(currRecs[0]);
 
-  /* Group by name, sum amounts */
+  /* Group by name */
   const mapPrev = new Map();
   prevRecs.forEach(r => {
     const k = nameKey(r.name);
@@ -349,19 +340,25 @@ function render(records) {
   const cntPrev = mapPrev.size;
   const cntCurr = mapCurr.size;
 
-  /* Ordered union: prev order first, then curr-only */
-  const orderedKeys = [];
+  /* Order: matched (prev order) first, then only-prev, then only-curr */
+  const matchedKeys   = [];
+  const onlyPrevKeys  = [];
+  const onlyCurrKeys  = [];
   const seen = new Set();
+
   mapPrev.forEach((v, k) => {
-    if (!seen.has(k)) { seen.add(k); orderedKeys.push(k); }
+    if (seen.has(k)) return;
+    seen.add(k);
+    if (mapCurr.has(k)) matchedKeys.push(k);
+    else onlyPrevKeys.push(k);
   });
   mapCurr.forEach((v, k) => {
-    if (!seen.has(k)) { seen.add(k); orderedKeys.push(k); }
+    if (seen.has(k)) return;
+    seen.add(k);
+    onlyCurrKeys.push(k);
   });
 
-  /* Split into matched and unmatched (for section separation) */
-  const matchedKeys = orderedKeys.filter(k => mapPrev.has(k) && mapCurr.has(k));
-  const unmatchedKeys = orderedKeys.filter(k => !(mapPrev.has(k) && mapCurr.has(k)));
+  const orderedKeys = [...matchedKeys, ...onlyPrevKeys, ...onlyCurrKeys];
 
   /* Build HTML */
   const body = document.getElementById("body");
@@ -369,14 +366,15 @@ function render(records) {
 
   let subPrev = 0, subCurr = 0;
 
-  /* Row builder — srLeft and srRight are the dynamic numbers */
-  const buildRow = (p, c, srLeft, srRight, showDiff) => {
+  const buildRow = (p, c, sr, showDiff) => {
+    const isMatched = p && c;
+
     const left = p
       ? `<div class="m1-cell">
            <div class="name-line"><span class="nm">${esc(p.name)}</span></div>
            <div class="amt">${fmt(p.amount)}</div>
          </div>`
-      : `<div class="m1-cell"><div class="missing">— not present —</div></div>`;
+      : `<div class="m1-cell"><div class="missing">—</div></div>`;
 
     let rightName = "";
     if (c) {
@@ -392,80 +390,53 @@ function render(records) {
 
     const right = c
       ? `<div class="m2-cell">${rightName}<div class="amt">${fmt(c.amount)}</div></div>`
-      : `<div class="m2-cell"><div class="missing">— not present —</div></div>`;
+      : `<div class="m2-cell"><div class="missing">—</div></div>`;
 
     const row = document.createElement("div");
-    row.className = "item";
+    row.className = "item " + (isMatched ? "matched" : "unmatched");
     row.innerHTML = `
-      <div class="sr-cell">${srLeft ?? ""}</div>
+      <div class="sr-cell">${sr}</div>
       ${left}
-      <div class="sr-cell">${srRight ?? ""}</div>
       ${right}
     `;
     return row;
   };
 
-  /* ===== MATCHED SECTION ===== */
-  if (matchedKeys.length) {
-    const sec = document.createElement("div");
-    sec.className = "sec ok";
-    sec.textContent = `✓ Matched Persons (${matchedKeys.length})`;
-    body.appendChild(sec);
+  orderedKeys.forEach((k, i) => {
+    const p = mapPrev.get(k) || null;
+    const c = mapCurr.get(k) || null;
+    if (p) subPrev += p.amount;
+    if (c) subCurr += c.amount;
 
-    matchedKeys.forEach((k, i) => {
-      const p = mapPrev.get(k), c = mapCurr.get(k);
-      subPrev += p.amount;
-      subCurr += c.amount;
-      /* Dynamic SR numbers: left column 1..N, right column 1..N */
-      body.appendChild(buildRow(p, c, i + 1, i + 1, true));
-    });
-  }
+    const isMatched = p && c;
+    body.appendChild(buildRow(p, c, i + 1, !!isMatched));
+  });
 
-  /* ===== UNMATCHED SECTION ===== */
-  if (unmatchedKeys.length) {
-    const sec = document.createElement("div");
-    sec.className = "sec warn";
-    sec.textContent = `⚠ Unmatched Persons (${unmatchedKeys.length})`;
-    body.appendChild(sec);
-
-    /* Dynamic SR continues: left and right number independently */
-    let srLeft = matchedKeys.length;
-    let srRight = matchedKeys.length;
-
-    unmatchedKeys.forEach(k => {
-      const p = mapPrev.get(k) || null;
-      const c = mapCurr.get(k) || null;
-      if (p) subPrev += p.amount;
-      if (c) subCurr += c.amount;
-
-      const sL = p ? ++srLeft : "";
-      const sR = c ? ++srRight : "";
-      body.appendChild(buildRow(p, c, sL, sR, false));
-    });
-  }
-
-  /* ===== SUBTOTAL ROW ===== */
+  /* Subtotal row */
   const totals = document.createElement("div");
   totals.className = "total-row";
   totals.innerHTML = `
     <div class="sr-blank"></div>
     <div><div class="lbl">Subtotal</div><div class="val v1">${fmt(subPrev)}</div></div>
-    <div class="sr-blank"></div>
     <div><div class="lbl">Subtotal</div><div class="val v2">${fmt(subCurr)}</div></div>
   `;
   body.appendChild(totals);
 
-  /* ===== GRAND TOTAL ===== */
+  /* Grand total */
   const grand = document.createElement("div");
   grand.className = "grand";
   grand.innerHTML = `
     <div class="lbl">Grand Total (Both Months)</div>
     <div class="val">${fmt(subPrev + subCurr)}</div>
-    <div class="cnt">Matched: ${matchedKeys.length} &nbsp;•&nbsp; Only Month 1: ${unmatchedKeys.filter(k => mapPrev.has(k)).length} &nbsp;•&nbsp; Only Month 2: ${unmatchedKeys.filter(k => mapCurr.has(k)).length}</div>
+    <div class="cnt">
+      Matched: ${matchedKeys.length} &nbsp;•&nbsp;
+      Only ${monthLabel(prevRecs[0])}: ${onlyPrevKeys.length} &nbsp;•&nbsp;
+      Only ${monthLabel(currRecs[0])}: ${onlyCurrKeys.length}
+    </div>
   `;
   body.appendChild(grand);
 
-  /* ===== DIFFERENCE BAR ===== */
+  /* Difference bar */
   const diff = subCurr - subPrev;
   const diffEl = document.getElementById("diffbar");
   diffEl.className = "diffbar " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
