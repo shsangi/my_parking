@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monthly Comparison Receipt</title>
+<title>Monthly Comparison — Last 12 Months</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -13,7 +13,7 @@
   }
 
   .receipt {
-    max-width: 480px; margin: 0 auto;
+    max-width: 100%; margin: 0 auto;
     background: #fff; border-radius: 14px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     overflow: hidden;
@@ -23,129 +23,140 @@
     background: linear-gradient(135deg, #1e88e5, #1565c0);
     color: #fff; padding: 16px; text-align: center;
   }
-  .rc-head h1 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
+  .rc-head h1 { margin: 0; font-size: 17px; font-weight: 700; }
   .rc-head p { margin: 4px 0 0; font-size: 12px; opacity: 0.9; }
 
+  /* Counts strip — horizontal scroll too */
+  .counts-wrap {
+    overflow-x: auto; background: #f7f9fc;
+    border-bottom: 1px solid #e0e4ea;
+    -webkit-overflow-scrolling: touch;
+  }
   .counts {
-    display: grid; grid-template-columns: 1fr 1fr;
-    background: #f7f9fc; border-bottom: 1px solid #e0e4ea;
+    display: flex; min-width: max-content;
   }
   .counts > div {
-    padding: 10px 8px; text-align: center;
+    min-width: 90px; padding: 8px 6px; text-align: center;
     border-right: 1px solid #e0e4ea;
   }
   .counts > div:last-child { border-right: none; }
-  .counts .num { font-size: 20px; font-weight: 800; line-height: 1.1; }
-  .counts .lbl { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-  .counts .c1 { color: #1565c0; }
-  .counts .c2 { color: #2e7d32; }
+  .counts .num { font-size: 16px; font-weight: 800; line-height: 1.1; color: #1565c0; }
+  .counts .lbl { font-size: 9px; color: #666; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
 
-  .months {
+  /* Hint bar */
+  .hint {
+    background: #fff8e1; color: #8d6e00;
+    font-size: 11px; text-align: center; padding: 6px;
+    border-bottom: 1px solid #f0e0a0;
+  }
+
+  /* Main horizontal scroll container */
+  .grid-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  /* Grid: sticky cols (SR + Name) then month cells */
+  .grid {
     display: grid;
-    grid-template-columns: 34px 1fr 1fr;
-    background: #f7f9fc; border-bottom: 2px solid #e0e4ea;
+    min-width: max-content;
+  }
+
+  /* Header row */
+  .head-row {
     position: sticky; top: 0; z-index: 5;
-    font-size: 12px; font-weight: 700;
   }
-  .months .hd {
-    padding: 10px 6px; text-align: center;
+  .head-cell {
+    background: #f7f9fc; border-bottom: 2px solid #e0e4ea;
     border-right: 1px solid #e0e4ea;
+    padding: 10px 6px; text-align: center;
+    font-weight: 700; font-size: 12px;
+    white-space: nowrap;
   }
-  .months .hd:last-child { border-right: none; }
-  .months .m1 { color: #1565c0; }
-  .months .m2 { color: #2e7d32; }
-  .months .sr-h { color: #999; font-size: 11px; }
+  .head-sr   { background: #eef1f5; color: #999; font-size: 11px; }
+  .head-name { background: #eef1f5; color: #555; text-align: left; padding-left: 10px; }
 
-  .sec {
-    background: #eef1f5; padding: 6px 12px;
-    font-size: 11px; font-weight: 700; color: #666;
-    text-transform: uppercase; letter-spacing: 0.6px;
-    border-top: 1px solid #e0e4ea;
-    border-bottom: 1px solid #e0e4ea;
+  /* Sticky columns */
+  .sticky-sr {
+    position: sticky; left: 0; z-index: 3;
+    background: #f4f6f9;
   }
-  .sec.ok  { background: #e8f5e9; color: #2e7d32; }
-  .sec.warn{ background: #fff3e0; color: #e65100; }
+  .sticky-name {
+    position: sticky; left: 36px; z-index: 3;
+    background: #fff; box-shadow: 2px 0 4px rgba(0,0,0,0.06);
+  }
 
-  .item {
-    display: grid;
-    grid-template-columns: 34px 1fr 1fr;
+  /* Data rows */
+  .row-cell {
+    padding: 8px 6px; min-height: 46px;
     border-bottom: 1px dashed #e5e8ee;
+    border-right: 1px solid #f0f2f6;
+    display: flex; flex-direction: column; justify-content: center;
+    overflow: hidden;
     background: #fff;
   }
-  .item > div {
-    padding: 9px 8px; min-height: 48px;
-    display: flex; flex-direction: column; justify-content: center;
-    border-right: 1px solid #f0f2f6;
-    overflow: hidden;
-  }
-  .item > div:last-child { border-right: none; }
-
   .sr-cell {
-    font-size: 11px; font-weight: 700; color: #6b7280;
-    text-align: center; background: #f4f6f9;
+    text-align: center; font-size: 11px; font-weight: 700;
+    color: #6b7280; background: #f4f6f9;
+    min-width: 36px;
   }
-
-  .name-line {
-    display: flex; align-items: baseline; gap: 4px;
+  .name-cell {
     font-weight: 600; font-size: 13px;
-    white-space: nowrap; overflow: hidden;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    min-width: 130px; max-width: 130px;
+    padding-left: 10px;
   }
-  .name-line .nm { overflow: hidden; text-overflow: ellipsis; }
-  .amt { font-size: 14px; font-weight: 700; margin-top: 2px; }
-  .m1-cell .amt { color: #1565c0; }
-  .m2-cell .amt { color: #2e7d32; }
-
-  .missing {
-    color: #cbd0d8; font-style: italic; font-size: 11px;
-    display: flex; align-items: center; justify-content: center;
-    text-align: center;
+  .amt-cell {
+    font-size: 13px; font-weight: 700; color: #1565c0;
+    text-align: right; min-width: 88px;
+    white-space: nowrap;
   }
+  .amt-cell.zero { color: #c8cdd4; font-weight: 500; }
+  .amt-cell.missing { color: #c8cdd4; font-weight: 400; font-style: italic; font-size: 11px; text-align: center; }
 
-  .diff-badge {
+  /* Highlight recent 2 months */
+  .col-recent { background: #f0f8ff; }
+  .col-recent.head-cell { background: #e3f2fd; color: #0d47a1; }
+  .col-latest { background: #f0fbf3; }
+  .col-latest.head-cell { background: #e8f5e9; color: #1b5e20; }
+  .col-latest .amt-cell { color: #2e7d32; }
+
+  /* Diff chip on latest column */
+  .diff-chip {
     font-size: 9px; font-weight: 700;
-    padding: 1px 4px; border-radius: 4px; margin-left: auto;
-    flex-shrink: 0;
+    padding: 1px 4px; border-radius: 4px;
+    margin-left: 4px;
   }
-  .diff-badge.up { background: #e8f5e9; color: #2e7d32; }
-  .diff-badge.down { background: #ffebee; color: #c62828; }
-  .diff-badge.same { background: #f0f2f6; color: #666; }
+  .diff-chip.up { background: #e8f5e9; color: #2e7d32; }
+  .diff-chip.down { background: #ffebee; color: #c62828; }
+  .diff-chip.same { background: #f0f2f6; color: #666; }
 
+  /* Totals row */
   .total-row {
-    display: grid;
-    grid-template-columns: 34px 1fr 1fr;
-    background: #f7f9fc; border-top: 2px solid #e0e4ea;
-    font-weight: 700;
+    position: sticky; bottom: 0; z-index: 4;
+    background: #f7f9fc;
+    border-top: 2px solid #e0e4ea;
   }
-  .total-row > div {
+  .total-cell {
     padding: 12px 6px; text-align: center;
+    font-weight: 700; font-size: 12px;
     border-right: 1px solid #e0e4ea;
+    white-space: nowrap;
   }
-  .total-row > div:last-child { border-right: none; }
-  .total-row .lbl { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-  .total-row .val { font-size: 15px; margin-top: 3px; }
-  .total-row .v1 { color: #1565c0; }
-  .total-row .v2 { color: #2e7d32; }
-  .total-row .sr-blank { background: #f4f6f9; }
+  .total-cell .lbl { font-size: 9px; color: #666; text-transform: uppercase; letter-spacing: 0.4px; }
+  .total-cell .val { font-size: 13px; margin-top: 2px; color: #1565c0; }
 
+  /* Grand total banner */
   .grand {
     background: linear-gradient(135deg, #263238, #37474f);
     color: #fff; padding: 16px; text-align: center;
   }
   .grand .lbl { font-size: 11px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.6px; }
-  .grand .val { font-size: 26px; font-weight: 800; margin-top: 4px; letter-spacing: 0.5px; }
+  .grand .val { font-size: 24px; font-weight: 800; margin-top: 4px; }
   .grand .cnt { font-size: 11px; opacity: 0.85; margin-top: 6px; }
 
-  .diffbar {
-    margin: 10px 12px 14px; padding: 10px 14px;
-    border-radius: 10px; display: flex;
-    justify-content: space-between; align-items: center;
-    font-weight: 700; font-size: 14px;
-  }
-  .diffbar.pos { background: #e8f5e9; color: #2e7d32; }
-  .diffbar.neg { background: #ffebee; color: #c62828; }
-  .diffbar.zero { background: #f0f2f6; color: #555; }
-
-  .status { text-align: center; padding: 40px 20px; color: #777; font-size: 14px; }
+  .status { text-align: center; padding: 40px 20px; color: #777; }
 </style>
 </head>
 <body>
@@ -153,39 +164,32 @@
 <div class="receipt" id="receipt" style="display:none;">
   <div class="rc-head">
     <h1>Monthly Comparison</h1>
-    <p id="subtitle">Last two months</p>
+    <p id="subtitle">Last 12 months</p>
   </div>
 
-  <div class="counts">
-    <div>
-      <div class="num c1" id="cnt1">0</div>
-      <div class="lbl">Persons (Month 1)</div>
-    </div>
-    <div>
-      <div class="num c2" id="cnt2">0</div>
-      <div class="lbl">Persons (Month 2)</div>
-    </div>
+  <div class="counts-wrap">
+    <div class="counts" id="counts"></div>
   </div>
 
-  <div class="months">
-    <div class="hd sr-h">#</div>
-    <div class="hd m1" id="h1">—</div>
-    <div class="hd m2" id="h2">—</div>
+  <div class="hint">← Swipe left/right to see all months →</div>
+
+  <div class="grid-wrap">
+    <div class="grid" id="grid"></div>
   </div>
 
-  <div id="body"></div>
-
-  <div class="diffbar" id="diffbar">—</div>
+  <div class="grand" id="grand"></div>
 </div>
 
 <div class="status" id="status">Loading data…</div>
 
 <script>
 /* ============================================================
-   CONFIG
+   CONFIG — paste your CSV export URLs here
    ============================================================ */
 const SHEET1_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pub?output=csv";
 const SHEET2_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
+
+const MAX_MONTHS = 12;  // how many months to show
 
 const COL = {
   name:   ["name/item", "name", "item", "person", "party"],
@@ -194,6 +198,9 @@ const COL = {
   year:   ["year", "yr"]
 };
 
+/* ============================================================
+   CSV PARSER
+   ============================================================ */
 function parseCSV(text) {
   const rows = [];
   let cur = [], field = "", inQ = false;
@@ -248,24 +255,33 @@ function normalizeRecords(rows) {
   return out;
 }
 
+/* ============================================================
+   MONTH HELPERS
+   ============================================================ */
 const MONTH_NUM = {
   jan:1, january:1, feb:2, february:2, mar:3, march:3, apr:4, april:4,
   may:5, jun:6, june:6, jul:7, july:7, aug:8, august:8, sep:9, sept:9,
   september:9, oct:10, october:10, nov:11, november:11, dec:12, december:12
 };
+const MONTH_SHORT = ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
 function monthKey(rec) {
   const m = MONTH_NUM[rec.month.toLowerCase()] || 0;
   const y = parseInt(rec.year) || 0;
   return y * 100 + m;
 }
-function monthLabel(rec) {
-  if (!rec) return "—";
-  return `${rec.month} ${rec.year}`.trim();
+function monthLabelShort(key) {
+  const y = Math.floor(key / 100);
+  const m = key % 100;
+  return `${MONTH_SHORT[m]} ${String(y).slice(-2)}`;
 }
 function nameKey(name) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+/* ============================================================
+   LOAD + RENDER
+   ============================================================ */
 async function loadAll() {
   let all = [];
   for (const u of [SHEET1_CSV, SHEET2_CSV]) {
@@ -298,170 +314,156 @@ function render(records) {
     return;
   }
 
-  const keys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
-  if (keys.length < 2) {
+  /* ---- Pick last N months ---- */
+  const allKeys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
+  const monthKeys = allKeys.slice(-MAX_MONTHS);
+  if (monthKeys.length < 2) {
     statusEl.textContent = "Need at least two months of data to compare.";
     return;
   }
-  const kPrev = keys[keys.length - 2];
-  const kCurr = keys[keys.length - 1];
 
-  const prevRecs = records.filter(r => monthKey(r) === kPrev);
-  const currRecs = records.filter(r => monthKey(r) === kCurr);
+  /* ---- Group by name × month ---- */
+  const mapByMonth = new Map();   // monthKey -> Map(nameKey -> {name, amount})
+  monthKeys.forEach(k => mapByMonth.set(k, new Map()));
 
-  document.getElementById("h1").textContent = monthLabel(prevRecs[0]);
-  document.getElementById("h2").textContent = monthLabel(currRecs[0]);
-
-  const mapPrev = new Map();
-  prevRecs.forEach(r => {
-    const k = nameKey(r.name);
-    if (!mapPrev.has(k)) mapPrev.set(k, { name: r.name, amount: 0 });
-    mapPrev.get(k).amount += r.amount;
-  });
-  const mapCurr = new Map();
-  currRecs.forEach(r => {
-    const k = nameKey(r.name);
-    if (!mapCurr.has(k)) mapCurr.set(k, { name: r.name, amount: 0 });
-    mapCurr.get(k).amount += r.amount;
+  records.forEach(r => {
+    const k = monthKey(r);
+    if (!mapByMonth.has(k)) return;
+    const nk = nameKey(r.name);
+    const m = mapByMonth.get(k);
+    if (!m.has(nk)) m.set(nk, { name: r.name, amount: 0 });
+    m.get(nk).amount += r.amount;
   });
 
-  const cntPrev = mapPrev.size;
-  const cntCurr = mapCurr.size;
-
-  /* Buckets */
-  const matchedKeys   = [];
-  const onlyPrevKeys  = [];
-  const onlyCurrKeys  = [];
-  const seen = new Set();
-
-  mapPrev.forEach((v, k) => {
-    if (seen.has(k)) return;
-    seen.add(k);
-    if (mapCurr.has(k)) matchedKeys.push(k);
-    else onlyPrevKeys.push(k);
-  });
-  mapCurr.forEach((v, k) => {
-    if (seen.has(k)) return;
-    seen.add(k);
-    onlyCurrKeys.push(k);
-  });
-
-  /* Build HTML */
-  const body = document.getElementById("body");
-  body.innerHTML = "";
-
-  let subPrev = 0, subCurr = 0;
-  let srCounter = 0;
-
-  /* Row builder */
-  const buildRow = (p, c, sr, showDiff) => {
-    const left = p
-      ? `<div class="m1-cell">
-           <div class="name-line"><span class="nm">${esc(p.name)}</span></div>
-           <div class="amt">${fmt(p.amount)}</div>
-         </div>`
-      : `<div class="m1-cell"><div class="missing">—</div></div>`;
-
-    let rightName = "";
-    if (c) {
-      let badge = "";
-      if (showDiff && p) {
-        const d = c.amount - p.amount;
-        if (Math.abs(d) < 0.005) badge = `<span class="diff-badge same">same</span>`;
-        else if (d > 0)           badge = `<span class="diff-badge up">▲${fmt(d)}</span>`;
-        else                      badge = `<span class="diff-badge down">▼${fmt(Math.abs(d))}</span>`;
-      }
-      rightName = `<div class="name-line"><span class="nm">${esc(c.name)}</span>${badge}</div>`;
-    }
-
-    const right = c
-      ? `<div class="m2-cell">${rightName}<div class="amt">${fmt(c.amount)}</div></div>`
-      : `<div class="m2-cell"><div class="missing">—</div></div>`;
-
-    const row = document.createElement("div");
-    row.className = "item";
-    row.innerHTML = `<div class="sr-cell">${sr}</div>${left}${right}`;
-    return row;
-  };
-
-  /* ===== MATCHED SECTION ===== */
-  if (matchedKeys.length) {
-    const sec = document.createElement("div");
-    sec.className = "sec ok";
-    sec.textContent = `✓ Matched Persons (${matchedKeys.length})`;
-    body.appendChild(sec);
-
-    matchedKeys.forEach(k => {
-      const p = mapPrev.get(k), c = mapCurr.get(k);
-      subPrev += p.amount;
-      subCurr += c.amount;
-      body.appendChild(buildRow(p, c, ++srCounter, true));
+  /* ---- Collect all person keys, ordered by first appearance (earliest month first) ---- */
+  const orderedPersons = [];
+  const seenPerson = new Set();
+  monthKeys.forEach(k => {
+    mapByMonth.get(k).forEach((v, nk) => {
+      if (!seenPerson.has(nk)) { seenPerson.add(nk); orderedPersons.push(nk); }
     });
-  }
+  });
 
-  /* ===== UNMATCHED SECTION — pair left-over with right-over ===== */
-  if (onlyPrevKeys.length || onlyCurrKeys.length) {
-    const sec = document.createElement("div");
-    sec.className = "sec warn";
-    sec.textContent = `⚠ Unmatched Persons (${onlyPrevKeys.length + onlyCurrKeys.length})`;
-    body.appendChild(sec);
+  /* ---- Count persons per month ---- */
+  const countsEl = document.getElementById("counts");
+  countsEl.innerHTML = "";
+  monthKeys.forEach((k, idx) => {
+    const cnt = mapByMonth.get(k).size;
+    const isLatest = idx === monthKeys.length - 1;
+    const isRecent = idx === monthKeys.length - 2;
+    const div = document.createElement("div");
+    if (isLatest) div.style.background = "#e8f5e9";
+    else if (isRecent) div.style.background = "#e3f2fd";
+    div.innerHTML = `
+      <div class="num" style="${isLatest ? 'color:#2e7d32;' : ''}">${cnt}</div>
+      <div class="lbl">${monthLabelShort(k)}</div>
+    `;
+    countsEl.appendChild(div);
+  });
 
-    const maxLen = Math.max(onlyPrevKeys.length, onlyCurrKeys.length);
-    for (let i = 0; i < maxLen; i++) {
-      const pKey = onlyPrevKeys[i];
-      const cKey = onlyCurrKeys[i];
-      const p = pKey ? mapPrev.get(pKey) : null;
-      const c = cKey ? mapCurr.get(cKey) : null;
+  /* ---- Build grid ---- */
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
 
-      if (p) subPrev += p.amount;
-      if (c) subCurr += c.amount;
+  /* grid-template-columns: 36px (sr) 130px (name) + N columns for months */
+  const cols = `36px 130px repeat(${monthKeys.length}, 92px)`;
+  grid.style.gridTemplateColumns = cols;
 
-      body.appendChild(buildRow(p, c, ++srCounter, false));
-    }
-  }
-
-  /* ===== SUBTOTAL ===== */
-  const totals = document.createElement("div");
-  totals.className = "total-row";
-  totals.innerHTML = `
-    <div class="sr-blank"></div>
-    <div><div class="lbl">Subtotal</div><div class="val v1">${fmt(subPrev)}</div></div>
-    <div><div class="lbl">Subtotal</div><div class="val v2">${fmt(subCurr)}</div></div>
+  /* ---- Header row ---- */
+  const hRow = document.createElement("div");
+  hRow.className = "head-row";
+  hRow.style.display = "contents";
+  hRow.innerHTML = `
+    <div class="head-cell head-sr sticky-sr">#</div>
+    <div class="head-cell head-name sticky-name">Name</div>
+    ${monthKeys.map((k, i) => {
+      const isLatest = i === monthKeys.length - 1;
+      const isRecent = i === monthKeys.length - 2;
+      const cls = isLatest ? "col-latest" : isRecent ? "col-recent" : "";
+      return `<div class="head-cell ${cls}">${monthLabelShort(k)}</div>`;
+    }).join("")}
   `;
-  body.appendChild(totals);
+  grid.appendChild(hRow);
 
-  /* ===== GRAND TOTAL ===== */
-  const grand = document.createElement("div");
-  grand.className = "grand";
-  grand.innerHTML = `
-    <div class="lbl">Grand Total (Both Months)</div>
-    <div class="val">${fmt(subPrev + subCurr)}</div>
-    <div class="cnt">
-      Matched: ${matchedKeys.length} &nbsp;•&nbsp;
-      Only ${monthLabel(prevRecs[0])}: ${onlyPrevKeys.length} &nbsp;•&nbsp;
-      Only ${monthLabel(currRecs[0])}: ${onlyCurrKeys.length}
-    </div>
+  /* ---- Data rows ---- */
+  let sr = 0;
+  const totalsByMonth = monthKeys.map(() => 0);
+
+  orderedPersons.forEach(nk => {
+    sr++;
+    const row = document.createElement("div");
+    row.style.display = "contents";
+
+    row.innerHTML = `
+      <div class="row-cell sr-cell sticky-sr">${sr}</div>
+      <div class="row-cell name-cell sticky-name">${esc(mapByMonth.get(monthKeys[0]).get(nk)?.name || 
+        monthKeys.map(k => mapByMonth.get(k).get(nk)).find(v => v)?.name || "")}</div>
+    `;
+
+    monthKeys.forEach((k, i) => {
+      const rec = mapByMonth.get(k).get(nk);
+      const isLatest = i === monthKeys.length - 1;
+      const isRecent = i === monthKeys.length - 2;
+      const cls = isLatest ? "col-latest" : isRecent ? "col-recent" : "";
+
+      const cell = document.createElement("div");
+      cell.className = "row-cell amt-cell " + cls;
+
+      if (rec) {
+        totalsByMonth[i] += rec.amount;
+        let amtHtml = fmt(rec.amount);
+        if (rec.amount === 0) cell.classList.add("zero");
+
+        /* Diff chip only on the LATEST column */
+        if (isLatest && isRecent) {
+          const prevRec = mapByMonth.get(monthKeys[i-1]).get(nk);
+          if (prevRec) {
+            const d = rec.amount - prevRec.amount;
+            let chip = "";
+            if (Math.abs(d) < 0.005) chip = `<span class="diff-chip same">=</span>`;
+            else if (d > 0)          chip = `<span class="diff-chip up">▲</span>`;
+            else                     chip = `<span class="diff-chip down">▼</span>`;
+            amtHtml += " " + chip;
+          }
+        }
+        cell.innerHTML = amtHtml;
+      } else {
+        cell.classList.add("missing");
+        cell.textContent = "—";
+      }
+
+      row.appendChild(cell);
+    });
+
+    grid.appendChild(row);
+  });
+
+  /* ---- Totals row (sticky bottom) ---- */
+  const totalRow = document.createElement("div");
+  totalRow.className = "total-row";
+  totalRow.style.display = "contents";
+
+  totalRow.innerHTML = `
+    <div class="total-cell sticky-sr"> </div>
+    <div class="total-cell sticky-name" style="text-align:left; padding-left:10px;">TOTAL</div>
+    ${totalsByMonth.map(v => `<div class="total-cell"><div class="lbl">Total</div><div class="val">${fmt(v)}</div></div>`).join("")}
   `;
-  body.appendChild(grand);
+  grid.appendChild(totalRow);
 
-  /* ===== DIFFERENCE ===== */
-  const diff = subCurr - subPrev;
-  const diffEl = document.getElementById("diffbar");
-  diffEl.className = "diffbar " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
-  const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "=";
-  const sign  = diff > 0 ? "+" : "";
-  diffEl.innerHTML = `
-    <span>Monthly Difference</span>
-    <span>${arrow} ${sign}${fmt(diff)}</span>
+  /* ---- Grand total ---- */
+  const grandTotal = totalsByMonth.reduce((a,b) => a+b, 0);
+  document.getElementById("grand").innerHTML = `
+    <div class="lbl">Grand Total (${monthKeys.length} months)</div>
+    <div class="val">${fmt(grandTotal)}</div>
+    <div class="cnt">${orderedPersons.length} unique persons across all months</div>
   `;
 
-  document.getElementById("cnt1").textContent = cntPrev;
-  document.getElementById("cnt2").textContent = cntCurr;
+  /* ---- Subtitle ---- */
+  document.getElementById("subtitle").textContent =
+    `${monthLabelShort(monthKeys[0])} — ${monthLabelShort(monthKeys[monthKeys.length-1])}  (${monthKeys.length} months)`;
 
   statusEl.style.display = "none";
   document.getElementById("receipt").style.display = "block";
-  document.getElementById("subtitle").textContent =
-    `${monthLabel(prevRecs[0])}  vs  ${monthLabel(currRecs[0])}`;
 }
 
 loadAll().then(render).catch(e => {
