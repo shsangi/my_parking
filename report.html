@@ -115,7 +115,7 @@
     padding: 0 12px;
   }
 
-  /* ---------- OVERALL CARD (modern gradient header) ---------- */
+  /* ---------- OVERALL CARD ---------- */
   .overall-card {
     background: var(--card);
     border-radius: var(--radius);
@@ -214,7 +214,7 @@
     margin-left: 4px;
   }
 
-  /* Green — Combined Total */
+  /* Green — Combined Total with salary/expenses */
   .oc-row.combined {
     background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
     margin: 10px -20px -18px;
@@ -222,6 +222,9 @@
     border-bottom: none;
     color: #fff;
     border-radius: 0 0 var(--radius) var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   .oc-row.combined .k {
     color: #fff;
@@ -236,12 +239,49 @@
     color: #fff;
     letter-spacing: -0.3px;
     text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    text-align: left;
   }
   .oc-row.combined .v .unit {
     font-size: 12px;
     font-weight: 600;
     opacity: 0.8;
     margin-left: 4px;
+  }
+
+  /* Salary / expenses breakdown inside green */
+  .combined-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 12.5px;
+  }
+  .combined-details .item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    opacity: 0.95;
+  }
+  .combined-details .item .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ffd966;
+    flex-shrink: 0;
+  }
+  .combined-details .item .label {
+    font-weight: 600;
+    opacity: 0.85;
+  }
+  .combined-details .item .value {
+    font-weight: 800;
+    color: #ffd966;
+    font-variant-numeric: tabular-nums;
+  }
+  .combined-details .item .value.neg {
+    color: #ffb3b3;
   }
 
   /* ---------- SECTION HEAD ---------- */
@@ -499,11 +539,16 @@
     background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
     border-radius: 14px;
     display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(15, 75, 30, 0.2);
+  }
+  .mr-combined-strip .top-row {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(15, 75, 30, 0.2);
   }
   .mr-combined-strip .lbl-block { min-width: 0; flex: 1; }
   .mr-combined-strip .c-lbl {
@@ -534,6 +579,38 @@
     font-weight: 600;
     opacity: 0.8;
     margin-left: 4px;
+  }
+  .mr-combined-strip .breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 11.5px;
+  }
+  .mr-combined-strip .breakdown .item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    opacity: 0.95;
+  }
+  .mr-combined-strip .breakdown .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #ffd966;
+    flex-shrink: 0;
+  }
+  .mr-combined-strip .breakdown .label {
+    font-weight: 600;
+    opacity: 0.85;
+  }
+  .mr-combined-strip .breakdown .value {
+    font-weight: 800;
+    color: #ffd966;
+    font-variant-numeric: tabular-nums;
+  }
+  .mr-combined-strip .breakdown .value.neg {
+    color: #ffb3b3;
   }
 
   /* ---------- DAILY SECTION ---------- */
@@ -1113,8 +1190,7 @@
     .mr-metrics, .pr-metrics { gap: 5px; }
     .mr-metric .val, .pr-metric .val { font-size: 13px; }
     .mr-metric .lbl, .pr-metric .lbl { font-size: 9px; }
-    .oc-row.combined { flex-direction: column; align-items: flex-start; gap: 8px; }
-    .oc-row.combined .v { font-size: 19px; }
+    .combined-details { font-size: 11.5px; gap: 6px 12px; }
     .cmp-row > div { padding: 9px 6px; }
     .cmp-name { font-size: 12px; }
     .cmp-amt { font-size: 12.5px; }
@@ -1207,6 +1283,11 @@
 const SHEET1_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pub?output=csv";
 const SHEET2_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
 const SHEET_DAILY_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1810247989";
+
+/* ---- Monthly salary & daily expense config (NOT excluded) ---- */
+const MONTHLY_SALARY = 15000;      // 15k monthly salary
+const MONTHLY_SALARY_PREV = 14000; // 14k for previous month
+const DAILY_EXPENSE = 300;         // daily expense not excluded
 
 const COL = {
   name:   ["name/item", "name", "item", "person", "party"],
@@ -1642,13 +1723,17 @@ function buildAllMonthsTable(monthList) {
 
 /* ============================================================
    OVERALL SUMMARY CARD
-   - Title: "Sangi Parking"
-   - Rows: Start, End, Days, Gross, Expenses, Net, Avg Daily Earning, Combined Total
+   - Includes salary & daily expense breakdown in green row
    ============================================================ */
 function buildOverallSummaryCard(totals) {
   const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal } = totals;
   const avgNet = days ? net / days : 0;
-  const combinedTotal = (monthlySheetTotal / 2) + net;
+
+  /* Compute combined total with salary & daily expense deductions */
+  const dailyExpenseTotal = DAILY_EXPENSE * days;
+  const salaryTotal = MONTHLY_SALARY; // 15k for current month
+  const combinedTotalRaw = (monthlySheetTotal / 2) + net;
+  const combinedTotalAfterDeductions = combinedTotalRaw - dailyExpenseTotal - salaryTotal;
 
   const el = document.createElement("div");
   el.className = "overall-card";
@@ -1667,9 +1752,29 @@ function buildOverallSummaryCard(totals) {
         <span class="k">Avg Daily Earning</span>
         <span class="v">${fmtDec2(avgNet)}<span class="unit">PKR/day</span></span>
       </div>
+
       <div class="oc-row combined">
-        <span class="k">Total Monthly ÷ 2 + Credit</span>
-        <span class="v">${fmtInt(combinedTotal)}<span class="unit">PKR</span></span>
+        <div>
+          <div class="k">Total Monthly ÷ 2 + Credit</div>
+          <div class="v">${fmtInt(combinedTotalAfterDeductions)}<span class="unit">PKR</span></div>
+        </div>
+        <div class="combined-details">
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">Raw Combined:</span>
+            <span class="value">${fmtInt(combinedTotalRaw)}</span>
+          </div>
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">− Salary (15k):</span>
+            <span class="value neg">−${fmtInt(salaryTotal)}</span>
+          </div>
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">− Daily Exp (300 × ${days}):</span>
+            <span class="value neg">−${fmtInt(dailyExpenseTotal)}</span>
+          </div>
+        </div>
       </div>
     </div>
   `;
@@ -1792,7 +1897,7 @@ function sumMonthlySheetTotals(records) {
 }
 
 /* ============================================================
-   MONTH ROW
+   MONTH ROW — with salary & daily expense breakdown in green
    ============================================================ */
 function buildMonthRow(info, srNo, sheetTotal) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
@@ -1803,7 +1908,16 @@ function buildMonthRow(info, srNo, sheetTotal) {
   if (sheetTotal) {
     const sheetAmt = sheetTotal.amount;
     const halfSheet = sheetAmt / 2;
-    const combined = halfSheet + net;
+
+    /* Salary: use 14k for previous month, 15k for current */
+    const now = new Date();
+    const currentMonthKey = now.getFullYear() * 100 + (now.getMonth() + 1);
+    const thisMonthKey = y * 100 + m;
+    const salaryForMonth = (thisMonthKey === currentMonthKey) ? MONTHLY_SALARY : MONTHLY_SALARY_PREV;
+
+    const dailyExpenseTotal = DAILY_EXPENSE * daysCount;
+    const combinedRaw = halfSheet + net;
+    const combinedAfter = combinedRaw - salaryForMonth - dailyExpenseTotal;
 
     sheetStrip = `
       <div class="mr-sheet-strip">
@@ -1819,11 +1933,30 @@ function buildMonthRow(info, srNo, sheetTotal) {
 
     combinedStrip = `
       <div class="mr-combined-strip">
-        <div class="lbl-block">
-          <div class="c-lbl">Combined Total</div>
-          <div class="c-sub">(Sheet ÷ 2) + Credit</div>
+        <div class="top-row">
+          <div class="lbl-block">
+            <div class="c-lbl">Combined Total</div>
+            <div class="c-sub">(Sheet ÷ 2) + Credit</div>
+          </div>
+          <div class="c-val">${fmtInt(combinedAfter)}<span class="unit">PKR</span></div>
         </div>
-        <div class="c-val">${fmtInt(combined)}<span class="unit">PKR</span></div>
+        <div class="breakdown">
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">Raw:</span>
+            <span class="value">${fmtInt(combinedRaw)}</span>
+          </div>
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">− Salary ${salaryForMonth === MONTHLY_SALARY ? '(15k)' : '(14k)'}:</span>
+            <span class="value neg">−${fmtInt(salaryForMonth)}</span>
+          </div>
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">− Daily Exp (300 × ${daysCount}):</span>
+            <span class="value neg">−${fmtInt(dailyExpenseTotal)}</span>
+          </div>
+        </div>
       </div>
     `;
   }
