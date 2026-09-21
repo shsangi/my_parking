@@ -1,0 +1,32 @@
+{
+  "name": "Sangi Parking — Reports",
+  "short_name": "Sangi Parking",
+  "description": "Parking reports dashboard with monthly comparisons and daily data.",
+  "start_url": "parking.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a66c2",
+  "theme_color": "#0a66c2",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "parkinglogo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "parkinglogo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "parkinglogo.jpg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ]
+}
