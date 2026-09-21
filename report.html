@@ -338,12 +338,28 @@
   .month-row, .period-row {
     padding: 12px 14px;
     border-bottom: 1px solid #eef1f5;
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 10px;
+    align-items: start;
   }
   .month-row:last-child, .period-row:last-child { border-bottom: none; }
 
   .month-row.current {
     background: linear-gradient(180deg, #fff8e1 0%, #fffdf7 100%);
     border-left: 3px solid #ffa726;
+  }
+
+  .row-sr {
+    font-size: 12px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-align: center;
+    background: #f1f5f9;
+    border-radius: 6px;
+    padding: 3px 0;
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
   }
 
   .mr-head, .pr-head {
@@ -761,9 +777,7 @@ function parseDateParts(s) {
   return null;
 }
 
-function dateKeyOf(p) {
-  return p ? (p.y * 10000 + p.m * 100 + p.d) : 0;
-}
+function dateKeyOf(p) { return p ? (p.y * 10000 + p.m * 100 + p.d) : 0; }
 function dateCmp(a, b) { return dateKeyOf(a) - dateKeyOf(b); }
 
 function daysBetween(p1, p2) {
@@ -773,9 +787,7 @@ function daysBetween(p1, p2) {
   const diff = Math.round((d2 - d1) / 86400000) + 1;
   return diff > 0 ? diff : 0;
 }
-function daysInMonth(y, m) {
-  return new Date(y, m, 0).getDate();
-}
+function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
 function fmtDateLong(p) {
   if (!p) return "—";
   return `${MONTH_LONG[p.m - 1]} ${p.d}, ${p.y}`;
@@ -1041,14 +1053,7 @@ function buildOverallSummaryCard(totals) {
 }
 
 /* ============================================================
-   SMART MONTHLY BOUNDS — with proportional amount split
-   ------------------------------------------------------------
-   For every month that a period touches:
-     - Start of month   = real start date if period starts here,
-                          else 1st of month
-     - End of month     = real end date if period ends here,
-                          else last day of month
-     - Period's amount for this month = row amount × (days_in_month / total_period_days)
+   SMART MONTHLY SPLIT (proportional by days)
    ============================================================ */
 function computeMonthlySplit(rows) {
   const buckets = new Map();
@@ -1060,9 +1065,7 @@ function computeMonthlySplit(rows) {
         y, m,
         minStart: null,
         maxEnd:   null,
-        gross: 0,
-        exp:   0,
-        net:   0
+        gross: 0, exp: 0, net: 0
       });
     }
     return buckets.get(key);
@@ -1075,12 +1078,10 @@ function computeMonthlySplit(rows) {
 
     const periodDays = daysBetween(sp, ep) || 1;
 
-    /* Distribute this row's amounts across months it touches */
     let y = sp.y, m = sp.m;
     while (true) {
       const bucket = ensure(y, m);
 
-      /* Segment of this row inside month (y, m) */
       const monthFirst = { y, m, d: 1 };
       const monthLast  = { y, m, d: daysInMonth(y, m) };
 
@@ -1094,7 +1095,6 @@ function computeMonthlySplit(rows) {
       bucket.exp   += r.expenses * frac;
       bucket.net   += r.net * frac;
 
-      /* Track bounds inside this month */
       if (sp.y === y && sp.m === m) {
         if (!bucket.minStart || dateCmp(sp, bucket.minStart) < 0) {
           bucket.minStart = { y: sp.y, m: sp.m, d: sp.d };
@@ -1115,18 +1115,15 @@ function computeMonthlySplit(rows) {
         }
       }
 
-      /* Move to next month, stop when past the period's end month */
       if (ep && y === ep.y && m === ep.m) break;
       if (!ep && y === sp.y && m === sp.m) break;
 
       m++;
       if (m > 12) { m = 1; y++; }
-      /* Safety: stop if we've passed the end month */
       if (ep && (y > ep.y || (y === ep.y && m > ep.m))) break;
     }
   });
 
-  /* Apply caps & fallbacks */
   const now = new Date();
   const today = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
 
@@ -1144,60 +1141,60 @@ function computeMonthlySplit(rows) {
     const daysCount = daysBetween(startP, endP);
 
     result.push({
-      y: b.y,
-      m: b.m,
-      startP,
-      endP,
+      y: b.y, m: b.m,
+      startP, endP,
       daysCount,
       isCurrentMonth,
-      gross: b.gross,
-      exp:   b.exp,
-      net:   b.net
+      gross: b.gross, exp: b.exp, net: b.net
     });
   });
 
-  result.sort((a, b) => (a.y * 100 + a.m) - (b.y * 100 + b.m));
+  /* Descending (newest → oldest) */
+  result.sort((a, b) => (b.y * 100 + b.m) - (a.y * 100 + a.m));
   return result;
 }
 
 /* ============================================================
    REPORT — Monthly row
    ============================================================ */
-function buildMonthRow(info) {
+function buildMonthRow(info, srNo) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
 
   const row = document.createElement("div");
   row.className = "month-row" + (isCurrentMonth ? " current" : "");
   row.innerHTML = `
-    <div class="mr-head">
-      <div>
-        <div class="mr-title">
-          ${esc(MONTH_LONG[m - 1])} ${y}
-          ${isCurrentMonth ? '<span class="mr-badge">Current</span>' : ''}
+    <div class="row-sr">${srNo}</div>
+    <div>
+      <div class="mr-head">
+        <div>
+          <div class="mr-title">
+            ${esc(MONTH_LONG[m - 1])} ${y}
+            ${isCurrentMonth ? '<span class="mr-badge">Current</span>' : ''}
+          </div>
+          <div class="mr-range">
+            ${esc(fmtDateShort(startP))} → ${esc(fmtDateShort(endP))}
+          </div>
         </div>
-        <div class="mr-range">
-          ${esc(fmtDateShort(startP))} → ${esc(fmtDateShort(endP))}
+        <div class="mr-days">${daysCount}d</div>
+      </div>
+      <div class="mr-metrics">
+        <div class="mr-metric credit">
+          <div class="lbl">Credit</div>
+          <div class="val">${fmtInt(net)}</div>
         </div>
-      </div>
-      <div class="mr-days">${daysCount}d</div>
-    </div>
-    <div class="mr-metrics">
-      <div class="mr-metric credit">
-        <div class="lbl">Credit</div>
-        <div class="val">${fmtInt(net)}</div>
-      </div>
-      <div class="mr-metric exp">
-        <div class="lbl">Expenses</div>
-        <div class="val">${fmtInt(exp)}</div>
-      </div>
-      <div class="mr-metric gross">
-        <div class="lbl">Gross</div>
-        <div class="val">${fmtInt(gross)}</div>
-      </div>
-      <div class="mr-metric avg">
-        <div class="lbl">Avg/Day</div>
-        <div class="val">${fmtInt(avgNet)}</div>
+        <div class="mr-metric exp">
+          <div class="lbl">Expenses</div>
+          <div class="val">${fmtInt(exp)}</div>
+        </div>
+        <div class="mr-metric gross">
+          <div class="lbl">Gross</div>
+          <div class="val">${fmtInt(gross)}</div>
+        </div>
+        <div class="mr-metric avg">
+          <div class="lbl">Avg/Day</div>
+          <div class="val">${fmtInt(avgNet)}</div>
+        </div>
       </div>
     </div>
   `;
@@ -1207,7 +1204,7 @@ function buildMonthRow(info) {
 /* ============================================================
    REPORT — Period row
    ============================================================ */
-function buildPeriodRow(period) {
+function buildPeriodRow(period, srNo) {
   const { startP, endP, startStr, endStr, gross, exp, net } = period;
   const days = daysBetween(startP, endP) || 1;
   const avgNet = net / days;
@@ -1218,26 +1215,29 @@ function buildPeriodRow(period) {
   const row = document.createElement("div");
   row.className = "period-row";
   row.innerHTML = `
-    <div class="pr-head">
-      <div class="pr-range">${esc(startLabel)} → ${esc(endLabel)}</div>
-      <div class="pr-days">${days}d</div>
-    </div>
-    <div class="pr-metrics">
-      <div class="pr-metric credit">
-        <div class="lbl">Credit</div>
-        <div class="val">${fmtInt(net)}</div>
+    <div class="row-sr">${srNo}</div>
+    <div>
+      <div class="pr-head">
+        <div class="pr-range">${esc(startLabel)} → ${esc(endLabel)}</div>
+        <div class="pr-days">${days}d</div>
       </div>
-      <div class="pr-metric exp">
-        <div class="lbl">Expenses</div>
-        <div class="val">${fmtInt(exp)}</div>
-      </div>
-      <div class="pr-metric gross">
-        <div class="lbl">Gross</div>
-        <div class="val">${fmtInt(gross)}</div>
-      </div>
-      <div class="pr-metric avg">
-        <div class="lbl">Avg/Day</div>
-        <div class="val">${fmtInt(avgNet)}</div>
+      <div class="pr-metrics">
+        <div class="pr-metric credit">
+          <div class="lbl">Credit</div>
+          <div class="val">${fmtInt(net)}</div>
+        </div>
+        <div class="pr-metric exp">
+          <div class="lbl">Expenses</div>
+          <div class="val">${fmtInt(exp)}</div>
+        </div>
+        <div class="pr-metric gross">
+          <div class="lbl">Gross</div>
+          <div class="val">${fmtInt(gross)}</div>
+        </div>
+        <div class="pr-metric avg">
+          <div class="lbl">Avg/Day</div>
+          <div class="val">${fmtInt(avgNet)}</div>
+        </div>
       </div>
     </div>
   `;
@@ -1256,7 +1256,6 @@ function renderReport(rows) {
     return;
   }
 
-  /* Overall stats */
   let minStart = null, maxEnd = null;
   let totalGross = 0, totalExp = 0, totalNet = 0;
 
@@ -1264,17 +1263,14 @@ function renderReport(rows) {
     totalGross += r.gross;
     totalExp   += r.expenses;
     totalNet   += r.net;
-
     const sp = parseDateParts(r.startDate);
     const ep = parseDateParts(r.endDate) || sp;
-
     if (sp && (!minStart || dateCmp(sp, minStart) < 0)) minStart = sp;
     if (ep && (!maxEnd   || dateCmp(ep, maxEnd)   > 0)) maxEnd   = ep;
   });
 
   const totalDays = (minStart && maxEnd) ? daysBetween(minStart, maxEnd) : 0;
 
-  /* Overall card */
   const overallEl = document.getElementById("overallCard");
   overallEl.innerHTML = "";
   overallEl.appendChild(buildOverallSummaryCard({
@@ -1282,23 +1278,23 @@ function renderReport(rows) {
     minStart, maxEnd
   }));
 
-  /* Monthly breakdown (proportional) */
+  /* Monthly — descending */
   const monthInfos = computeMonthlySplit(rows);
   const monthEl = document.getElementById("monthList");
   monthEl.innerHTML = "";
-  monthInfos.forEach(info => monthEl.appendChild(buildMonthRow(info)));
+  monthInfos.forEach((info, i) => monthEl.appendChild(buildMonthRow(info, i + 1)));
 
-  /* Period breakdown */
+  /* Period — descending */
   const periodEl = document.getElementById("periodList");
   periodEl.innerHTML = "";
 
   const sortedRows = [...rows].sort((a, b) => {
     const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
-    if (da && db) return dateCmp(da, db);
-    return (a.startDate || "").localeCompare(b.startDate || "");
+    if (da && db) return dateCmp(db, da); /* newest first */
+    return (b.startDate || "").localeCompare(a.startDate || "");
   });
 
-  sortedRows.forEach(r => {
+  sortedRows.forEach((r, i) => {
     const startP = parseDateParts(r.startDate);
     const endP   = parseDateParts(r.endDate) || startP;
     periodEl.appendChild(buildPeriodRow({
@@ -1306,7 +1302,7 @@ function renderReport(rows) {
       endStr:   r.endDate,
       startP, endP,
       gross: r.gross, exp: r.expenses, net: r.net
-    }));
+    }, i + 1));
   });
 
   renderDailyTable(sortedRows);
@@ -1380,7 +1376,7 @@ async function loadDaily() {
 }
 
 /* ============================================================
-   MONTHLY STATE (for Last 2 / All Months)
+   MONTHLY STATE (Last 2 / All Months)
    ============================================================ */
 let allKeys = [];
 let byMonth = new Map();
