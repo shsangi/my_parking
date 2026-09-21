@@ -182,6 +182,54 @@
   .diffbar.neg { background: #ffebee; color: #c62828; }
   .diffbar.zero { background: #f0f2f6; color: #555; }
 
+  /* ---- Sheet total strips in Last 2 Months ---- */
+  .sheet-totals-wrap {
+    padding: 10px 12px 14px;
+    background: #f7f9fc;
+    border-top: 2px solid #e0e4ea;
+  }
+  .sheet-totals-title {
+    font-size: 10px;
+    color: #6a1b9a;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .sheet-totals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .sheet-total-cell {
+    background: linear-gradient(135deg, #f3e5f5 0%, #ede7f6 100%);
+    border-radius: 8px;
+    padding: 10px;
+    border-left: 3px solid #8e24aa;
+    text-align: center;
+  }
+  .sheet-total-cell .st-month {
+    font-size: 11px;
+    color: #6a1b9a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 800;
+  }
+  .sheet-total-cell .st-val {
+    font-size: 17px;
+    font-weight: 800;
+    color: #6a1b9a;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sheet-total-cell .st-sub {
+    font-size: 10px;
+    color: #8e24aa;
+    font-weight: 600;
+    margin-top: 3px;
+  }
+
   .table-wrap {
     max-width: 100%; overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -455,7 +503,6 @@
   .mr-metric.avg, .pr-metric.avg                 { background: #e8f0fe; }
   .mr-metric.avg .val, .pr-metric.avg .val       { color: #0d47a1; }
 
-  /* Monthly sheet total strip */
   .mr-sheet-strip {
     margin-top: 8px;
     padding: 8px 10px;
@@ -495,7 +542,6 @@
     margin-top: 1px;
   }
 
-  /* Combined (sheet/2 + credit) strip */
   .mr-combined-strip {
     margin-top: 6px;
     padding: 10px 12px;
@@ -873,7 +919,7 @@ function fmtDateShort(p) {
 /* ============================================================
    LAST-2-MONTHS CARD
    ============================================================ */
-function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
+function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel, prevSheetTotal, currSheetTotal) {
   const mapPrev = groupByName(prevRecs);
   const mapCurr = groupByName(currRecs);
   const cntPrev = mapPrev.size;
@@ -997,6 +1043,27 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
   `;
   body.appendChild(grand);
 
+  /* ---- Monthly Sheet Totals section ---- */
+  const sheetWrap = document.createElement("div");
+  sheetWrap.className = "sheet-totals-wrap";
+  sheetWrap.innerHTML = `
+    <div class="sheet-totals-title">Monthly Sheet Totals</div>
+    <div class="sheet-totals-grid">
+      <div class="sheet-total-cell">
+        <div class="st-month">${esc(prevLabel)}</div>
+        <div class="st-val">${prevSheetTotal ? fmtInt(prevSheetTotal.amount) : 0} PKR</div>
+        <div class="st-sub">${prevSheetTotal ? prevSheetTotal.count : 0} entr${(prevSheetTotal && prevSheetTotal.count === 1) ? "y" : "ies"}</div>
+      </div>
+      <div class="sheet-total-cell">
+        <div class="st-month">${esc(currLabel)}</div>
+        <div class="st-val">${currSheetTotal ? fmtInt(currSheetTotal.amount) : 0} PKR</div>
+        <div class="st-sub">${currSheetTotal ? currSheetTotal.count : 0} entr${(currSheetTotal && currSheetTotal.count === 1) ? "y" : "ies"}</div>
+      </div>
+    </div>
+  `;
+  body.appendChild(sheetWrap);
+
+  /* Difference bar */
   const diff = subCurr - subPrev;
   const diffEl = document.createElement("div");
   diffEl.className = "diffbar " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
@@ -1127,8 +1194,6 @@ function buildOverallSummaryCard(totals) {
 
 /* ============================================================
    SMART MONTHLY SPLIT
-   - Gross & Net  → proportional by days
-   - Expenses     → FULL to the month where period STARTS
    ============================================================ */
 function computeMonthlySplit(rows) {
   const buckets = new Map();
@@ -1252,7 +1317,6 @@ function buildMonthRow(info, srNo, sheetTotal) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
 
-  /* Monthly sheet total strip */
   let sheetStrip = "";
   let combinedStrip = "";
   if (sheetTotal) {
@@ -1529,8 +1593,16 @@ function renderLast2() {
   const prevRecs = byMonth.get(kPrev) || [];
   const currRecs = byMonth.get(kCurr) || [];
 
+  const sheetTotals = computeMonthlySheetTotals(monthlyRecordsCache);
+  const prevSheetTotal = sheetTotals.get(kPrev) || null;
+  const currSheetTotal = sheetTotals.get(kCurr) || null;
+
   carousel.appendChild(
-    buildCompareCard(prevRecs, currRecs, monthLabel(prevRecs[0]), monthLabel(currRecs[0]))
+    buildCompareCard(
+      prevRecs, currRecs,
+      monthLabel(prevRecs[0]), monthLabel(currRecs[0]),
+      prevSheetTotal, currSheetTotal
+    )
   );
 
   statusEl.style.display = "none";
@@ -1565,7 +1637,7 @@ async function loadMonthlyOnce() {
   if (monthlyLoaded) return;
   monthlyLoaded = true;
 
-  const records = await loadMonthly();
+  const records = monthlyRecordsCache.length ? monthlyRecordsCache : await loadMonthly();
   monthlyRecordsCache = records;
 
   if (!records.length) {
