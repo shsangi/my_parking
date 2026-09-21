@@ -631,264 +631,162 @@
   .mcol-grand .mcol-total .lbl { color: #ffd966; opacity: 0.9; }
   .mcol-grand .mcol-total .cnt { color: #ffd966; opacity: 0.8; }
 
-  /* ============================================================
-     DATA TAB — Sheet links + Raw data tables
-     ============================================================ */
+  /* ---- DATA TAB ---- */
   .data-intro {
     background: linear-gradient(135deg, #e8f0fe 0%, #f0f7ff 100%);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    border: 1px solid #d0e2fa;
-    border-left: 4px solid var(--brand);
-    margin-bottom: 16px;
-    font-size: 13px;
-    color: #0a3d7a;
-    font-weight: 500;
-    line-height: 1.5;
+    border-radius: var(--radius-sm); padding: 14px 16px;
+    border: 1px solid #d0e2fa; border-left: 4px solid var(--brand);
+    margin-bottom: 16px; font-size: 13px; color: #0a3d7a;
+    font-weight: 500; line-height: 1.5;
   }
   .data-intro .emoji { font-size: 16px; margin-right: 6px; }
-
   .sheet-card {
-    background: var(--card);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--line);
-    overflow: hidden;
-    margin-bottom: 14px;
+    background: var(--card); border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md); border: 1px solid var(--line);
+    overflow: hidden; margin-bottom: 14px;
   }
   .sheet-card-head {
     background: linear-gradient(135deg, #1f2e3d, #0b1e33);
-    color: #fff;
-    padding: 12px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    color: #fff; padding: 12px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
   }
   .sheet-card-head .title-block { min-width: 0; flex: 1; }
   .sheet-card-head .s-title {
     font-size: 13px; font-weight: 800;
     display: flex; align-items: center; gap: 8px;
-    letter-spacing: -0.1px;
   }
   .sheet-card-head .s-title .badge {
     background: rgba(255,255,255,0.15);
     padding: 2px 8px; border-radius: 10px;
     font-size: 10px; font-weight: 700;
-    letter-spacing: 0.4px;
   }
   .sheet-card-head .s-url {
-    font-size: 10.5px; opacity: 0.75;
-    margin-top: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 10.5px; opacity: 0.75; margin-top: 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-    letter-spacing: -0.1px;
   }
   .sheet-card-head .open-link {
     background: linear-gradient(135deg, #f5a623, #d68910);
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 10px;
-    font-weight: 800;
-    font-size: 11px;
-    cursor: pointer;
-    font-family: inherit;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    color: #fff; border: none; padding: 8px 12px;
+    border-radius: 10px; font-weight: 800; font-size: 11px;
+    cursor: pointer; font-family: inherit; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 5px;
+    white-space: nowrap; flex-shrink: 0;
     box-shadow: 0 2px 6px rgba(245,166,35,0.35);
     transition: transform 0.15s ease;
   }
   .sheet-card-head .open-link:active { transform: scale(0.96); }
   .sheet-card-head .open-link svg {
     width: 13px; height: 13px;
-    stroke: currentColor; fill: none;
-    stroke-width: 2.2;
+    stroke: currentColor; fill: none; stroke-width: 2.2;
     stroke-linecap: round; stroke-linejoin: round;
   }
-
   .sheet-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--line);
-    border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--line); border-bottom: 1px solid var(--line);
   }
-  .sheet-stats > div {
-    background: var(--card);
-    padding: 10px 8px;
-    text-align: center;
-  }
+  .sheet-stats > div { background: var(--card); padding: 10px 8px; text-align: center; }
   .sheet-stats .lbl {
-    font-size: 9.5px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.4px;
-    font-weight: 700; margin-bottom: 4px;
+    font-size: 9.5px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.4px; font-weight: 700; margin-bottom: 4px;
   }
   .sheet-stats .val {
-    font-size: 15px; font-weight: 800;
-    color: var(--text);
+    font-size: 15px; font-weight: 800; color: var(--text);
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.3px;
   }
   .sheet-stats .val.good { color: var(--green-dark); }
   .sheet-stats .val.bad { color: var(--red); }
-
   .raw-table-wrap {
     max-width: 100%; overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    max-height: 380px;
-    overflow-y: auto;
+    max-height: 380px; overflow-y: auto;
   }
   .raw-table-wrap::-webkit-scrollbar { height: 5px; width: 5px; }
   .raw-table-wrap::-webkit-scrollbar-thumb { background: #c8d4e0; border-radius: 3px; }
-
   .raw-table {
-    width: 100%; border-collapse: collapse;
-    font-size: 12px;
-    min-width: 500px;
+    width: 100%; border-collapse: collapse; font-size: 12px; min-width: 500px;
   }
   .raw-table thead th {
-    background: #f1f5f9;
-    color: #334155;
-    padding: 8px 10px;
-    text-align: left;
-    font-weight: 800;
-    font-size: 10px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    background: #f1f5f9; color: #334155; padding: 8px 10px;
+    text-align: left; font-weight: 800; font-size: 10px;
+    letter-spacing: 0.5px; text-transform: uppercase;
     border-bottom: 2px solid #cbd5e1;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    white-space: nowrap;
+    position: sticky; top: 0; z-index: 2; white-space: nowrap;
   }
   .raw-table tbody td {
-    padding: 7px 10px;
-    border-bottom: 1px solid #eef2f6;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
+    padding: 7px 10px; border-bottom: 1px solid #eef2f6;
+    white-space: nowrap; font-variant-numeric: tabular-nums;
     color: #0b1e33;
   }
   .raw-table tbody tr:nth-child(even) { background: #fafbfd; }
   .raw-table tbody tr:hover { background: #e8f0fe; }
   .raw-table td.num { text-align: right; font-weight: 700; }
   .raw-table td.name { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
-
   .raw-empty {
-    padding: 24px 16px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-    font-style: italic;
+    padding: 24px 16px; text-align: center; color: var(--muted);
+    font-size: 13px; font-style: italic;
   }
 
-  /* ============================================================
-     ACTIVITY LOG
-     ============================================================ */
+  /* ---- ACTIVITY LOG ---- */
   .activity-controls {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
+    display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
   }
   .activity-controls button {
-    flex: 1;
-    min-width: 120px;
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--text);
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 12.5px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: all 0.15s ease;
-    box-shadow: var(--shadow-sm);
+    flex: 1; min-width: 120px; padding: 10px 14px;
+    border-radius: 12px; border: 1px solid var(--line);
+    background: var(--card); color: var(--text);
+    font-family: inherit; font-weight: 700; font-size: 12.5px;
+    cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; gap: 6px;
+    transition: all 0.15s ease; box-shadow: var(--shadow-sm);
   }
   .activity-controls button:active { transform: scale(0.97); }
   .activity-controls button.danger {
     background: linear-gradient(135deg, #fee2e2, #fecaca);
-    color: #b91c1c;
-    border-color: #fca5a5;
+    color: #b91c1c; border-color: #fca5a5;
   }
   .activity-controls button.primary {
     background: linear-gradient(135deg, #0a66c2, #1e88e5);
-    color: #fff;
-    border-color: transparent;
+    color: #fff; border-color: transparent;
     box-shadow: 0 4px 12px rgba(10,102,194,0.3);
   }
   .activity-controls button svg {
-    width: 14px; height: 14px;
-    stroke: currentColor; fill: none;
+    width: 14px; height: 14px; stroke: currentColor; fill: none;
     stroke-width: 2.2;
     stroke-linecap: round; stroke-linejoin: round;
   }
-
   .activity-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 12px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 12px;
   }
   .activity-stats > div {
     background: linear-gradient(135deg, #f0f7ff 0%, #e8f0fe 100%);
-    border: 1px solid #d0e2fa;
-    border-radius: 12px;
-    padding: 10px 8px;
-    text-align: center;
+    border: 1px solid #d0e2fa; border-radius: 12px;
+    padding: 10px 8px; text-align: center;
   }
   .activity-stats .lbl {
-    font-size: 9.5px;
-    color: #0a4a8c;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    font-weight: 700;
-    margin-bottom: 4px;
+    font-size: 9.5px; color: #0a4a8c; text-transform: uppercase;
+    letter-spacing: 0.4px; font-weight: 700; margin-bottom: 4px;
   }
   .activity-stats .val {
-    font-size: 17px;
-    font-weight: 800;
-    color: #0a4a8c;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.3px;
+    font-size: 17px; font-weight: 800; color: #0a4a8c;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.3px;
   }
-
   .activity-list {
-    background: var(--card);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--line);
-    box-shadow: var(--shadow-md);
+    background: var(--card); border-radius: var(--radius-sm);
+    border: 1px solid var(--line); box-shadow: var(--shadow-md);
     overflow: hidden;
   }
   .activity-item {
-    display: grid;
-    grid-template-columns: 32px 1fr auto;
-    gap: 10px;
-    align-items: center;
-    padding: 11px 12px;
-    border-bottom: 1px solid var(--line);
-    font-size: 13px;
+    display: grid; grid-template-columns: 32px 1fr auto;
+    gap: 10px; align-items: center;
+    padding: 11px 12px; border-bottom: 1px solid var(--line); font-size: 13px;
   }
   .activity-item:last-child { border-bottom: none; }
   .activity-item .act-icon {
-    width: 32px; height: 32px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 14px;
+    width: 32px; height: 32px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
   }
   .activity-item .act-icon.view { background: #e3f2fd; color: #0a66c2; }
   .activity-item .act-icon.click { background: #fff3e0; color: #e65100; }
@@ -896,36 +794,22 @@
   .activity-item .act-icon.session { background: #e8f5e9; color: #1e7e34; }
   .activity-item .act-body { min-width: 0; }
   .activity-item .act-title {
-    font-weight: 700;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-weight: 700; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     font-size: 13px;
   }
   .activity-item .act-detail {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 11px; color: var(--muted); margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .activity-item .act-time {
-    font-size: 10.5px;
-    color: var(--muted);
-    font-weight: 700;
-    text-align: right;
-    white-space: nowrap;
+    font-size: 10.5px; color: var(--muted); font-weight: 700;
+    text-align: right; white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
   .activity-item .act-time .pkt {
-    display: block;
-    font-size: 9px;
-    opacity: 0.7;
-    font-weight: 600;
-    margin-top: 1px;
-    letter-spacing: 0.3px;
+    display: block; font-size: 9px; opacity: 0.7;
+    font-weight: 600; margin-top: 1px; letter-spacing: 0.3px;
   }
 
   /* ---- Install Banner ---- */
@@ -1116,7 +1000,7 @@
   <div class="hint" id="tableHint" style="display:none;">← Swipe horizontally to see all months →</div>
 </div>
 
-<!-- ============ DATA TAB (NEW) ============ -->
+<!-- ============ DATA TAB ============ -->
 <div class="tab-content" id="contentData">
   <div class="wrap">
     <div class="data-intro">
@@ -1230,7 +1114,6 @@
    ============================================================ */
 function formatPKT(date) {
   if (!date) date = new Date();
-  // Convert to Pakistan Standard Time (UTC+5)
   const pkt = new Date(date.getTime() + (5 * 60 * 60 * 1000));
   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const d = pkt.getUTCDate();
@@ -1263,33 +1146,22 @@ function getSessionId() {
   }
   return sid;
 }
-
 function loadActivity() {
-  try {
-    return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || "[]");
-  } catch (e) {
-    return [];
-  }
+  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || "[]"); }
+  catch (e) { return []; }
 }
-
 function saveActivity(list) {
   try {
-    // Keep only last 500 events
     if (list.length > 500) list = list.slice(-500);
     localStorage.setItem(ACTIVITY_KEY, JSON.stringify(list));
-  } catch (e) {
-    console.warn("Could not save activity:", e);
-  }
+  } catch (e) { console.warn("Could not save activity:", e); }
 }
-
 function logActivity(type, title, detail) {
   const now = new Date();
   const pkt = formatPKT(now);
   const event = {
     id: "e_" + now.getTime() + "_" + Math.random().toString(36).slice(2, 6),
-    type,             // 'view' | 'click' | 'scroll' | 'session'
-    title,
-    detail: detail || "",
+    type, title, detail: detail || "",
     session: getSessionId(),
     timestamp: pkt.full,
     ts: now.getTime(),
@@ -1300,9 +1172,7 @@ function logActivity(type, title, detail) {
   list.push(event);
   saveActivity(list);
   console.log("📝", type, "→", title, event.detail);
-  if (document.getElementById("contentData").classList.contains("active")) {
-    renderActivity();
-  }
+  if (document.getElementById("contentData").classList.contains("active")) renderActivity();
   return event;
 }
 
@@ -1316,18 +1186,13 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.warn('SW registration failed:', err));
   });
 }
-
 let deferredPrompt = null;
 const installBanner = document.getElementById('installBanner');
 const installBtn = document.getElementById('installBtn');
 const closeBanner = document.getElementById('closeBanner');
-
 window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  setTimeout(() => {
-    if (!localStorage.getItem('installDismissed')) installBanner.classList.add('show');
-  }, 3000);
+  e.preventDefault(); deferredPrompt = e;
+  setTimeout(() => { if (!localStorage.getItem('installDismissed')) installBanner.classList.add('show'); }, 3000);
 });
 installBtn?.addEventListener('click', async () => {
   if (!deferredPrompt) return;
@@ -1353,13 +1218,13 @@ const SHEET1_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_N
 const SHEET2_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
 const SHEET_DAILY_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1810247989";
 
-// URLs to open in new tab (edit version of the sheet)
 const SHEET1_OPEN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pubhtml";
 const SHEET2_OPEN = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/edit#gid=1452200885";
 const SHEET_DAILY_OPEN = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/edit#gid=1810247989";
 
-const MONTHLY_SALARY = 29000;
-const DAILY_EXPENSE = 300;
+/* ---- Salary & daily expense config ---- */
+const MONTHLY_SALARY = 29000;   // 29k per month
+const DAILY_EXPENSE = 300;      // 300 per day
 
 const COL = {
   name: ["name/item", "name", "item", "person", "party"],
@@ -1397,7 +1262,6 @@ function parseCSV(text) {
   if (field.length || cur.length) { cur.push(field); rows.push(cur); }
   return rows.filter(r => r.some(c => c.trim() !== ""));
 }
-
 function findCol(headers, names) {
   for (let i = 0; i < headers.length; i++) {
     const h = (headers[i] || "").trim().toLowerCase().replace(/\s+/g, " ");
@@ -1405,7 +1269,6 @@ function findCol(headers, names) {
   }
   return -1;
 }
-
 function normalizeRecords(rows) {
   if (!rows.length) return [];
   const headers = rows[0];
@@ -1423,15 +1286,13 @@ function normalizeRecords(rows) {
     if (!name) continue;
     const amtRaw = (r[idx.amount] || "0").toString().replace(/[^0-9.\-]/g, "");
     out.push({
-      name,
-      amount: parseFloat(amtRaw) || 0,
+      name, amount: parseFloat(amtRaw) || 0,
       month: idx.month >= 0 ? (r[idx.month] || "").trim() : "",
       year: idx.year >= 0 ? (r[idx.year] || "").trim() : ""
     });
   }
   return out;
 }
-
 function normalizeDaily(rows) {
   if (!rows.length) return [];
   const headers = rows[0];
@@ -1457,7 +1318,6 @@ function normalizeDaily(rows) {
   }
   return out;
 }
-
 function parseNum(v) {
   if (v == null) return 0;
   const s = v.toString().replace(/[^0-9.\-]/g, "");
@@ -1513,7 +1373,6 @@ function parseDateParts(s) {
   if (!isNaN(t)) { const dt = new Date(t); return { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() }; }
   return null;
 }
-
 function dateKeyOf(p) { return p ? (p.y * 10000 + p.m * 100 + p.d) : 0; }
 function dateCmp(a, b) { return dateKeyOf(a) - dateKeyOf(b); }
 function daysBetween(p1, p2) {
@@ -1526,6 +1385,15 @@ function daysBetween(p1, p2) {
 function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
 function fmtDateLong(p) { if (!p) return "—"; return `${MONTH_LONG[p.m - 1]} ${p.d}, ${p.y}`; }
 function fmtDateShort(p) { if (!p) return "—"; return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]} ${p.y}`; }
+
+/* ============================================================
+   MONTHS BETWEEN START & END (for salary calculation)
+   ============================================================ */
+function monthsBetween(startP, endP) {
+  if (!startP || !endP) return 0;
+  let months = (endP.y - startP.y) * 12 + (endP.m - startP.m) + 1;
+  return months > 0 ? months : 0;
+}
 
 /* ============================================================
    COMPARE CARD
@@ -1662,12 +1530,23 @@ function buildAllMonthsTable(monthList) {
 }
 
 /* ============================================================
-   OVERALL SUMMARY CARD
+   OVERALL SUMMARY CARD — UPDATED
+   - Green row: Total Monthly (raw sheet total)
+   - Salary: auto-calculated from months between start & end
+   - Daily expense: 300 × total days
    ============================================================ */
 function buildOverallSummaryCard(totals) {
   const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal } = totals;
   const avgNet = days ? net / days : 0;
-  const combinedRaw = (monthlySheetTotal / 2) + net;
+
+  /* Total Monthly = full monthly sheet total (from sheets) */
+  const totalMonthly = monthlySheetTotal;
+
+  /* Auto-calculate salary: 29,000 × months between start & end */
+  const numMonths = monthsBetween(minStart, maxEnd);
+  const salaryTotal = MONTHLY_SALARY * numMonths;
+
+  /* Daily expense = 300 × total days */
   const dailyExpenseTotal = DAILY_EXPENSE * days;
 
   const el = document.createElement("div");
@@ -1690,14 +1569,14 @@ function buildOverallSummaryCard(totals) {
       </div>
       <div class="oc-row combined">
         <div>
-          <div class="k">Total Monthly ÷ 2 + Credit</div>
-          <div class="v">${fmtInt(combinedRaw)}<span class="unit">PKR</span></div>
+          <div class="k">Total Monthly (Complete Records)</div>
+          <div class="v">${fmtInt(totalMonthly)}<span class="unit">PKR</span></div>
         </div>
         <div class="combined-details">
           <div class="item">
             <span class="dot"></span>
-            <span class="label">You can minus salary</span>
-            <span class="value">${fmtInt(MONTHLY_SALARY)}</span>
+            <span class="label">You can minus salary (${numMonths} month${numMonths === 1 ? "" : "s"} × ${fmtInt(MONTHLY_SALARY)})</span>
+            <span class="value">${fmtInt(salaryTotal)}</span>
           </div>
           <div class="item">
             <span class="dot"></span>
@@ -1781,22 +1660,27 @@ function computeMonthlySheetTotals(records) {
   });
   return totals;
 }
-
 function sumMonthlySheetTotals(records) {
   let sum = 0;
   records.forEach(r => { sum += r.amount; });
   return sum;
 }
 
+/* ============================================================
+   MONTH ROW — UPDATED
+   - Green strip shows: Total Monthly + auto salary + daily expense
+   ============================================================ */
 function buildMonthRow(info, srNo, sheetTotal) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
   let sheetStrip = "", combinedStrip = "";
   if (sheetTotal) {
     const sheetAmt = sheetTotal.amount;
-    const halfSheet = sheetAmt / 2;
-    const combinedRaw = halfSheet + net;
+
+    /* Auto salary: for this single month it's 1 month = 29,000 */
+    const salaryTotal = MONTHLY_SALARY;
     const dailyExpenseTotal = DAILY_EXPENSE * daysCount;
+
     sheetStrip = `
       <div class="mr-sheet-strip">
         <div class="lbl-block"><div class="sheet-lbl">Monthly Sheet Total</div><div class="sheet-sub">${sheetTotal.count} entr${sheetTotal.count === 1 ? "y" : "ies"}</div></div>
@@ -1805,11 +1689,11 @@ function buildMonthRow(info, srNo, sheetTotal) {
     combinedStrip = `
       <div class="mr-combined-strip">
         <div class="top-row">
-          <div class="lbl-block"><div class="c-lbl">Combined Total</div><div class="c-sub">(Sheet ÷ 2) + Credit</div></div>
-          <div class="c-val">${fmtInt(combinedRaw)}<span class="unit">PKR</span></div>
+          <div class="lbl-block"><div class="c-lbl">Total Monthly</div><div class="c-sub">Complete records from sheets</div></div>
+          <div class="c-val">${fmtInt(sheetAmt)}<span class="unit">PKR</span></div>
         </div>
         <div class="breakdown">
-          <div class="item"><span class="dot"></span><span class="label">You can minus salary</span><span class="value">${fmtInt(MONTHLY_SALARY)}</span></div>
+          <div class="item"><span class="dot"></span><span class="label">You can minus salary (1 month × ${fmtInt(MONTHLY_SALARY)})</span><span class="value">${fmtInt(salaryTotal)}</span></div>
           <div class="item"><span class="dot"></span><span class="label">Daily expense (300 × ${daysCount})</span><span class="value">${fmtInt(dailyExpenseTotal)}</span></div>
         </div>
       </div>`;
@@ -1932,24 +1816,17 @@ function renderDailyTable(rows) {
 }
 
 /* ============================================================
-   DATA LOADING (returns raw rows for the Data tab)
+   DATA LOADING
    ============================================================ */
 async function fetchCSV(url) {
   try {
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const txt = await res.text();
-    if (txt.trim().startsWith("<")) {
-      console.warn("⚠️ Got HTML instead of CSV:", url);
-      return null;
-    }
+    if (txt.trim().startsWith("<")) { console.warn("⚠️ Got HTML instead of CSV:", url); return null; }
     return txt;
-  } catch (e) {
-    console.error("❌ Fetch failed:", url, e);
-    return null;
-  }
+  } catch (e) { console.error("❌ Fetch failed:", url, e); return null; }
 }
-
 async function loadMonthly() {
   let all = [];
   for (const u of [SHEET1_CSV, SHEET2_CSV]) {
@@ -1959,7 +1836,6 @@ async function loadMonthly() {
   }
   return all;
 }
-
 async function loadDaily() {
   const txt = await fetchCSV(SHEET_DAILY_CSV);
   if (!txt) return [];
@@ -1981,19 +1857,15 @@ function renderLast2() {
   if (allKeys.length < 2) {
     statusEl.className = "status error";
     statusEl.innerHTML = "⚠️ Need at least two months of data<br><small>Check that both monthly sheets are published to web as CSV.</small>";
-    statusEl.style.display = "block";
-    wrap.style.display = "none";
-    return;
+    statusEl.style.display = "block"; wrap.style.display = "none"; return;
   }
   const kPrev = allKeys[allKeys.length - 2];
   const kCurr = allKeys[allKeys.length - 1];
   const prevRecs = byMonth.get(kPrev) || [];
   const currRecs = byMonth.get(kCurr) || [];
   wrap.appendChild(buildCompareCard(prevRecs, currRecs, monthLabel(prevRecs[0]), monthLabel(currRecs[0])));
-  statusEl.style.display = "none";
-  wrap.style.display = "block";
+  statusEl.style.display = "none"; wrap.style.display = "block";
 }
-
 function renderAllMonths() {
   const statusEl = document.getElementById("statusAll");
   const tableWrap = document.getElementById("tableWrap");
@@ -2001,21 +1873,16 @@ function renderAllMonths() {
   if (allKeys.length < 2) {
     statusEl.className = "status error";
     statusEl.innerHTML = "⚠️ Need at least two months of data<br><small>Check that both monthly sheets are published to web as CSV.</small>";
-    statusEl.style.display = "block";
-    tableWrap.style.display = "none";
-    hint.style.display = "none";
-    return;
+    statusEl.style.display = "block"; tableWrap.style.display = "none"; hint.style.display = "none"; return;
   }
   const monthList = allKeys.map(k => {
     const recs = byMonth.get(k) || [];
     return { recs, label: monthLabel(recs[0]) };
   }).filter(m => m.recs.length);
   buildAllMonthsTable(monthList);
-  statusEl.style.display = "none";
-  tableWrap.style.display = "block";
+  statusEl.style.display = "none"; tableWrap.style.display = "block";
   hint.style.display = monthList.length > 1 ? "block" : "none";
 }
-
 async function loadMonthlyOnce() {
   if (monthlyLoaded) return;
   monthlyLoaded = true;
@@ -2043,26 +1910,18 @@ async function loadMonthlyOnce() {
    DATA TAB — populate raw tables
    ============================================================ */
 async function populateDataTab() {
-  // Sheet 1
   const t1 = await fetchCSV(SHEET1_CSV);
   fillRawTable("rawTable1", t1, "stat1Rows", "stat1Cols", "stat1Total");
-
-  // Sheet 2
   const t2 = await fetchCSV(SHEET2_CSV);
   fillRawTable("rawTable2", t2, "stat2Rows", "stat2Cols", "stat2Total");
-
-  // Daily
   const td = await fetchCSV(SHEET_DAILY_CSV);
   fillRawTable("rawTableD", td, "statDRows", "statDCols", "statDTotal", true);
 }
-
 function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDaily = false) {
   const table = document.getElementById(tableId);
   const thead = table.querySelector("thead");
   const tbody = table.querySelector("tbody");
-  thead.innerHTML = "";
-  tbody.innerHTML = "";
-
+  thead.innerHTML = ""; tbody.innerHTML = "";
   if (!csvText) {
     tbody.innerHTML = `<tr><td class="raw-empty" colspan="10">⚠️ Could not load — sheet may not be published to web as CSV.</td></tr>`;
     document.getElementById(rowStatId).textContent = "0";
@@ -2071,18 +1930,14 @@ function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDai
     document.getElementById(totalStatId).className = "val bad";
     return;
   }
-
   const rows = parseCSV(csvText);
   if (rows.length < 1) {
     tbody.innerHTML = `<tr><td class="raw-empty" colspan="10">Empty sheet.</td></tr>`;
     return;
   }
-
   const headers = rows[0];
   document.getElementById(rowStatId).textContent = (rows.length - 1).toLocaleString();
   document.getElementById(colStatId).textContent = headers.length;
-
-  // Build header row
   const trh = document.createElement("tr");
   headers.forEach(h => {
     const th = document.createElement("th");
@@ -2090,16 +1945,12 @@ function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDai
     trh.appendChild(th);
   });
   thead.appendChild(trh);
-
-  // Find amount column for total
   let amountIdx = -1;
   if (isDaily) {
     amountIdx = findCol(headers, ["total net amount credited (pkr)", "total net amount credited", "net amount credited", "net amount", "net"]);
   } else {
     amountIdx = findCol(headers, COL.amount);
   }
-
-  // Build body rows (limit 100 for performance)
   const maxRows = Math.min(rows.length - 1, 100);
   let total = 0;
   for (let i = 1; i < rows.length; i++) {
@@ -2112,21 +1963,16 @@ function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDai
         const hLower = (h || "").toLowerCase();
         const isNumeric = /amount|amt|value|total|gross|expenses|net|pkr/i.test(hLower);
         if (isNumeric && amountIdx >= 0 && ci === amountIdx) {
-          td.className = "num";
-          td.textContent = fmtInt(parseNum(val));
+          td.className = "num"; td.textContent = fmtInt(parseNum(val));
         } else if (ci === 0) {
-          td.className = "name";
-          td.textContent = val;
-        } else {
-          td.textContent = val;
-        }
+          td.className = "name"; td.textContent = val;
+        } else { td.textContent = val; }
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
     }
     if (amountIdx >= 0) total += parseNum(r[amountIdx]);
   }
-
   if (rows.length - 1 > maxRows) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
@@ -2139,7 +1985,6 @@ function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDai
     tr.appendChild(td);
     tbody.appendChild(tr);
   }
-
   const totalEl = document.getElementById(totalStatId);
   totalEl.textContent = fmtInt(total);
   totalEl.className = "val good";
@@ -2151,37 +1996,19 @@ function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDai
 function renderActivity() {
   const list = loadActivity();
   const container = document.getElementById("activityList");
-  const countEl = document.getElementById("activityCount");
-  countEl.textContent = list.length;
-
-  // Stats
+  document.getElementById("activityCount").textContent = list.length;
   const sessions = new Set(list.filter(e => e.session).map(e => e.session)).size;
   const tabViews = list.filter(e => e.type === "view").length;
   document.getElementById("statSessions").textContent = sessions;
   document.getElementById("statTabViews").textContent = tabViews;
   document.getElementById("statTotalEvents").textContent = list.length;
-
   if (!list.length) {
     container.innerHTML = `<div class="raw-empty">No activity yet. Interact with the app to see your usage log here.</div>`;
     return;
   }
-
-  // Show newest first, max 100
   const recent = [...list].reverse().slice(0, 100);
-
-  const icons = {
-    view: "👁",
-    click: "👆",
-    scroll: "📜",
-    session: "🚀"
-  };
-  const labels = {
-    view: "Viewed",
-    click: "Clicked",
-    scroll: "Scrolled",
-    session: "Session started"
-  };
-
+  const icons = { view: "👁", click: "👆", scroll: "📜", session: "🚀" };
+  const labels = { view: "Viewed", click: "Clicked", scroll: "Scrolled", session: "Session started" };
   container.innerHTML = recent.map(e => {
     const icon = icons[e.type] || "•";
     const label = labels[e.type] || e.type;
@@ -2208,34 +2035,23 @@ document.getElementById("refreshActivityBtn")?.addEventListener("click", () => {
   renderActivity();
   logActivity("click", "Refresh Activity Log", "User refreshed the activity log view");
 });
-
 document.getElementById("clearActivityBtn")?.addEventListener("click", () => {
   if (!confirm("Clear all local activity log? This cannot be undone.")) return;
   localStorage.removeItem(ACTIVITY_KEY);
   renderActivity();
-  console.log("🧹 Activity cleared");
 });
-
 document.getElementById("copyActivityBtn")?.addEventListener("click", async () => {
   const list = loadActivity();
-  if (!list.length) {
-    alert("No activity to copy.");
-    return;
-  }
-  const text = list.map(e => {
-    const timeParts = e.timestamp.split(", ");
-    return `[${e.timestamp}] ${e.type.toUpperCase()} — ${e.title}${e.detail ? " (" + e.detail + ")" : ""}`;
-  }).join("\n");
+  if (!list.length) { alert("No activity to copy."); return; }
+  const text = list.map(e => `[${e.timestamp}] ${e.type.toUpperCase()} — ${e.title}${e.detail ? " (" + e.detail + ")" : ""}`).join("\n");
   try {
     await navigator.clipboard.writeText(text);
-    logActivity("click", "Copied Activity Log", `${list.length} events copied to clipboard`);
-    alert("✅ Activity log copied to clipboard!");
+    logActivity("click", "Copied Activity Log", `${list.length} events copied`);
+    alert("✅ Activity log copied!");
   } catch (err) {
-    // Fallback
     const ta = document.createElement("textarea");
     ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
+    document.body.appendChild(ta); ta.select();
     document.execCommand("copy");
     document.body.removeChild(ta);
     logActivity("click", "Copied Activity Log", `${list.length} events copied (fallback)`);
@@ -2244,61 +2060,33 @@ document.getElementById("copyActivityBtn")?.addEventListener("click", async () =
 });
 
 /* ============================================================
-   TAB SWITCHING with tracking
+   TAB SWITCHING
    ============================================================ */
 let currentTab = "report";
-
 function switchTab(tab) {
-  if (currentTab === tab) return; // no double logging
-
-  const tabNames = {
-    report: "Report",
-    last2: "Last 2 Months",
-    all: "All Months",
-    data: "Data"
-  };
-
+  if (currentTab === tab) return;
+  const tabNames = { report: "Report", last2: "Last 2 Months", all: "All Months", data: "Data" };
   logActivity("view", tabNames[tab] || tab, `Switched from ${tabNames[currentTab] || currentTab}`);
-
   currentTab = tab;
-
-  document.querySelectorAll('.tab-bar button').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tab);
-  });
-  document.querySelectorAll('.bottom-nav button').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tab);
-  });
+  document.querySelectorAll('.tab-bar button').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+  document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
   document.getElementById("contentReport").classList.toggle("active", tab === "report");
   document.getElementById("contentLast2").classList.toggle("active", tab === "last2");
   document.getElementById("contentAll").classList.toggle("active", tab === "all");
   document.getElementById("contentData").classList.toggle("active", tab === "data");
-
   window.scrollTo({ top: 0, behavior: 'smooth' });
-
   if (tab === "last2" || tab === "all") loadMonthlyOnce();
-  if (tab === "data") {
-    populateDataTab();
-    renderActivity();
-  }
+  if (tab === "data") { populateDataTab(); renderActivity(); }
 }
-
-// Wire up top tabs
-document.querySelectorAll('.tab-bar button').forEach(btn => {
-  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-});
-// Wire up bottom nav
-document.querySelectorAll('.bottom-nav button').forEach(btn => {
-  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-});
+document.querySelectorAll('.tab-bar button').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+document.querySelectorAll('.bottom-nav button').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
 
 /* ============================================================
-   TRACK CLICKS ON INTERESTING ELEMENTS
+   TRACK CLICKS
    ============================================================ */
 document.addEventListener("click", (e) => {
   const link = e.target.closest("a[href]");
-  if (link && link.id) {
-    logActivity("click", "Opened sheet link", `Link: ${link.id}`);
-  }
+  if (link && link.id) logActivity("click", "Opened sheet link", `Link: ${link.id}`);
   const btn = e.target.closest("button[id]");
   if (btn && !btn.dataset.tab && !["closeBanner","installBtn","refreshActivityBtn","clearActivityBtn","copyActivityBtn"].includes(btn.id)) {
     logActivity("click", `Button: ${btn.id}`, "");
@@ -2306,7 +2094,7 @@ document.addEventListener("click", (e) => {
 });
 
 /* ============================================================
-   TRACK SCROLL (throttled)
+   TRACK SCROLL
    ============================================================ */
 let lastScrollLog = 0;
 let maxScrollDepth = 0;
@@ -2314,8 +2102,6 @@ window.addEventListener("scroll", () => {
   const now = Date.now();
   const depth = Math.round((window.scrollY + window.innerHeight) / document.body.scrollHeight * 100);
   if (depth > maxScrollDepth) maxScrollDepth = depth;
-
-  // Log every 15 seconds at most, and only if scrolled past 25%
   if (now - lastScrollLog > 15000 && maxScrollDepth > 25) {
     lastScrollLog = now;
     logActivity("scroll", `Scrolled to ${maxScrollDepth}%`, `Tab: ${currentTab} • Y: ${Math.round(window.scrollY)}px`);
@@ -2326,11 +2112,8 @@ window.addEventListener("scroll", () => {
    BOOT
    ============================================================ */
 console.log("🚀 Sangi Parking starting...");
-
-// Log session start
 logActivity("session", "App opened", `Path: ${location.pathname} • Device: ${navigator.userAgent.includes("Mobile") ? "Mobile" : "Desktop"}`);
 
-// Populate sheet URLs on the Data tab
 document.getElementById("openSheet1").href = SHEET1_OPEN;
 document.getElementById("openSheet2").href = SHEET2_OPEN;
 document.getElementById("openDaily").href = SHEET_DAILY_OPEN;
