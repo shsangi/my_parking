@@ -1053,7 +1053,9 @@ function buildOverallSummaryCard(totals) {
 }
 
 /* ============================================================
-   SMART MONTHLY SPLIT (proportional by days)
+   SMART MONTHLY SPLIT
+   - Gross & Net  → proportional by days (per month)
+   - Expenses     → FULL amount to the month where period STARTS
    ============================================================ */
 function computeMonthlySplit(rows) {
   const buckets = new Map();
@@ -1091,10 +1093,16 @@ function computeMonthlySplit(rows) {
       const segDays = daysBetween(segStart, segEnd);
       const frac = periodDays ? segDays / periodDays : 0;
 
+      /* Gross & Net split proportionally */
       bucket.gross += r.gross * frac;
-      bucket.exp   += r.expenses * frac;
-      bucket.net   += r.net * frac;
+      bucket.net   += r.net   * frac;
 
+      /* Expenses → FULL to the month where period STARTS */
+      if (y === sp.y && m === sp.m) {
+        bucket.exp += r.expenses;
+      }
+
+      /* Track bounds */
       if (sp.y === y && sp.m === m) {
         if (!bucket.minStart || dateCmp(sp, bucket.minStart) < 0) {
           bucket.minStart = { y: sp.y, m: sp.m, d: sp.d };
@@ -1149,7 +1157,7 @@ function computeMonthlySplit(rows) {
     });
   });
 
-  /* Descending (newest → oldest) */
+  /* Descending (newest first) */
   result.sort((a, b) => (b.y * 100 + b.m) - (a.y * 100 + a.m));
   return result;
 }
@@ -1290,7 +1298,7 @@ function renderReport(rows) {
 
   const sortedRows = [...rows].sort((a, b) => {
     const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
-    if (da && db) return dateCmp(db, da); /* newest first */
+    if (da && db) return dateCmp(db, da);
     return (b.startDate || "").localeCompare(a.startDate || "");
   });
 
