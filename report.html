@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monthly Comparison Receipt</title>
+<title>Monthly Receipts</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -13,7 +13,6 @@
     overflow-x: hidden;
   }
 
-  /* ============ CAROUSEL ============ */
   .carousel {
     display: flex;
     overflow-x: auto;
@@ -33,6 +32,16 @@
     border-radius: 14px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .page.highlight {
+    border-color: #1e88e5;
+    box-shadow: 0 6px 22px rgba(30,136,229,0.25);
+  }
+  .page.highlight.curr {
+    border-color: #43a047;
+    box-shadow: 0 6px 22px rgba(67,160,71,0.25);
   }
 
   /* Dots */
@@ -48,43 +57,53 @@
   .dots .dot.active {
     background: #1e88e5; width: 22px; border-radius: 4px;
   }
+  .dots .dot.highlight { background: #66bb6a; }
+  .dots .dot.highlight.active { background: #43a047; }
 
-  /* ============ CARD CONTENT ============ */
+  /* Card */
   .rc-head {
-    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    background: linear-gradient(135deg, #546e7a, #37474f);
     color: #fff; padding: 14px; text-align: center;
   }
-  .rc-head h1 { margin: 0; font-size: 16px; font-weight: 700; }
+  .page.highlight .rc-head {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+  }
+  .page.highlight.curr .rc-head {
+    background: linear-gradient(135deg, #43a047, #2e7d32);
+  }
+  .rc-head h1 { margin: 0; font-size: 17px; font-weight: 700; }
   .rc-head p { margin: 3px 0 0; font-size: 12px; opacity: 0.9; }
+  .rc-head .badge {
+    display: inline-block; margin-top: 6px;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px;
+    background: rgba(255,255,255,0.25);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
 
+  /* Person count */
   .counts {
-    display: grid; grid-template-columns: 1fr 1fr;
-    background: #f7f9fc; border-bottom: 1px solid #e0e4ea;
+    background: #f7f9fc; padding: 10px; text-align: center;
+    border-bottom: 1px solid #e0e4ea;
   }
-  .counts > div {
-    padding: 10px 8px; text-align: center;
-    border-right: 1px solid #e0e4ea;
-  }
-  .counts > div:last-child { border-right: none; }
-  .counts .num { font-size: 20px; font-weight: 800; line-height: 1.1; }
-  .counts .lbl { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-  .counts .c1 { color: #1565c0; }
-  .counts .c2 { color: #2e7d32; }
+  .counts .num { font-size: 22px; font-weight: 800; line-height: 1; color: #1565c0; }
+  .page.highlight.curr .counts .num { color: #2e7d32; }
+  .counts .lbl { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
 
+  /* Header row */
   .months {
     display: grid;
     grid-template-columns: 34px 1fr 1fr;
     background: #f7f9fc; border-bottom: 2px solid #e0e4ea;
     position: sticky; top: 0; z-index: 5;
-    font-size: 12px; font-weight: 700;
+    font-size: 11px; font-weight: 700;
   }
   .months .hd {
     padding: 9px 6px; text-align: center;
     border-right: 1px solid #e0e4ea;
+    color: #666;
   }
   .months .hd:last-child { border-right: none; }
-  .months .m1 { color: #1565c0; }
-  .months .m2 { color: #2e7d32; }
   .months .sr-h { color: #999; font-size: 11px; }
 
   .sec {
@@ -122,75 +141,50 @@
     white-space: nowrap; overflow: hidden;
   }
   .name-line .nm { overflow: hidden; text-overflow: ellipsis; }
-  .amt { font-size: 14px; font-weight: 700; margin-top: 2px; }
-  .m1-cell .amt { color: #1565c0; }
-  .m2-cell .amt { color: #2e7d32; }
+  .amt { font-size: 14px; font-weight: 700; margin-top: 2px; color: #1565c0; }
 
   .missing {
     color: #cbd0d8; font-style: italic; font-size: 11px;
     display: flex; align-items: center; justify-content: center;
   }
 
-  .diff-badge {
-    font-size: 9px; font-weight: 700;
-    padding: 1px 4px; border-radius: 4px; margin-left: auto;
-    flex-shrink: 0;
-  }
-  .diff-badge.up { background: #e8f5e9; color: #2e7d32; }
-  .diff-badge.down { background: #ffebee; color: #c62828; }
-  .diff-badge.same { background: #f0f2f6; color: #666; }
-
-  /* Subtotal per month — bold with name & count */
+  /* Subtotal with month name + count */
   .total-row {
     display: grid;
-    grid-template-columns: 34px 1fr 1fr;
+    grid-template-columns: 34px 1fr;
     background: #f7f9fc; border-top: 2px solid #e0e4ea;
     font-weight: 700;
   }
   .total-row > div {
-    padding: 10px 6px; text-align: center;
-    border-right: 1px solid #e0e4ea;
-  }
-  .total-row > div:last-child { border-right: none; }
-  .total-row .mname {
-    font-size: 10px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.4px;
-  }
-  .total-row .mname.v1 { color: #1565c0; }
-  .total-row .mname.v2 { color: #2e7d32; }
-  .total-row .val { font-size: 15px; margin-top: 3px; }
-  .total-row .val.v1 { color: #1565c0; }
-  .total-row .val.v2 { color: #2e7d32; }
-  .total-row .cnt {
-    font-size: 10px; color: #777; font-weight: 500; margin-top: 2px;
+    padding: 12px 10px; text-align: center;
   }
   .total-row .sr-blank { background: #f4f6f9; }
+  .total-row .mname {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: #1565c0;
+  }
+  .page.highlight.curr .total-row .mname { color: #2e7d32; }
+  .total-row .val { font-size: 18px; margin-top: 3px; color: #1565c0; }
+  .page.highlight.curr .total-row .val { color: #2e7d32; }
+  .total-row .cnt { font-size: 11px; color: #777; font-weight: 500; margin-top: 2px; }
 
+  /* Grand total bar */
   .grand {
     background: linear-gradient(135deg, #263238, #37474f);
     color: #fff; padding: 14px; text-align: center;
   }
-  .grand .lbl { font-size: 11px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.6px; }
+  .grand .lbl { font-size: 10px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.6px; }
   .grand .val { font-size: 24px; font-weight: 800; margin-top: 4px; }
-  .grand .cnt { font-size: 11px; opacity: 0.85; margin-top: 6px; }
-
-  .diffbar {
-    margin: 10px 12px 14px; padding: 10px 14px;
-    border-radius: 10px; display: flex;
-    justify-content: space-between; align-items: center;
-    font-weight: 700; font-size: 14px;
-  }
-  .diffbar.pos { background: #e8f5e9; color: #2e7d32; }
-  .diffbar.neg { background: #ffebee; color: #c62828; }
-  .diffbar.zero { background: #f0f2f6; color: #555; }
 
   .status { text-align: center; padding: 40px 20px; color: #777; font-size: 14px; }
 
-  /* Swipe hint */
-  .swipe-hint {
-    text-align: center; font-size: 11px; color: #888;
-    padding: 4px 0 10px;
+  .legend {
+    display: flex; justify-content: center; gap: 16px;
+    font-size: 11px; color: #666; padding: 6px 0 0;
   }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend .chip { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 </style>
 </head>
 <body>
@@ -199,7 +193,11 @@
 
 <div class="carousel" id="carousel" style="display:none;"></div>
 <div class="dots" id="dots" style="display:none;"></div>
-<div class="swipe-hint" id="swipeHint" style="display:none;">← Swipe to see other month pairs →</div>
+<div class="legend" id="legend" style="display:none;">
+  <span><i class="chip" style="background:#43a047;"></i> Current Month</span>
+  <span><i class="chip" style="background:#1e88e5;"></i> Previous Month</span>
+  <span><i class="chip" style="background:#90a4ae;"></i> Older</span>
+</div>
 
 <script>
 /* ============================================================
@@ -279,13 +277,6 @@ function monthKey(rec) {
   const y = parseInt(rec.year) || 0;
   return y * 100 + m;
 }
-function monthLabel(rec) {
-  if (!rec) return "—";
-  return `${rec.month} ${rec.year}`.trim();
-}
-function nameKey(name) {
-  return name.toLowerCase().replace(/[^a-z0-9]/g, "");
-}
 
 async function loadAll() {
   let all = [];
@@ -311,190 +302,104 @@ function esc(s) {
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[c]));
 }
+function nameKey(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
 
 /* ============================================================
-   BUILD ONE PAGE FOR A GIVEN MONTH PAIR
+   BUILD ONE MONTH PAGE
    ============================================================ */
-function buildPage(prevRecs, currRecs, prevLabel, currLabel) {
+function buildMonthPage(monthRecords, monthLabel, highlightType) {
+  /* highlightType: "curr" | "prev" | "none" */
+
   /* Group by name */
-  const mapPrev = new Map();
-  prevRecs.forEach(r => {
+  const map = new Map();
+  monthRecords.forEach(r => {
     const k = nameKey(r.name);
-    if (!mapPrev.has(k)) mapPrev.set(k, { name: r.name, amount: 0 });
-    mapPrev.get(k).amount += r.amount;
-  });
-  const mapCurr = new Map();
-  currRecs.forEach(r => {
-    const k = nameKey(r.name);
-    if (!mapCurr.has(k)) mapCurr.set(k, { name: r.name, amount: 0 });
-    mapCurr.get(k).amount += r.amount;
+    if (!map.has(k)) map.set(k, { name: r.name, amount: 0 });
+    map.get(k).amount += r.amount;
   });
 
-  const cntPrev = mapPrev.size;
-  const cntCurr = mapCurr.size;
-
-  const matchedKeys   = [];
-  const onlyPrevKeys  = [];
-  const onlyCurrKeys  = [];
-  const seen = new Set();
-
-  mapPrev.forEach((v, k) => {
-    if (seen.has(k)) return;
-    seen.add(k);
-    if (mapCurr.has(k)) matchedKeys.push(k);
-    else onlyPrevKeys.push(k);
-  });
-  mapCurr.forEach((v, k) => {
-    if (seen.has(k)) return;
-    seen.add(k);
-    onlyCurrKeys.push(k);
-  });
-
-  let subPrev = 0, subCurr = 0;
-  let sr = 0;
+  const entries = [...map.values()];
+  const count = entries.length;
+  const total = entries.reduce((s, e) => s + e.amount, 0);
 
   const page = document.createElement("div");
   page.className = "page";
+  if (highlightType === "curr") page.classList.add("highlight", "curr");
+  else if (highlightType === "prev") page.classList.add("highlight");
 
   /* Header */
+  let badge = "";
+  if (highlightType === "curr") badge = `<div class="badge">Current Month</div>`;
+  else if (highlightType === "prev") badge = `<div class="badge">Previous Month</div>`;
+
   page.innerHTML = `
     <div class="rc-head">
-      <h1>Monthly Comparison</h1>
-      <p>${esc(prevLabel)}  vs  ${esc(currLabel)}</p>
+      <h1>${esc(monthLabel)}</h1>
+      <p>Monthly Receipt</p>
+      ${badge}
     </div>
     <div class="counts">
-      <div>
-        <div class="num c1">${cntPrev}</div>
-        <div class="lbl">Persons (${esc(prevLabel)})</div>
-      </div>
-      <div>
-        <div class="num c2">${cntCurr}</div>
-        <div class="lbl">Persons (${esc(currLabel)})</div>
-      </div>
+      <div class="num">${count}</div>
+      <div class="lbl">Total Persons</div>
     </div>
     <div class="months">
       <div class="hd sr-h">#</div>
-      <div class="hd m1">${esc(prevLabel)}</div>
-      <div class="hd m2">${esc(currLabel)}</div>
+      <div class="hd" style="grid-column: 2 / 4;">Name / Item &amp; Amount</div>
     </div>
   `;
 
   const body = document.createElement("div");
 
-  const buildRow = (p, c, srNum, showDiff) => {
-    const left = p
-      ? `<div class="m1-cell">
-           <div class="name-line"><span class="nm">${esc(p.name)}</span></div>
-           <div class="amt">${fmt(p.amount)}</div>
-         </div>`
-      : `<div class="m1-cell"><div class="missing">—</div></div>`;
-
-    let rightName = "";
-    if (c) {
-      let badge = "";
-      if (showDiff && p) {
-        const d = c.amount - p.amount;
-        if (Math.abs(d) < 0.005) badge = `<span class="diff-badge same">same</span>`;
-        else if (d > 0)           badge = `<span class="diff-badge up">▲${fmt(d)}</span>`;
-        else                      badge = `<span class="diff-badge down">▼${fmt(Math.abs(d))}</span>`;
-      }
-      rightName = `<div class="name-line"><span class="nm">${esc(c.name)}</span>${badge}</div>`;
-    }
-
-    const right = c
-      ? `<div class="m2-cell">${rightName}<div class="amt">${fmt(c.amount)}</div></div>`
-      : `<div class="m2-cell"><div class="missing">—</div></div>`;
-
-    const row = document.createElement("div");
-    row.className = "item";
-    row.innerHTML = `<div class="sr-cell">${srNum}</div>${left}${right}`;
-    return row;
-  };
-
-  /* Matched */
-  if (matchedKeys.length) {
-    const sec = document.createElement("div");
-    sec.className = "sec ok";
-    sec.textContent = `✓ Matched Persons (${matchedKeys.length})`;
-    body.appendChild(sec);
-
-    matchedKeys.forEach(k => {
-      const p = mapPrev.get(k), c = mapCurr.get(k);
-      subPrev += p.amount;
-      subCurr += c.amount;
-      body.appendChild(buildRow(p, c, ++sr, true));
+  if (!entries.length) {
+    const empty = document.createElement("div");
+    empty.style.cssText = "padding:30px;text-align:center;color:#999;font-size:13px;";
+    empty.textContent = "No records for this month.";
+    body.appendChild(empty);
+  } else {
+    entries.forEach((e, i) => {
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = `
+        <div class="sr-cell">${i + 1}</div>
+        <div class="m1-cell" style="grid-column: 2 / 4;">
+          <div class="name-line"><span class="nm">${esc(e.name)}</span></div>
+          <div class="amt">${fmt(e.amount)}</div>
+        </div>
+      `;
+      body.appendChild(row);
     });
   }
 
-  /* Unmatched — paired horizontally */
-  if (onlyPrevKeys.length || onlyCurrKeys.length) {
-    const sec = document.createElement("div");
-    sec.className = "sec warn";
-    sec.textContent = `⚠ Unmatched Persons (${onlyPrevKeys.length + onlyCurrKeys.length})`;
-    body.appendChild(sec);
-
-    const maxLen = Math.max(onlyPrevKeys.length, onlyCurrKeys.length);
-    for (let i = 0; i < maxLen; i++) {
-      const pKey = onlyPrevKeys[i];
-      const cKey = onlyCurrKeys[i];
-      const p = pKey ? mapPrev.get(pKey) : null;
-      const c = cKey ? mapCurr.get(cKey) : null;
-      if (p) subPrev += p.amount;
-      if (c) subCurr += c.amount;
-      body.appendChild(buildRow(p, c, ++sr, false));
-    }
-  }
-
-  /* Subtotals with month name + person count */
+  /* Subtotal with month name + count */
   const totals = document.createElement("div");
   totals.className = "total-row";
   totals.innerHTML = `
     <div class="sr-blank"></div>
     <div>
-      <div class="mname v1">${esc(prevLabel)}</div>
-      <div class="val v1">${fmt(subPrev)}</div>
-      <div class="cnt">${cntPrev} person${cntPrev === 1 ? "" : "s"}</div>
-    </div>
-    <div>
-      <div class="mname v2">${esc(currLabel)}</div>
-      <div class="val v2">${fmt(subCurr)}</div>
-      <div class="cnt">${cntCurr} person${cntCurr === 1 ? "" : "s"}</div>
+      <div class="mname">Subtotal — ${esc(monthLabel)}</div>
+      <div class="val">${fmt(total)}</div>
+      <div class="cnt">${count} person${count === 1 ? "" : "s"}</div>
     </div>
   `;
   body.appendChild(totals);
 
-  /* Grand total */
+  /* Grand total bar */
   const grand = document.createElement("div");
   grand.className = "grand";
   grand.innerHTML = `
-    <div class="lbl">Grand Total (Both Months)</div>
-    <div class="val">${fmt(subPrev + subCurr)}</div>
-    <div class="cnt">
-      Matched: ${matchedKeys.length} &nbsp;•&nbsp;
-      Only ${esc(prevLabel)}: ${onlyPrevKeys.length} &nbsp;•&nbsp;
-      Only ${esc(currLabel)}: ${onlyCurrKeys.length}
-    </div>
+    <div class="lbl">Total — ${esc(monthLabel)}</div>
+    <div class="val">${fmt(total)}</div>
   `;
   body.appendChild(grand);
-
-  /* Difference */
-  const diff = subCurr - subPrev;
-  const diffEl = document.createElement("div");
-  diffEl.className = "diffbar " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
-  const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "=";
-  const sign  = diff > 0 ? "+" : "";
-  diffEl.innerHTML = `
-    <span>Monthly Difference</span>
-    <span>${arrow} ${sign}${fmt(diff)}</span>
-  `;
-  body.appendChild(diffEl);
 
   page.appendChild(body);
   return page;
 }
 
 /* ============================================================
-   RENDER — build a page for each consecutive month pair
+   RENDER — one page per month, latest two highlighted
    ============================================================ */
 function render(records) {
   const statusEl = document.getElementById("status");
@@ -503,13 +408,15 @@ function render(records) {
     return;
   }
 
-  /* Get unique month keys, sorted ascending, keep last 12 max */
   const keys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
-  if (keys.length < 2) {
-    statusEl.textContent = "Need at least two months of data to compare.";
+  if (!keys.length) {
+    statusEl.textContent = "No month data found.";
     return;
   }
+
   const limitedKeys = keys.slice(-12); // last 12 months max
+  const currKey = limitedKeys[limitedKeys.length - 1];
+  const prevKey = limitedKeys[limitedKeys.length - 2]; // may be undefined
 
   /* Bucket records by month */
   const byMonth = new Map();
@@ -519,50 +426,67 @@ function render(records) {
     byMonth.get(k).push(r);
   });
 
-  /* Build one page per consecutive pair */
-  const pairs = [];
-  for (let i = 1; i < limitedKeys.length; i++) {
-    const kPrev = limitedKeys[i - 1];
-    const kCurr = limitedKeys[i];
-    const prevRecs = byMonth.get(kPrev) || [];
-    const currRecs = byMonth.get(kCurr) || [];
-    const prevLabel = monthLabel(prevRecs[0]);
-    const currLabel = monthLabel(currRecs[0]);
-    pairs.push({ prevRecs, currRecs, prevLabel, currLabel });
-  }
-
   const carousel = document.getElementById("carousel");
   const dotsEl = document.getElementById("dots");
   carousel.innerHTML = "";
   dotsEl.innerHTML = "";
 
-  pairs.forEach((p, idx) => {
-    carousel.appendChild(buildPage(p.prevRecs, p.currRecs, p.prevLabel, p.currLabel));
+  limitedKeys.forEach((k, idx) => {
+    const recs = byMonth.get(k) || [];
+    const label = recs.length ? `${recs[0].month} ${recs[0].year}`.trim() : String(k);
+
+    let type = "none";
+    if (k === currKey) type = "curr";
+    else if (k === prevKey) type = "prev";
+
+    carousel.appendChild(buildMonthPage(recs, label, type));
+
     const dot = document.createElement("div");
-    dot.className = "dot" + (idx === 0 ? " active" : "");
+    dot.className = "dot";
+    if (type === "curr" || type === "prev") dot.classList.add("highlight");
+    if (idx === limitedKeys.length - 1) dot.classList.add("active");
     dot.dataset.idx = idx;
     dot.addEventListener("click", () => {
+      const pageEl = carousel.querySelectorAll(".page")[idx];
       carousel.scrollTo({
-        left: idx * (carousel.querySelector(".page").offsetWidth + 12),
+        left: pageEl.offsetLeft - 12,
         behavior: "smooth"
       });
     });
     dotsEl.appendChild(dot);
   });
 
+  /* Auto-scroll to the LAST (current) page on load */
+  requestAnimationFrame(() => {
+    const pages = carousel.querySelectorAll(".page");
+    const lastPage = pages[pages.length - 1];
+    if (lastPage) {
+      carousel.scrollTo({
+        left: lastPage.offsetLeft - 12,
+        behavior: "auto"
+      });
+    }
+  });
+
   /* Update dots on scroll */
   carousel.addEventListener("scroll", () => {
-    const pageW = carousel.querySelector(".page").offsetWidth + 12;
-    const idx = Math.round(carousel.scrollLeft / pageW);
+    const pages = carousel.querySelectorAll(".page");
+    if (!pages.length) return;
+    const carouselLeft = carousel.scrollLeft;
+    let bestIdx = 0, bestDist = Infinity;
+    pages.forEach((p, i) => {
+      const d = Math.abs(p.offsetLeft - 12 - carouselLeft);
+      if (d < bestDist) { bestDist = d; bestIdx = i; }
+    });
     dotsEl.querySelectorAll(".dot").forEach((d, i) => {
-      d.classList.toggle("active", i === idx);
+      d.classList.toggle("active", i === bestIdx);
     });
   }, { passive: true });
 
   statusEl.style.display = "none";
   carousel.style.display = "flex";
   dotsEl.style.display = "flex";
-  document.getElementById("swipeHint").style.display = pairs.length > 1 ? "block" : "none";
+  document.getElementById("legend").style.display = "flex";
 }
 
 loadAll().then(render).catch(e => {
