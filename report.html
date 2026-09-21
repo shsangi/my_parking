@@ -278,7 +278,6 @@
     padding: 0 12px 20px;
   }
 
-  /* ---------- Overall card ---------- */
   .overall-card {
     background: linear-gradient(180deg, #eef1f6 0%, #e3e8ef 100%);
     border-radius: 16px;
@@ -301,48 +300,137 @@
     margin-bottom: 18px;
     letter-spacing: -0.3px;
   }
-  .oc-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  .oc-table tr {
-    border-bottom: 1px solid #e2e8f0;
-  }
+  .oc-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .oc-table tr { border-bottom: 1px solid #e2e8f0; }
   .oc-table tr:last-child { border-bottom: none; }
-  .oc-table td {
-    padding: 12px 2px;
-    vertical-align: middle;
-  }
+  .oc-table td { padding: 12px 2px; vertical-align: middle; }
   .oc-table td.metric {
-    font-weight: 700;
-    color: #1e3a5f;
-    width: 45%;
-    font-size: 15px;
-    line-height: 1.25;
+    font-weight: 700; color: #1e3a5f;
+    width: 45%; font-size: 15px; line-height: 1.25;
   }
   .oc-table td.detail {
-    color: #1f2937;
-    font-weight: 600;
-    text-align: left;
-    font-size: 15px;
+    color: #1f2937; font-weight: 600;
+    text-align: left; font-size: 15px;
   }
   .oc-table td.detail.highlight {
-    font-weight: 800;
-    color: #0d47a1;
-    font-size: 16px;
+    font-weight: 800; color: #0d47a1; font-size: 16px;
   }
 
-  /* ---------- Period list (compact single-line rows) ---------- */
+  /* Section headings */
   .section-label {
     font-size: 12px;
     font-weight: 800;
     color: #475569;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    padding: 6px 4px 10px;
+    padding: 14px 4px 10px;
+  }
+  .section-label:first-child { padding-top: 0; }
+
+  /* Monthly list */
+  .month-list {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+    overflow: hidden;
+    border: 1px solid #eef1f5;
+    margin-bottom: 6px;
   }
 
+  .month-row {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eef1f5;
+  }
+  .month-row:last-child { border-bottom: none; }
+  .month-row.current {
+    background: linear-gradient(180deg, #fff8e1 0%, #fffdf7 100%);
+    border-left: 3px solid #ffa726;
+  }
+
+  .mr-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .mr-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1e3a5f;
+    line-height: 1.2;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .mr-badge {
+    background: #ffa726;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 8px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .mr-range {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .mr-days {
+    background: #e3f2fd;
+    color: #0d47a1;
+    padding: 3px 9px;
+    border-radius: 10px;
+    font-size: 10.5px;
+    font-weight: 800;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .mr-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .mr-metric {
+    text-align: center;
+    padding: 6px 2px;
+    border-radius: 8px;
+    background: #f8fafc;
+    min-width: 0;
+  }
+  .mr-metric .lbl {
+    font-size: 9px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mr-metric .val {
+    font-size: 12.5px;
+    font-weight: 800;
+    margin-top: 3px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .mr-metric.credit .val { color: #2e7d32; }
+  .mr-metric.exp .val    { color: #c62828; }
+  .mr-metric.gross .val  { color: #1565c0; }
+  .mr-metric.avg {
+    background: #e8f0fe;
+  }
+  .mr-metric.avg .val { color: #0d47a1; }
+
+  /* Period list (compact) */
   .period-list {
     background: #fff;
     border-radius: 14px;
@@ -358,7 +446,6 @@
   }
   .period-row:last-child { border-bottom: none; }
 
-  /* Top line: date range + days pill */
   .pr-head {
     display: flex;
     align-items: center;
@@ -388,7 +475,6 @@
     flex-shrink: 0;
   }
 
-  /* Bottom line: 4 metrics in a row */
   .pr-metrics {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -426,7 +512,6 @@
   }
   .pr-metric.avg .val { color: #0d47a1; }
 
-  /* Daily data section */
   .daily-section-title {
     font-size: 13px; font-weight: 700; color: #263238;
     padding: 12px 4px 10px;
@@ -509,6 +594,9 @@
     <div class="report-wrap">
 
       <div id="overallCard"></div>
+
+      <div class="section-label">Monthly Breakdown</div>
+      <div class="month-list" id="monthList"></div>
 
       <div class="section-label">Period Breakdown</div>
       <div class="period-list" id="periodList"></div>
@@ -754,6 +842,10 @@ function daysBetween(p1, p2) {
   return diff > 0 ? diff : 0;
 }
 
+function daysInMonth(y, m) {
+  return new Date(y, m, 0).getDate();
+}
+
 function fmtDateLong(p) {
   if (!p) return "—";
   return `${MONTH_LONG[p.m - 1]} ${p.d}, ${p.y}`;
@@ -761,6 +853,10 @@ function fmtDateLong(p) {
 function fmtDateShort(p) {
   if (!p) return "—";
   return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]} ${p.y}`;
+}
+function fmtDateShortNoYear(p) {
+  if (!p) return "—";
+  return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]}`;
 }
 
 /* ============================================================
@@ -1005,34 +1101,13 @@ function buildOverallSummaryCard(totals) {
     <div class="oc-inner">
       <div class="oc-title">Sangi Parking Daily<br>Average Earning</div>
       <table class="oc-table">
-        <tr>
-          <td class="metric">Start Date</td>
-          <td class="detail">${esc(fmtDateLong(minStart))}</td>
-        </tr>
-        <tr>
-          <td class="metric">End Date</td>
-          <td class="detail">${esc(fmtDateLong(maxEnd))}</td>
-        </tr>
-        <tr>
-          <td class="metric">Total Days</td>
-          <td class="detail">${days} Day${days === 1 ? "" : "s"}</td>
-        </tr>
-        <tr>
-          <td class="metric">Total Gross Amount</td>
-          <td class="detail">${fmtInt(gross)} PKR</td>
-        </tr>
-        <tr>
-          <td class="metric">Total Expenses</td>
-          <td class="detail">${fmtInt(exp)} PKR</td>
-        </tr>
-        <tr>
-          <td class="metric">Total Net Amount<br>Credited</td>
-          <td class="detail">${fmtInt(net)} PKR</td>
-        </tr>
-        <tr>
-          <td class="metric">Average Daily<br>Earning (Net)</td>
-          <td class="detail highlight">${fmtDec2(avgNet)} PKR / day</td>
-        </tr>
+        <tr><td class="metric">Start Date</td><td class="detail">${esc(fmtDateLong(minStart))}</td></tr>
+        <tr><td class="metric">End Date</td><td class="detail">${esc(fmtDateLong(maxEnd))}</td></tr>
+        <tr><td class="metric">Total Days</td><td class="detail">${days} Day${days === 1 ? "" : "s"}</td></tr>
+        <tr><td class="metric">Total Gross Amount</td><td class="detail">${fmtInt(gross)} PKR</td></tr>
+        <tr><td class="metric">Total Expenses</td><td class="detail">${fmtInt(exp)} PKR</td></tr>
+        <tr><td class="metric">Total Net Amount<br>Credited</td><td class="detail">${fmtInt(net)} PKR</td></tr>
+        <tr><td class="metric">Average Daily<br>Earning (Net)</td><td class="detail highlight">${fmtDec2(avgNet)} PKR / day</td></tr>
       </table>
     </div>
   `;
@@ -1040,7 +1115,66 @@ function buildOverallSummaryCard(totals) {
 }
 
 /* ============================================================
-   REPORT — Compact period row (single line)
+   REPORT — Monthly row
+   For each month: Start = 1st, End = last day of month
+   (or today if current month).
+   Averages divide by days in that month (or days elapsed for current month).
+   ============================================================ */
+function buildMonthRow(y, m, monthRows, today) {
+  /* Totals */
+  let gross = 0, exp = 0, net = 0;
+  monthRows.forEach(r => { gross += r.gross; exp += r.expenses; net += r.net; });
+
+  /* Days calculation:
+     - For current month → days elapsed (1..today's day)
+     - For past month    → full calendar days of that month */
+  const isCurrentMonth = today && today.y === y && today.m === m;
+  const daysCount = isCurrentMonth ? today.d : daysInMonth(y, m);
+
+  const avgNet = daysCount ? net / daysCount : 0;
+
+  const startP = { y, m, d: 1 };
+  const endP   = { y, m, d: isCurrentMonth ? today.d : daysInMonth(y, m) };
+
+  const row = document.createElement("div");
+  row.className = "month-row" + (isCurrentMonth ? " current" : "");
+  row.innerHTML = `
+    <div class="mr-head">
+      <div>
+        <div class="mr-title">
+          ${esc(MONTH_LONG[m - 1])} ${y}
+          ${isCurrentMonth ? '<span class="mr-badge">Current</span>' : ''}
+        </div>
+        <div class="mr-range">
+          ${esc(fmtDateShort(startP))} → ${esc(fmtDateShort(endP))}
+        </div>
+      </div>
+      <div class="mr-days">${daysCount}d</div>
+    </div>
+    <div class="mr-metrics">
+      <div class="mr-metric credit">
+        <div class="lbl">Credit</div>
+        <div class="val">${fmtInt(net)}</div>
+      </div>
+      <div class="mr-metric exp">
+        <div class="lbl">Expenses</div>
+        <div class="val">${fmtInt(exp)}</div>
+      </div>
+      <div class="mr-metric gross">
+        <div class="lbl">Gross</div>
+        <div class="val">${fmtInt(gross)}</div>
+      </div>
+      <div class="mr-metric avg">
+        <div class="lbl">Avg/Day</div>
+        <div class="val">${fmtInt(avgNet)}</div>
+      </div>
+    </div>
+  `;
+  return row;
+}
+
+/* ============================================================
+   REPORT — Compact period row
    ============================================================ */
 function buildPeriodRow(period) {
   const { startP, endP, startStr, endStr, gross, exp, net } = period;
@@ -1127,7 +1261,30 @@ function renderReport(rows) {
     maxEnd:   maxEnd   ? maxEnd.p   : null
   }));
 
-  /* Period list */
+  /* Group rows by month (using START date) */
+  const monthGroups = new Map();
+  rows.forEach(r => {
+    const sp = parseDateParts(r.startDate);
+    if (!sp) return;
+    const key = sp.y * 100 + sp.m;
+    if (!monthGroups.has(key)) monthGroups.set(key, { y: sp.y, m: sp.m, rows: [] });
+    monthGroups.get(key).rows.push(r);
+  });
+
+  /* Today */
+  const now = new Date();
+  const today = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
+
+  /* Monthly Breakdown */
+  const monthEl = document.getElementById("monthList");
+  monthEl.innerHTML = "";
+  const monthKeys = [...monthGroups.keys()].sort((a, b) => a - b);
+  monthKeys.forEach(k => {
+    const g = monthGroups.get(k);
+    monthEl.appendChild(buildMonthRow(g.y, g.m, g.rows, today));
+  });
+
+  /* Period Breakdown */
   const periodEl = document.getElementById("periodList");
   periodEl.innerHTML = "";
 
