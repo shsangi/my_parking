@@ -773,4 +773,55 @@ function renderView() {
     const prevLabel = monthLabel(prevRecs[0]);
     const currLabel = monthLabel(currRecs[0]);
 
-    carousel.appendChild(buildComparePage(prevRec
+    carousel.appendChild(buildComparePage(prevRecs, currRecs, prevLabel, currLabel));
+    carousel.style.display = "flex";
+  } else {
+    const monthList = allKeys.map(k => {
+      const recs = byMonth.get(k) || [];
+      return { recs, label: monthLabel(recs[0]) };
+    }).filter(m => m.recs.length);
+
+    buildTable(monthList);
+    tableWrap.style.display = "block";
+    tableHint.style.display = monthList.length > 1 ? "block" : "none";
+  }
+}
+
+function render(records) {
+  const statusEl = document.getElementById("status");
+  if (!records.length) {
+    statusEl.textContent = "No data available. Please make sure the sheets are published as CSV.";
+    return;
+  }
+
+  allKeys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
+  if (allKeys.length < 2) {
+    statusEl.textContent = "Need at least two months of data.";
+    return;
+  }
+
+  byMonth = new Map();
+  records.forEach(r => {
+    const k = monthKey(r);
+    if (!byMonth.has(k)) byMonth.set(k, []);
+    byMonth.get(k).push(r);
+  });
+
+  statusEl.style.display = "none";
+  renderView();
+
+  document.querySelectorAll('input[name="view"]').forEach(rb => {
+    rb.addEventListener("change", e => {
+      currentView = e.target.value;
+      renderView();
+    });
+  });
+}
+
+loadAll().then(render).catch(e => {
+  document.getElementById("status").textContent = "Error: " + e.message;
+  console.error(e);
+});
+</script>
+</body>
+</html>
