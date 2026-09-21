@@ -251,16 +251,16 @@
   /* Salary / expenses breakdown inside green */
   .combined-details {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px 16px;
-    padding-top: 8px;
+    flex-direction: column;
+    gap: 7px;
+    padding-top: 10px;
     border-top: 1px solid rgba(255,255,255,0.2);
     font-size: 12.5px;
   }
   .combined-details .item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     color: #fff;
     opacity: 0.95;
   }
@@ -273,12 +273,14 @@
   }
   .combined-details .item .label {
     font-weight: 600;
-    opacity: 0.85;
+    opacity: 0.9;
+    flex: 1;
   }
   .combined-details .item .value {
     font-weight: 800;
     color: #ffd966;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
   .combined-details .item .value.neg {
     color: #ffb3b3;
@@ -582,16 +584,16 @@
   }
   .mr-combined-strip .breakdown {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px 14px;
-    padding-top: 8px;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 10px;
     border-top: 1px solid rgba(255,255,255,0.2);
     font-size: 11.5px;
   }
   .mr-combined-strip .breakdown .item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     opacity: 0.95;
   }
   .mr-combined-strip .breakdown .dot {
@@ -602,12 +604,14 @@
   }
   .mr-combined-strip .breakdown .label {
     font-weight: 600;
-    opacity: 0.85;
+    opacity: 0.9;
+    flex: 1;
   }
   .mr-combined-strip .breakdown .value {
     font-weight: 800;
     color: #ffd966;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
   .mr-combined-strip .breakdown .value.neg {
     color: #ffb3b3;
@@ -1190,7 +1194,7 @@
     .mr-metrics, .pr-metrics { gap: 5px; }
     .mr-metric .val, .pr-metric .val { font-size: 13px; }
     .mr-metric .lbl, .pr-metric .lbl { font-size: 9px; }
-    .combined-details { font-size: 11.5px; gap: 6px 12px; }
+    .combined-details { font-size: 11.5px; gap: 6px; }
     .cmp-row > div { padding: 9px 6px; }
     .cmp-name { font-size: 12px; }
     .cmp-amt { font-size: 12.5px; }
@@ -1284,10 +1288,9 @@ const SHEET1_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_N
 const SHEET2_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
 const SHEET_DAILY_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1810247989";
 
-/* ---- Monthly salary & daily expense config (NOT excluded) ---- */
-const MONTHLY_SALARY = 15000;      // 15k monthly salary
-const MONTHLY_SALARY_PREV = 14000; // 14k for previous month
-const DAILY_EXPENSE = 300;         // daily expense not excluded
+/* ---- Salary & daily expense config (shown as items you can minus) ---- */
+const MONTHLY_SALARY = 29000;      // 29k salary (14k + 15k)
+const DAILY_EXPENSE = 300;         // 300 daily expense (not excluded)
 
 const COL = {
   name:   ["name/item", "name", "item", "person", "party"],
@@ -1723,17 +1726,18 @@ function buildAllMonthsTable(monthList) {
 
 /* ============================================================
    OVERALL SUMMARY CARD
-   - Includes salary & daily expense breakdown in green row
+   - Green row shows RAW combined total + list of items to minus
+   - Does NOT perform the subtraction
    ============================================================ */
 function buildOverallSummaryCard(totals) {
   const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal } = totals;
   const avgNet = days ? net / days : 0;
 
-  /* Compute combined total with salary & daily expense deductions */
+  /* Raw combined total (NOT subtracted) */
+  const combinedRaw = (monthlySheetTotal / 2) + net;
+
+  /* Items you can minus (shown for reference) */
   const dailyExpenseTotal = DAILY_EXPENSE * days;
-  const salaryTotal = MONTHLY_SALARY; // 15k for current month
-  const combinedTotalRaw = (monthlySheetTotal / 2) + net;
-  const combinedTotalAfterDeductions = combinedTotalRaw - dailyExpenseTotal - salaryTotal;
 
   const el = document.createElement("div");
   el.className = "overall-card";
@@ -1756,23 +1760,18 @@ function buildOverallSummaryCard(totals) {
       <div class="oc-row combined">
         <div>
           <div class="k">Total Monthly ÷ 2 + Credit</div>
-          <div class="v">${fmtInt(combinedTotalAfterDeductions)}<span class="unit">PKR</span></div>
+          <div class="v">${fmtInt(combinedRaw)}<span class="unit">PKR</span></div>
         </div>
         <div class="combined-details">
           <div class="item">
             <span class="dot"></span>
-            <span class="label">Raw Combined:</span>
-            <span class="value">${fmtInt(combinedTotalRaw)}</span>
+            <span class="label">You can minus salary</span>
+            <span class="value">${fmtInt(MONTHLY_SALARY)}</span>
           </div>
           <div class="item">
             <span class="dot"></span>
-            <span class="label">− Salary (15k):</span>
-            <span class="value neg">−${fmtInt(salaryTotal)}</span>
-          </div>
-          <div class="item">
-            <span class="dot"></span>
-            <span class="label">− Daily Exp (300 × ${days}):</span>
-            <span class="value neg">−${fmtInt(dailyExpenseTotal)}</span>
+            <span class="label">Daily expense (300 × ${days})</span>
+            <span class="value">${fmtInt(dailyExpenseTotal)}</span>
           </div>
         </div>
       </div>
@@ -1897,7 +1896,7 @@ function sumMonthlySheetTotals(records) {
 }
 
 /* ============================================================
-   MONTH ROW — with salary & daily expense breakdown in green
+   MONTH ROW — with salary & daily expense items (no subtraction)
    ============================================================ */
 function buildMonthRow(info, srNo, sheetTotal) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
@@ -1908,16 +1907,8 @@ function buildMonthRow(info, srNo, sheetTotal) {
   if (sheetTotal) {
     const sheetAmt = sheetTotal.amount;
     const halfSheet = sheetAmt / 2;
-
-    /* Salary: use 14k for previous month, 15k for current */
-    const now = new Date();
-    const currentMonthKey = now.getFullYear() * 100 + (now.getMonth() + 1);
-    const thisMonthKey = y * 100 + m;
-    const salaryForMonth = (thisMonthKey === currentMonthKey) ? MONTHLY_SALARY : MONTHLY_SALARY_PREV;
-
-    const dailyExpenseTotal = DAILY_EXPENSE * daysCount;
     const combinedRaw = halfSheet + net;
-    const combinedAfter = combinedRaw - salaryForMonth - dailyExpenseTotal;
+    const dailyExpenseTotal = DAILY_EXPENSE * daysCount;
 
     sheetStrip = `
       <div class="mr-sheet-strip">
@@ -1938,23 +1929,18 @@ function buildMonthRow(info, srNo, sheetTotal) {
             <div class="c-lbl">Combined Total</div>
             <div class="c-sub">(Sheet ÷ 2) + Credit</div>
           </div>
-          <div class="c-val">${fmtInt(combinedAfter)}<span class="unit">PKR</span></div>
+          <div class="c-val">${fmtInt(combinedRaw)}<span class="unit">PKR</span></div>
         </div>
         <div class="breakdown">
           <div class="item">
             <span class="dot"></span>
-            <span class="label">Raw:</span>
-            <span class="value">${fmtInt(combinedRaw)}</span>
+            <span class="label">You can minus salary</span>
+            <span class="value">${fmtInt(MONTHLY_SALARY)}</span>
           </div>
           <div class="item">
             <span class="dot"></span>
-            <span class="label">− Salary ${salaryForMonth === MONTHLY_SALARY ? '(15k)' : '(14k)'}:</span>
-            <span class="value neg">−${fmtInt(salaryForMonth)}</span>
-          </div>
-          <div class="item">
-            <span class="dot"></span>
-            <span class="label">− Daily Exp (300 × ${daysCount}):</span>
-            <span class="value neg">−${fmtInt(dailyExpenseTotal)}</span>
+            <span class="label">Daily expense (300 × ${daysCount})</span>
+            <span class="value">${fmtInt(dailyExpenseTotal)}</span>
           </div>
         </div>
       </div>
