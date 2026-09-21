@@ -455,30 +455,89 @@
   .mr-metric.avg, .pr-metric.avg                 { background: #e8f0fe; }
   .mr-metric.avg .val, .pr-metric.avg .val       { color: #0d47a1; }
 
-  /* Combined total strip */
-  .mr-total-strip {
+  /* Monthly sheet total strip */
+  .mr-sheet-strip {
     margin-top: 8px;
-    padding: 10px 12px;
-    background: linear-gradient(135deg, #e8eaf6 0%, #f3e5f5 100%);
+    padding: 8px 10px;
+    background: linear-gradient(135deg, #f3e5f5 0%, #ede7f6 100%);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    border-left: 3px solid #5e35b1;
+    border-left: 3px solid #8e24aa;
   }
-  .mr-total-strip .total-lbl {
-    font-size: 12px;
-    color: #4527a0;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-  }
-  .mr-total-strip .total-val {
-    font-size: 16px;
+  .mr-sheet-strip .sheet-lbl {
+    font-size: 10px;
+    color: #6a1b9a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
     font-weight: 800;
-    color: #4527a0;
+  }
+  .mr-sheet-strip .sheet-sub {
+    font-size: 9px;
+    color: #8e24aa;
+    font-weight: 600;
+    margin-top: 1px;
+  }
+  .mr-sheet-strip .sheet-val {
+    font-size: 15px;
+    font-weight: 800;
+    color: #6a1b9a;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+  }
+  .mr-sheet-strip .sheet-cnt {
+    font-size: 10px;
+    color: #8e24aa;
+    font-weight: 600;
+    text-align: right;
+    margin-top: 1px;
+  }
+
+  /* ===== Total breakdown strip ===== */
+  .mr-total-strip {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border-radius: 8px;
+    border-left: 3px solid #ef6c00;
+  }
+  .mr-total-strip .ts-title {
+    font-size: 10px;
+    color: #bf360c;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .mr-total-strip .ts-formula {
+    font-size: 12px;
+    color: #5d4037;
+    font-weight: 600;
+    line-height: 1.35;
+    font-variant-numeric: tabular-nums;
+  }
+  .mr-total-strip .ts-formula .num {
+    color: #bf360c;
+    font-weight: 800;
+  }
+  .mr-total-strip .ts-result {
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #e65100;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .mr-total-strip .ts-result .lbl {
+    font-size: 10px;
+    color: #bf360c;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 800;
   }
 
   .daily-section-title {
@@ -1080,8 +1139,8 @@ function buildOverallSummaryCard(totals) {
 
 /* ============================================================
    SMART MONTHLY SPLIT
-   - Gross & Net  → proportional by days
-   - Expenses     → FULL to the month where period STARTS
+   - Gross & Net → proportional by days
+   - Expenses    → FULL to start month
    ============================================================ */
 function computeMonthlySplit(rows) {
   const buckets = new Map();
@@ -1185,7 +1244,7 @@ function computeMonthlySplit(rows) {
 }
 
 /* ============================================================
-   MONTHLY SHEET TOTALS (from monthly sheet)
+   MONTHLY SHEET TOTALS
    ============================================================ */
 function computeMonthlySheetTotals(records) {
   const totals = new Map();
@@ -1207,19 +1266,43 @@ function buildMonthRow(info, srNo, sheetTotal) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
 
-  const monthTitle = `${MONTH_LONG[m - 1]} ${y}`;
-
-  /* Combined total strip: credit (from daily) + monthly sheet total */
+  /* Sheet total strip */
   let sheetStrip = "";
-  if (sheetTotal && sheetTotal.amount) {
-    const combined = net + sheetTotal.amount;
+  const sheetAmount = sheetTotal ? sheetTotal.amount : 0;
+  if (sheetTotal) {
     sheetStrip = `
-      <div class="mr-total-strip">
-        <div class="total-lbl">${esc(monthTitle)} - Total :</div>
-        <div class="total-val">${fmtInt(combined)} PKR</div>
+      <div class="mr-sheet-strip">
+        <div>
+          <div class="sheet-lbl">Monthly Sheet Total</div>
+          <div class="sheet-sub">${sheetTotal.count} entr${sheetTotal.count === 1 ? "y" : "ies"}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="sheet-val">${fmtInt(sheetAmount)} PKR</div>
+          <div class="sheet-cnt">from Monthly sheet</div>
+        </div>
       </div>
     `;
   }
+
+  /* Total = Credit + (Sheet Total / 2) */
+  const halfSheet = sheetAmount / 2;
+  const combinedTotal = net + halfSheet;
+
+  const totalStrip = `
+    <div class="mr-total-strip">
+      <div class="ts-title">Total Calculation</div>
+      <div class="ts-formula">
+        ${esc(MONTH_LONG[m - 1])} ${y} — Total :
+        <span class="num">${fmtInt(net)}</span>
+        +
+        <span class="num">${fmtInt(sheetAmount)}</span>/2
+      </div>
+      <div class="ts-result">
+        <span class="lbl">Total</span>
+        <span>${fmtInt(combinedTotal)} PKR</span>
+      </div>
+    </div>
+  `;
 
   const row = document.createElement("div");
   row.className = "month-row" + (isCurrentMonth ? " current" : "");
@@ -1229,7 +1312,7 @@ function buildMonthRow(info, srNo, sheetTotal) {
       <div class="mr-head">
         <div>
           <div class="mr-title">
-            ${esc(monthTitle)}
+            ${esc(MONTH_LONG[m - 1])} ${y}
             ${isCurrentMonth ? '<span class="mr-badge">Current</span>' : ''}
           </div>
           <div class="mr-range">
@@ -1257,6 +1340,7 @@ function buildMonthRow(info, srNo, sheetTotal) {
         </div>
       </div>
       ${sheetStrip}
+      ${totalStrip}
     </div>
   `;
   return row;
@@ -1339,10 +1423,8 @@ function renderReport(rows, monthlyRecords) {
     minStart, maxEnd
   }));
 
-  /* Monthly sheet totals */
   const sheetTotals = computeMonthlySheetTotals(monthlyRecords);
 
-  /* Monthly — descending */
   const monthInfos = computeMonthlySplit(rows);
   const monthEl = document.getElementById("monthList");
   monthEl.innerHTML = "";
@@ -1352,7 +1434,6 @@ function renderReport(rows, monthlyRecords) {
     monthEl.appendChild(buildMonthRow(info, i + 1, sheetTotal));
   });
 
-  /* Period — descending */
   const periodEl = document.getElementById("periodList");
   periodEl.innerHTML = "";
 
@@ -1495,68 +1576,4 @@ function renderAllMonths() {
   }).filter(m => m.recs.length);
 
   buildAllMonthsTable(monthList);
-  statusEl.style.display = "none";
-  tableWrap.style.display = "block";
-  hint.style.display = monthList.length > 1 ? "block" : "none";
-}
-
-async function loadMonthlyOnce() {
-  if (monthlyLoaded) return;
-  monthlyLoaded = true;
-
-  const records = await loadMonthly();
-  monthlyRecordsCache = records;
-
-  if (!records.length) {
-    document.getElementById("statusLast2").textContent = "No monthly data available.";
-    document.getElementById("statusAll").textContent = "No monthly data available.";
-    return;
-  }
-
-  allKeys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
-
-  byMonth = new Map();
-  records.forEach(r => {
-    const k = monthKey(r);
-    if (!byMonth.has(k)) byMonth.set(k, []);
-    byMonth.get(k).push(r);
-  });
-
-  renderLast2();
-  renderAllMonths();
-}
-
-/* ============================================================
-   TAB SWITCHING
-   ============================================================ */
-function switchTab(tab) {
-  document.getElementById("tabReport").classList.toggle("active", tab === "report");
-  document.getElementById("tabLast2").classList.toggle("active", tab === "last2");
-  document.getElementById("tabAll").classList.toggle("active", tab === "all");
-
-  document.getElementById("contentReport").classList.toggle("active", tab === "report");
-  document.getElementById("contentLast2").classList.toggle("active", tab === "last2");
-  document.getElementById("contentAll").classList.toggle("active", tab === "all");
-
-  if (tab === "last2" || tab === "all") loadMonthlyOnce();
-}
-
-document.getElementById("tabReport").addEventListener("click", () => switchTab("report"));
-document.getElementById("tabLast2").addEventListener("click", () => switchTab("last2"));
-document.getElementById("tabAll").addEventListener("click", () => switchTab("all"));
-
-/* ============================================================
-   BOOT — load both Daily and Monthly sheet data
-   ============================================================ */
-Promise.all([loadDaily(), loadMonthly()])
-  .then(([dailyRows, monthlyRecords]) => {
-    monthlyRecordsCache = monthlyRecords;
-    renderReport(dailyRows, monthlyRecords);
-  })
-  .catch(e => {
-    document.getElementById("dailyStatus").textContent = "Error: " + e.message;
-    console.error(e);
-  });
-</script>
-</body>
-</html>
+  statusEl.style.display
