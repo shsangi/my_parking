@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reports</title>
+<title>Parking Reports</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -13,24 +13,27 @@
     overflow-x: hidden;
   }
 
-  /* ============ TOP TABS ============ */
-  .tabs {
+  /* ============ TAB BAR ============ */
+  .tab-bar {
     max-width: 480px; margin: 0 auto 12px;
     background: #fff; border-radius: 12px;
     padding: 6px; display: flex; gap: 4px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
-  .tab {
-    flex: 1; padding: 10px 6px; border-radius: 8px;
-    font-size: 12px; font-weight: 700; cursor: pointer;
-    color: #666; background: transparent;
-    text-align: center; transition: all 0.18s;
-    user-select: none; border: none;
+  .tab-bar button {
+    flex: 1; padding: 10px 8px; border: none;
+    background: transparent; color: #666;
+    font-size: 13px; font-weight: 600;
+    border-radius: 8px; cursor: pointer;
+    font-family: inherit;
+    transition: all 0.18s;
   }
-  .tab.active { background: #1e88e5; color: #fff; }
-  .tab:active { transform: scale(0.97); }
+  .tab-bar button.active {
+    background: #1e88e5; color: #fff;
+    box-shadow: 0 2px 6px rgba(30,136,229,0.4);
+  }
 
-  /* ============ TOGGLE (inside compare tab) ============ */
+  /* ============ SUB TOGGLE (within Monthly tab) ============ */
   .toggle-bar {
     max-width: 480px; margin: 0 auto 12px;
     background: #fff; border-radius: 12px;
@@ -54,7 +57,11 @@
     transition: all 0.18s;
   }
 
-  /* ============ CAROUSEL ============ */
+  /* ============ TAB CONTENT ============ */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ============ CAROUSEL (last 2 months) ============ */
   .carousel {
     display: flex;
     overflow-x: auto;
@@ -75,17 +82,6 @@
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     overflow: hidden;
   }
-
-  .dots {
-    display: flex; justify-content: center; gap: 6px;
-    padding: 12px 0 4px;
-    flex-wrap: wrap;
-  }
-  .dots .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #c8d0da; transition: all 0.2s; cursor: pointer;
-  }
-  .dots .dot.active { background: #1e88e5; width: 22px; border-radius: 4px; }
 
   /* ============ CARD ============ */
   .rc-head {
@@ -113,7 +109,6 @@
     display: grid;
     grid-template-columns: 34px 1fr 1fr;
     background: #f7f9fc; border-bottom: 2px solid #e0e4ea;
-    position: sticky; top: 0; z-index: 5;
     font-size: 12px; font-weight: 700;
   }
   .months .hd {
@@ -229,6 +224,7 @@
     -webkit-overflow-scrolling: touch;
     padding: 0 12px 12px;
   }
+  .table-wrap.active { display: block; }
   .table-wrap::-webkit-scrollbar { height: 6px; }
   .table-wrap::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
 
@@ -245,8 +241,7 @@
   .mcol {
     display: flex; flex-direction: column;
     border-right: 1px solid #e0e4ea;
-    min-width: 140px;
-    max-width: 140px;
+    min-width: 140px; max-width: 140px;
   }
   .mcol:last-child { border-right: none; }
 
@@ -254,7 +249,6 @@
     background: linear-gradient(135deg, #1e88e5, #1565c0);
     color: #fff; padding: 10px 8px; text-align: center;
     font-weight: 700; font-size: 13px;
-    position: sticky; top: 0; z-index: 3;
   }
   .mcol:nth-child(even) .mcol-head {
     background: linear-gradient(135deg, #43a047, #2e7d32);
@@ -263,7 +257,6 @@
   .mcol-head .mcount {
     font-size: 10px; opacity: 0.9; margin-top: 3px; font-weight: 500;
   }
-
   .mcol-body { flex: 1; }
 
   .mrow {
@@ -291,8 +284,7 @@
   .mcol-total {
     background: #f7f9fc;
     border-top: 2px solid #e0e4ea;
-    padding: 10px 8px;
-    text-align: center;
+    padding: 10px 8px; text-align: center;
   }
   .mcol-total .lbl {
     font-size: 10px; color: #666; text-transform: uppercase;
@@ -301,54 +293,26 @@
   .mcol-total .val { font-size: 15px; font-weight: 800; margin-top: 3px; }
   .mcol:nth-child(odd) .mcol-total .val { color: #1565c0; }
   .mcol:nth-child(even) .mcol-total .val { color: #2e7d32; }
-  .mcol-total .cnt {
-    font-size: 10px; color: #777; font-weight: 500; margin-top: 2px;
-  }
+  .mcol-total .cnt { font-size: 10px; color: #777; font-weight: 500; margin-top: 2px; }
 
   .mcol-grand {
     display: flex; flex-direction: column;
     min-width: 150px; max-width: 150px;
-    background: #263238;
-    color: #fff;
+    background: #263238; color: #fff;
     border-left: 3px solid #ffb300;
-    position: sticky; right: 0;
-    box-shadow: -4px 0 10px rgba(0,0,0,0.15);
   }
-  .mcol-grand .mcol-head {
-    background: linear-gradient(135deg, #ffa726, #ef6c00);
-  }
+  .mcol-grand .mcol-head { background: linear-gradient(135deg, #ffa726, #ef6c00); }
   .mcol-grand .mcol-body {
-    display: flex; flex-direction: column;
-    justify-content: center;
-    padding: 14px 10px;
-    text-align: center;
-    flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 14px 10px; text-align: center; flex: 1;
   }
-  .mcol-grand .big-lbl {
-    font-size: 10px; opacity: 0.85; text-transform: uppercase;
-    letter-spacing: 0.6px; font-weight: 700;
-  }
-  .mcol-grand .big-val {
-    font-size: 20px; font-weight: 800; margin-top: 6px;
-    color: #ffd54f;
-  }
-  .mcol-grand .sub {
-    font-size: 10px; opacity: 0.85; margin-top: 8px;
-  }
-  .mcol-grand .divider {
-    height: 1px; background: rgba(255,255,255,0.2); margin: 10px 0;
-  }
-  .mcol-grand .avg-lbl {
-    font-size: 9px; opacity: 0.7; text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .mcol-grand .avg-val {
-    font-size: 13px; font-weight: 700; margin-top: 3px; color: #fff;
-  }
-  .mcol-grand .mcol-total {
-    background: #1a232a;
-    border-top: 2px solid #ffb300;
-  }
+  .mcol-grand .big-lbl { font-size: 10px; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
+  .mcol-grand .big-val { font-size: 20px; font-weight: 800; margin-top: 6px; color: #ffd54f; }
+  .mcol-grand .sub { font-size: 10px; opacity: 0.85; margin-top: 8px; }
+  .mcol-grand .divider { height: 1px; background: rgba(255,255,255,0.2); margin: 10px 0; }
+  .mcol-grand .avg-lbl { font-size: 9px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+  .mcol-grand .avg-val { font-size: 13px; font-weight: 700; margin-top: 3px; }
+  .mcol-grand .mcol-total { background: #1a232a; border-top: 2px solid #ffb300; }
   .mcol-grand .mcol-total .val { color: #ffd54f; }
 
   .table-hint {
@@ -356,189 +320,146 @@
     padding: 6px 0 10px;
   }
 
-  /* ============ DAILY REPORT ============ */
+  /* ============ DAILY REPORT TABLE ============ */
   .daily-wrap {
-    display: none;
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 0 12px;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 12px 12px;
   }
-  .daily-card {
-    background: #fff; border-radius: 14px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    overflow: hidden;
-  }
+  .daily-wrap::-webkit-scrollbar { height: 6px; }
+  .daily-wrap::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
 
-  .daily-head {
-    background: linear-gradient(135deg, #00897b, #00695c);
-    color: #fff; padding: 16px; text-align: center;
-  }
-  .daily-head h1 { margin: 0; font-size: 16px; font-weight: 700; }
-  .daily-head p { margin: 3px 0 0; font-size: 12px; opacity: 0.9; }
-
-  /* Summary cards at top */
-  .daily-summary {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    padding: 12px;
-    background: #f7f9fc;
-    border-bottom: 1px solid #e0e4ea;
-  }
-  .sum-card {
-    background: #fff; border-radius: 10px;
-    padding: 10px 8px; text-align: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    border-left: 4px solid #1e88e5;
-  }
-  .sum-card.gross { border-left-color: #1e88e5; }
-  .sum-card.exp   { border-left-color: #e53935; }
-  .sum-card.net   { border-left-color: #43a047; }
-  .sum-card.rows  { border-left-color: #8e24aa; }
-  .sum-card .lbl {
-    font-size: 10px; color: #666; text-transform: uppercase;
-    letter-spacing: 0.5px; font-weight: 700;
-  }
-  .sum-card .val {
-    font-size: 16px; font-weight: 800; margin-top: 4px;
-  }
-  .sum-card.gross .val { color: #1565c0; }
-  .sum-card.exp   .val { color: #c62828; }
-  .sum-card.net   .val { color: #2e7d32; }
-  .sum-card.rows  .val { color: #6a1b9a; }
-
-  /* Daily entries */
-  .daily-list { padding: 0; }
-
-  .day-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    padding: 12px 14px;
-    border-bottom: 1px dashed #e5e8ee;
+  .daily-table {
+    width: 100%;
+    min-width: 640px;
     background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border-collapse: collapse;
+    font-size: 13px;
   }
-  .day-row:last-child { border-bottom: none; }
-
-  .day-dates {
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: 12px; color: #555; font-weight: 600;
-    margin-bottom: 8px;
-  }
-  .day-dates .arrow { color: #999; margin: 0 6px; }
-  .day-dates .badge {
-    background: #e3f2fd; color: #1565c0;
-    font-size: 10px; font-weight: 700;
-    padding: 2px 6px; border-radius: 4px;
-    text-transform: uppercase;
-  }
-
-  .day-amounts {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-  }
-  .day-amt {
-    text-align: center;
-    padding: 6px 4px;
-    background: #f7f9fc;
-    border-radius: 6px;
-  }
-  .day-amt .lbl {
-    font-size: 9px; color: #666; text-transform: uppercase;
-    letter-spacing: 0.4px; font-weight: 700;
-  }
-  .day-amt .val {
-    font-size: 12px; font-weight: 700; margin-top: 3px;
-  }
-  .day-amt.gross .val { color: #1565c0; }
-  .day-amt.exp   .val { color: #c62828; }
-  .day-amt.net   .val { color: #2e7d32; }
-
-  /* Footer totals */
-  .daily-footer {
-    background: linear-gradient(135deg, #263238, #37474f);
-    color: #fff; padding: 14px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    text-align: center;
-  }
-  .daily-footer .ft-lbl {
-    font-size: 10px; opacity: 0.75;
-    text-transform: uppercase; letter-spacing: 0.5px;
+  .daily-table thead th {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    color: #fff;
+    padding: 12px 10px;
+    text-align: left;
     font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
   }
-  .daily-footer .ft-val {
-    font-size: 15px; font-weight: 800; margin-top: 4px;
+  .daily-table thead th.num { text-align: right; }
+  .daily-table tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #eef1f5;
+    white-space: nowrap;
   }
-  .daily-footer .gross .ft-val { color: #90caf9; }
-  .daily-footer .exp   .ft-val { color: #ef9a9a; }
-  .daily-footer .net   .ft-val { color: #a5d6a7; }
+  .daily-table tbody td.num {
+    text-align: right;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .daily-table tbody td.date {
+    color: #555;
+    font-size: 12px;
+  }
+  .daily-table tbody tr:nth-child(even) { background: #fafbfd; }
+  .daily-table tbody tr:hover { background: #f0f7ff; }
 
-  .daily-hint {
-    text-align: center; font-size: 11px; color: #888;
-    padding: 8px 0 12px;
+  .daily-table td.gross   { color: #1565c0; }
+  .daily-table td.exp     { color: #c62828; }
+  .daily-table td.net     { color: #2e7d32; }
+
+  .daily-table tfoot td {
+    padding: 12px 10px;
+    background: #263238;
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    border-top: 2px solid #ffb300;
+    white-space: nowrap;
   }
+  .daily-table tfoot td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .daily-table tfoot td.gross { color: #90caf9; }
+  .daily-table tfoot td.exp   { color: #ef9a9a; }
+  .daily-table tfoot td.net   { color: #a5d6a7; }
 
   .status { text-align: center; padding: 40px 20px; color: #777; font-size: 14px; }
   .swipe-hint {
     text-align: center; font-size: 11px; color: #888;
     padding: 4px 0 10px;
   }
-  .view { display: none; }
-  .view.active { display: block; }
 </style>
 </head>
 <body>
 
-<!-- Top tabs -->
-<div class="tabs">
-  <button class="tab active" data-tab="compare">Last 2 Months</button>
-  <button class="tab" data-tab="all">All Months</button>
-  <button class="tab" data-tab="daily">Daily Report</button>
+<!-- Main tabs -->
+<div class="tab-bar">
+  <button id="tabMonthly" class="active" type="button">Monthly</button>
+  <button id="tabReport" type="button">Report</button>
 </div>
 
-<div id="status" class="status">Loading data…</div>
+<!-- ============= MONTHLY TAB ============= -->
+<div class="tab-content active" id="contentMonthly">
 
-<!-- ============ TAB: Last 2 Months ============ -->
-<div class="view active" id="view-compare">
-  <div class="carousel" id="carousel"></div>
-  <div class="dots" id="dots"></div>
+  <div class="toggle-bar">
+    <label>
+      <input type="radio" name="view" value="compare" checked>
+      <span>Last 2 Months</span>
+    </label>
+    <label>
+      <input type="radio" name="view" value="all">
+      <span>Show All Months</span>
+    </label>
+  </div>
+
+  <div id="status" class="status">Loading data…</div>
+
+  <!-- Last 2 months mode -->
+  <div class="carousel" id="carousel" style="display:none;"></div>
+  <div class="dots" id="dots" style="display:none;"></div>
   <div class="swipe-hint" id="swipeHint" style="display:none;">← Swipe to see other months →</div>
-</div>
 
-<!-- ============ TAB: All Months ============ -->
-<div class="view" id="view-all">
-  <div class="table-wrap" id="tableWrap" style="display:block;">
+  <!-- All months table mode -->
+  <div class="table-wrap" id="tableWrap">
     <div class="mtable" id="mtable"></div>
   </div>
   <div class="table-hint" id="tableHint" style="display:none;">← Swipe horizontally to see all months →</div>
 </div>
 
-<!-- ============ TAB: Daily Report ============ -->
-<div class="view" id="view-daily">
-  <div class="daily-wrap">
-    <div class="daily-card" id="dailyCard"></div>
-    <div class="daily-hint" id="dailyHint" style="display:none;">Daily summary — scroll for full list</div>
+<!-- ============= REPORT TAB (DAILY) ============= -->
+<div class="tab-content" id="contentReport">
+  <div id="dailyStatus" class="status">Loading daily data…</div>
+  <div class="daily-wrap" id="dailyWrap" style="display:none;">
+    <table class="daily-table" id="dailyTable">
+      <thead>
+        <tr>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th class="num">Gross (PKR)</th>
+          <th class="num">Expenses (PKR)</th>
+          <th class="num">Net Credited (PKR)</th>
+        </tr>
+      </thead>
+      <tbody id="dailyBody"></tbody>
+      <tfoot id="dailyFoot"></tfoot>
+    </table>
   </div>
+  <div class="table-hint" id="dailyHint" style="display:none;">← Swipe horizontally to see all columns →</div>
 </div>
 
 <script>
 /* ============================================================
-   CONFIG — PASTE YOUR PUBLISHED CSV URLs HERE
+   CONFIG
    ============================================================ */
-const MONTHLY_CSV_1 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pub?output=csv";
-const MONTHLY_CSV_2 = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
+const SHEET1_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pub?output=csv";
+const SHEET2_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
 
-/* >>>>>>>>>>>>>> DAILY SHEET CSV URL <<<<<<<<<<<<<<
-   Publish the "daily" tab (File → Share → Publish to web → CSV)
-   and paste the URL below.
-   Example: https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=1810247989&single=true&output=csv */
-const DAILY_CSV = "PASTE_DAILY_CSV_URL_HERE";
+/* Daily sheet — same workbook, gid 1810247989 */
+const SHEET_DAILY_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1810247989";
 
-/* ============================================================
-   COLUMN ALIASES
-   ============================================================ */
 const COL = {
   name:   ["name/item", "name", "item", "person", "party"],
   amount: ["amount", "amt", "value"],
@@ -546,16 +467,16 @@ const COL = {
   year:   ["year", "yr"]
 };
 
-const DCOL = {
-  start:  ["start date", "startdate", "from date", "from"],
-  end:    ["end date", "enddate", "to date", "to"],
-  gross:  ["total gross amount (pkr)", "total gross amount", "gross amount", "gross", "total gross"],
-  exp:    ["total expenses (pkr)", "total expenses", "expenses", "expense", "total expense"],
-  net:    ["total net amount credited (pkr)", "total net amount credited", "net amount credited", "net amount", "net credited", "net"]
+const DAILY_COL = {
+  startDate: ["start date", "startdate", "from", "from date"],
+  endDate:   ["end date", "enddate", "to", "to date"],
+  gross:     ["total gross amount (pkr)", "total gross amount", "gross amount", "gross"],
+  expenses:  ["total expenses (pkr)", "total expenses", "expenses", "expense"],
+  net:       ["total net amount credited (pkr)", "total net amount credited", "net amount credited", "net amount", "net"]
 };
 
 /* ============================================================
-   CSV PARSER
+   CSV UTIL
    ============================================================ */
 function parseCSV(text) {
   const rows = [];
@@ -586,10 +507,7 @@ function findCol(headers, names) {
   return -1;
 }
 
-/* ============================================================
-   MONTHLY RECORDS
-   ============================================================ */
-function normalizeMonthly(rows) {
+function normalizeRecords(rows) {
   if (!rows.length) return [];
   const headers = rows[0];
   const idx = {
@@ -614,39 +532,44 @@ function normalizeMonthly(rows) {
   return out;
 }
 
-/* ============================================================
-   DAILY RECORDS
-   ============================================================ */
 function normalizeDaily(rows) {
   if (!rows.length) return [];
   const headers = rows[0];
   const idx = {
-    start: findCol(headers, DCOL.start),
-    end:   findCol(headers, DCOL.end),
-    gross: findCol(headers, DCOL.gross),
-    exp:   findCol(headers, DCOL.exp),
-    net:   findCol(headers, DCOL.net)
-  };
-  const num = s => {
-    const n = parseFloat((s || "0").toString().replace(/[^0-9.\-]/g, ""));
-    return isNaN(n) ? 0 : n;
+    startDate: findCol(headers, DAILY_COL.startDate),
+    endDate:   findCol(headers, DAILY_COL.endDate),
+    gross:     findCol(headers, DAILY_COL.gross),
+    expenses:  findCol(headers, DAILY_COL.expenses),
+    net:       findCol(headers, DAILY_COL.net)
   };
   const out = [];
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
-    const start = idx.start >= 0 ? (r[idx.start] || "").trim() : "";
-    const end   = idx.end   >= 0 ? (r[idx.end]   || "").trim() : "";
-    const gross = idx.gross >= 0 ? num(r[idx.gross]) : 0;
-    const exp   = idx.exp   >= 0 ? num(r[idx.exp])   : 0;
-    const net   = idx.net   >= 0 ? num(r[idx.net])   : 0;
-    if (!start && !end && !gross && !exp && !net) continue;
-    out.push({ start, end, gross, exp, net });
+    // skip blank rows
+    if (!r.some(c => (c || "").trim() !== "")) continue;
+
+    const startDate = idx.startDate >= 0 ? (r[idx.startDate] || "").trim() : "";
+    const endDate   = idx.endDate   >= 0 ? (r[idx.endDate]   || "").trim() : "";
+    const gross     = idx.gross     >= 0 ? parseNum(r[idx.gross])     : 0;
+    const expenses  = idx.expenses  >= 0 ? parseNum(r[idx.expenses])  : 0;
+    const net       = idx.net       >= 0 ? parseNum(r[idx.net])       : 0;
+
+    // skip rows that have no dates and no amounts (e.g. "New" placeholder)
+    if (!startDate && !endDate && !gross && !expenses && !net) continue;
+
+    out.push({ startDate, endDate, gross, expenses, net });
   }
   return out;
 }
 
+function parseNum(v) {
+  if (v == null) return 0;
+  const s = v.toString().replace(/[^0-9.\-]/g, "");
+  return parseFloat(s) || 0;
+}
+
 /* ============================================================
-   MONTH HELPERS
+   MONTHLY HELPERS
    ============================================================ */
 const MONTH_NUM = {
   jan:1, january:1, feb:2, february:2, mar:3, march:3, apr:4, april:4,
@@ -665,6 +588,7 @@ function monthLabel(rec) {
 function nameKey(name) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
+
 function groupByName(recs) {
   const m = new Map();
   recs.forEach(r => {
@@ -675,40 +599,6 @@ function groupByName(recs) {
   return m;
 }
 
-/* ============================================================
-   FETCH ALL DATA
-   ============================================================ */
-async function fetchCSV(url) {
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error("HTTP " + res.status);
-  return await res.text();
-}
-
-async function loadMonthly() {
-  let all = [];
-  for (const u of [MONTHLY_CSV_1, MONTHLY_CSV_2]) {
-    try {
-      const txt = await fetchCSV(u);
-      all = all.concat(normalizeMonthly(parseCSV(txt)));
-    } catch (e) { console.warn("Monthly fetch failed:", u, e); }
-  }
-  return all;
-}
-
-async function loadDaily() {
-  if (!DAILY_CSV || DAILY_CSV.includes("PASTE_DAILY")) return [];
-  try {
-    const txt = await fetchCSV(DAILY_CSV);
-    return normalizeDaily(parseCSV(txt));
-  } catch (e) {
-    console.warn("Daily fetch failed:", e);
-    return [];
-  }
-}
-
-/* ============================================================
-   FORMAT HELPERS
-   ============================================================ */
 function fmt(n) {
   const sign = n < 0 ? "-" : "";
   return sign + Math.abs(n).toLocaleString(undefined, {
@@ -719,15 +609,6 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[c]));
-}
-function fmtDate(s) {
-  if (!s) return "—";
-  // Try to parse as Date; else return as-is
-  const d = new Date(s);
-  if (!isNaN(d.getTime())) {
-    return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
-  }
-  return s;
 }
 
 /* ============================================================
@@ -756,7 +637,7 @@ function buildComparePage(prevRecs, currRecs, prevLabel, currLabel) {
 
   page.innerHTML = `
     <div class="rc-head">
-      <h1>Monthly Report</h1>
+      <h1>Monthly Comparison</h1>
       <p>${esc(prevLabel)}  vs  ${esc(currLabel)}</p>
     </div>
     <div class="counts">
@@ -883,7 +764,7 @@ function buildTable(monthList) {
 
   let grandTotal = 0;
   let grandPersons = 0;
-  let monthsWithData = 0;
+  let totalMonthsWithData = 0;
 
   monthList.forEach(m => {
     const map = groupByName(m.recs);
@@ -927,14 +808,15 @@ function buildTable(monthList) {
       <div class="cnt">${map.size} person${map.size === 1 ? "" : "s"}</div>
     `;
     col.appendChild(tot);
+
     table.appendChild(col);
 
     grandTotal += total;
     grandPersons += map.size;
-    if (map.size) monthsWithData++;
+    if (map.size) totalMonthsWithData++;
   });
 
-  const avgPerMonth = monthsWithData ? grandTotal / monthsWithData : 0;
+  const avgPerMonth = totalMonthsWithData ? grandTotal / totalMonthsWithData : 0;
 
   const grandCol = document.createElement("div");
   grandCol.className = "mcol-grand";
@@ -963,219 +845,206 @@ function buildTable(monthList) {
 }
 
 /* ============================================================
-   DAILY REPORT
+   DAILY REPORT TABLE
    ============================================================ */
-function buildDaily(dailyRecs) {
-  const card = document.getElementById("dailyCard");
-  card.innerHTML = "";
+function renderDaily(rows) {
+  const statusEl = document.getElementById("dailyStatus");
+  const wrap     = document.getElementById("dailyWrap");
+  const hint     = document.getElementById("dailyHint");
+  const body     = document.getElementById("dailyBody");
+  const foot     = document.getElementById("dailyFoot");
 
-  if (!dailyRecs.length) {
-    card.innerHTML = `
-      <div class="daily-head">
-        <h1>Daily Report</h1>
-        <p>No daily data available</p>
-      </div>
-      <div style="padding:20px;text-align:center;color:#888;font-size:13px;">
-        Paste the published CSV URL for the daily sheet into <code>DAILY_CSV</code>.
-      </div>
-    `;
-    document.getElementById("dailyHint").style.display = "none";
+  if (!rows.length) {
+    statusEl.textContent = "No daily data found. Make sure the Daily sheet is published as CSV.";
     return;
   }
 
-  /* Totals */
-  let totGross = 0, totExp = 0, totNet = 0;
-  dailyRecs.forEach(r => {
-    totGross += r.gross;
-    totExp   += r.exp;
-    totNet   += r.net;
+  /* Sort by start date ascending (fallback: string sort) */
+  rows.sort((a, b) => {
+    const da = parseDate(a.startDate);
+    const db = parseDate(b.startDate);
+    if (da && db) return da - db;
+    return (a.startDate || "").localeCompare(b.startDate || "");
   });
 
-  /* Header */
-  const head = document.createElement("div");
-  head.className = "daily-head";
-  head.innerHTML = `
-    <h1>Daily Report</h1>
-    <p>${dailyRecs.length} entr${dailyRecs.length === 1 ? "y" : "ies"}</p>
-  `;
-  card.appendChild(head);
+  body.innerHTML = "";
+  let tGross = 0, tExp = 0, tNet = 0;
 
-  /* Summary cards */
-  const sum = document.createElement("div");
-  sum.className = "daily-summary";
-  sum.innerHTML = `
-    <div class="sum-card gross">
-      <div class="lbl">Total Gross (PKR)</div>
-      <div class="val">${fmt(totGross)}</div>
-    </div>
-    <div class="sum-card exp">
-      <div class="lbl">Total Expenses (PKR)</div>
-      <div class="val">${fmt(totExp)}</div>
-    </div>
-    <div class="sum-card net">
-      <div class="lbl">Net Credited (PKR)</div>
-      <div class="val">${fmt(totNet)}</div>
-    </div>
-    <div class="sum-card rows">
-      <div class="lbl">Entries</div>
-      <div class="val">${dailyRecs.length}</div>
-    </div>
-  `;
-  card.appendChild(sum);
+  rows.forEach(r => {
+    tGross += r.gross;
+    tExp   += r.expenses;
+    tNet   += r.net;
 
-  /* Rows */
-  const list = document.createElement("div");
-  list.className = "daily-list";
-
-  /* Show latest first */
-  const sorted = [...dailyRecs].reverse();
-  sorted.forEach(r => {
-    const row = document.createElement("div");
-    row.className = "day-row";
-    row.innerHTML = `
-      <div class="day-dates">
-        <span>${esc(fmtDate(r.start))}</span>
-        <span class="arrow">→</span>
-        <span>${esc(fmtDate(r.end))}</span>
-      </div>
-      <div class="day-amounts">
-        <div class="day-amt gross">
-          <div class="lbl">Gross</div>
-          <div class="val">${fmt(r.gross)}</div>
-        </div>
-        <div class="day-amt exp">
-          <div class="lbl">Expenses</div>
-          <div class="val">${fmt(r.exp)}</div>
-        </div>
-        <div class="day-amt net">
-          <div class="lbl">Net</div>
-          <div class="val">${fmt(r.net)}</div>
-        </div>
-      </div>
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="date">${esc(r.startDate) || "—"}</td>
+      <td class="date">${esc(r.endDate) || "—"}</td>
+      <td class="num gross">${fmt(r.gross)}</td>
+      <td class="num exp">${fmt(r.expenses)}</td>
+      <td class="num net">${fmt(r.net)}</td>
     `;
-    list.appendChild(row);
+    body.appendChild(tr);
   });
-  card.appendChild(list);
 
-  /* Footer totals */
-  const footer = document.createElement("div");
-  footer.className = "daily-footer";
-  footer.innerHTML = `
-    <div class="gross">
-      <div class="ft-lbl">Gross</div>
-      <div class="ft-val">${fmt(totGross)}</div>
-    </div>
-    <div class="exp">
-      <div class="ft-lbl">Expenses</div>
-      <div class="ft-val">${fmt(totExp)}</div>
-    </div>
-    <div class="net">
-      <div class="ft-lbl">Net</div>
-      <div class="ft-val">${fmt(totNet)}</div>
-    </div>
+  foot.innerHTML = `
+    <tr>
+      <td colspan="2">TOTAL (${rows.length} row${rows.length === 1 ? "" : "s"})</td>
+      <td class="num gross">${fmt(tGross)}</td>
+      <td class="num exp">${fmt(tExp)}</td>
+      <td class="num net">${fmt(tNet)}</td>
+    </tr>
   `;
-  card.appendChild(footer);
 
-  document.getElementById("dailyHint").style.display = "block";
+  statusEl.style.display = "none";
+  wrap.style.display = "block";
+  hint.style.display = "block";
+}
+
+function parseDate(s) {
+  if (!s) return null;
+  /* Try DD/MM/YYYY, DD-MM-YYYY, YYYY-MM-DD, or JS-native */
+  const t = Date.parse(s);
+  if (!isNaN(t)) return t;
+  const m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+  if (m) {
+    let dd = +m[1], mm = +m[2], yy = +m[3];
+    if (yy < 100) yy += 2000;
+    return new Date(yy, mm - 1, dd).getTime();
+  }
+  return null;
 }
 
 /* ============================================================
-   STATE + RENDER
+   DATA LOADING
+   ============================================================ */
+async function loadMonthly() {
+  let all = [];
+  for (const u of [SHEET1_CSV, SHEET2_CSV]) {
+    try {
+      const res = await fetch(u, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const txt = await res.text();
+      all = all.concat(normalizeRecords(parseCSV(txt)));
+    } catch (e) { console.warn("Monthly fetch failed:", u, e); }
+  }
+  return all;
+}
+
+async function loadDaily() {
+  try {
+    const res = await fetch(SHEET_DAILY_CSV, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const txt = await res.text();
+    return normalizeDaily(parseCSV(txt));
+  } catch (e) {
+    console.warn("Daily fetch failed:", SHEET_DAILY_CSV, e);
+    return [];
+  }
+}
+
+/* ============================================================
+   MONTHLY VIEW STATE
    ============================================================ */
 let allKeys = [];
 let byMonth = new Map();
-let dailyRecs = [];
+let currentView = "compare";
 
-function renderCompareView() {
-  const carousel = document.getElementById("carousel");
-  const dotsEl   = document.getElementById("dots");
-  const swipeHint = document.getElementById("swipeHint");
+function renderMonthlyView() {
+  const carousel   = document.getElementById("carousel");
+  const dotsEl     = document.getElementById("dots");
+  const swipeHint  = document.getElementById("swipeHint");
+  const tableWrap  = document.getElementById("tableWrap");
+  const tableHint  = document.getElementById("tableHint");
+
+  carousel.style.display   = "none";
+  dotsEl.style.display     = "none";
+  swipeHint.style.display  = "none";
+  tableWrap.style.display  = "none";
+  tableHint.style.display  = "none";
 
   carousel.innerHTML = "";
   dotsEl.innerHTML = "";
+  document.getElementById("mtable").innerHTML = "";
 
-  if (allKeys.length < 2) {
-    carousel.innerHTML = `<div class="page" style="padding:30px;text-align:center;color:#888;">
-      Need at least two months of data.</div>`;
+  if (currentView === "compare") {
+    if (allKeys.length < 2) return;
+    const kPrev = allKeys[allKeys.length - 2];
+    const kCurr = allKeys[allKeys.length - 1];
+    const prevRecs = byMonth.get(kPrev) || [];
+    const currRecs = byMonth.get(kCurr) || [];
+    const prevLabel = monthLabel(prevRecs[0]);
+    const currLabel = monthLabel(currRecs[0]);
+
+    carousel.appendChild(buildComparePage(prevRecs, currRecs, prevLabel, currLabel));
+    carousel.style.display = "flex";
+  } else {
+    const monthList = allKeys.map(k => {
+      const recs = byMonth.get(k) || [];
+      return { recs, label: monthLabel(recs[0]) };
+    }).filter(m => m.recs.length);
+
+    buildTable(monthList);
+    tableWrap.style.display = "block";
+    tableHint.style.display = monthList.length > 1 ? "block" : "none";
+  }
+}
+
+function renderMonthly(records) {
+  const statusEl = document.getElementById("status");
+  if (!records.length) {
+    statusEl.textContent = "No data available. Please make sure the sheets are published as CSV.";
     return;
   }
-  const kPrev = allKeys[allKeys.length - 2];
-  const kCurr = allKeys[allKeys.length - 1];
-  const prevRecs = byMonth.get(kPrev) || [];
-  const currRecs = byMonth.get(kCurr) || [];
-  const prevLabel = monthLabel(prevRecs[0]);
-  const currLabel = monthLabel(currRecs[0]);
 
-  carousel.appendChild(buildComparePage(prevRecs, currRecs, prevLabel, currLabel));
-  swipeHint.style.display = "none";
-}
+  allKeys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
+  if (allKeys.length < 2) {
+    statusEl.textContent = "Need at least two months of data.";
+    return;
+  }
 
-function renderAllView() {
-  const monthList = allKeys.map(k => {
-    const recs = byMonth.get(k) || [];
-    return { recs, label: monthLabel(recs[0]) };
-  }).filter(m => m.recs.length);
-
-  buildTable(monthList);
-  document.getElementById("tableHint").style.display =
-    monthList.length > 1 ? "block" : "none";
-}
-
-function activateTab(tab) {
-  document.querySelectorAll(".tab").forEach(t => {
-    t.classList.toggle("active", t.dataset.tab === tab);
+  byMonth = new Map();
+  records.forEach(r => {
+    const k = monthKey(r);
+    if (!byMonth.has(k)) byMonth.set(k, []);
+    byMonth.get(k).push(r);
   });
-  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-  const target = document.getElementById("view-" + tab);
-  if (target) target.classList.add("active");
+
+  statusEl.style.display = "none";
+  renderMonthlyView();
+
+  document.querySelectorAll('input[name="view"]').forEach(rb => {
+    rb.addEventListener("change", e => {
+      currentView = e.target.value;
+      renderMonthlyView();
+    });
+  });
 }
 
 /* ============================================================
-   INIT
+   TAB SWITCHING
    ============================================================ */
-async function init() {
-  const statusEl = document.getElementById("status");
+let reportLoaded = false;
+function switchTab(tab) {
+  document.getElementById("tabMonthly").classList.toggle("active", tab === "monthly");
+  document.getElementById("tabReport").classList.toggle("active", tab === "report");
+  document.getElementById("contentMonthly").classList.toggle("active", tab === "monthly");
+  document.getElementById("contentReport").classList.toggle("active", tab === "report");
 
-  try {
-    const [monthly, daily] = await Promise.all([loadMonthly(), loadDaily()]);
-
-    statusEl.style.display = "none";
-
-    /* Monthly processing */
-    if (monthly.length) {
-      allKeys = [...new Set(monthly.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
-      byMonth = new Map();
-      monthly.forEach(r => {
-        const k = monthKey(r);
-        if (!byMonth.has(k)) byMonth.set(k, []);
-        byMonth.get(k).push(r);
-      });
-    }
-
-    renderCompareView();
-    renderAllView();
-
-    /* Daily processing */
-    dailyRecs = daily;
-    buildDaily(dailyRecs);
-
-    /* Tab switching */
-    document.querySelectorAll(".tab").forEach(t => {
-      t.addEventListener("click", () => activateTab(t.dataset.tab));
-    });
-
-    /* Nothing fetched at all */
-    if (!monthly.length && !daily.length) {
-      statusEl.style.display = "block";
-      statusEl.textContent = "No data loaded. Check the CSV URLs.";
-    }
-  } catch (e) {
-    statusEl.textContent = "Error: " + e.message;
-    console.error(e);
+  if (tab === "report" && !reportLoaded) {
+    reportLoaded = true;
+    loadDaily().then(renderDaily);
   }
 }
+document.getElementById("tabMonthly").addEventListener("click", () => switchTab("monthly"));
+document.getElementById("tabReport").addEventListener("click", () => switchTab("report"));
 
-init();
+/* ============================================================
+   BOOT
+   ============================================================ */
+loadMonthly().then(renderMonthly).catch(e => {
+  document.getElementById("status").textContent = "Error: " + e.message;
+  console.error(e);
+});
 </script>
 </body>
 </html>
