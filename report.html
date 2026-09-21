@@ -13,6 +13,7 @@
     overflow-x: hidden;
   }
 
+  /* ============ TAB BAR ============ */
   .tab-bar {
     max-width: 480px; margin: 0 auto 12px;
     background: #fff; border-radius: 12px;
@@ -35,6 +36,7 @@
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
+  /* ============ CAROUSEL ============ */
   .carousel {
     display: flex; overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -182,6 +184,7 @@
   .diffbar.neg { background: #ffebee; color: #c62828; }
   .diffbar.zero { background: #f0f2f6; color: #555; }
 
+  /* ============ ALL MONTHS TABLE ============ */
   .table-wrap {
     max-width: 100%; overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -271,16 +274,202 @@
   .mcol-grand .mcol-total { background: #1a232a; border-top: 2px solid #ffb300; }
   .mcol-grand .mcol-total .val { color: #ffd54f; }
 
-  .report-section {
-    max-width: 100%; padding: 0 12px 20px;
+  /* ============ REPORT CARDS ============ */
+  .report-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 12px 20px;
   }
-  .section-title {
+
+  .report-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  /* Card header — month + date range */
+  .rcard-head {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    color: #fff;
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+  }
+  .rcard-head .month-name {
+    font-size: 17px; font-weight: 800; letter-spacing: 0.4px;
+  }
+  .rcard-head .date-range {
+    font-size: 11px; opacity: 0.9; margin-top: 3px;
+  }
+  .rcard-head .days-pill {
+    background: rgba(255,255,255,0.22);
+    padding: 5px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* Big total row (Gross) */
+  .rcard-total {
+    padding: 16px;
+    background: #f7f9fc;
+    text-align: center;
+    border-bottom: 1px solid #e0e4ea;
+  }
+  .rcard-total .big-lbl {
+    font-size: 10px; color: #666;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+  .rcard-total .big-val {
+    font-size: 28px; font-weight: 800;
+    color: #1565c0; margin-top: 5px;
+    line-height: 1.1;
+  }
+  .rcard-total .big-sub {
+    font-size: 11px; color: #777;
+    margin-top: 4px;
+  }
+
+  /* Two-column mini breakdown */
+  .rcard-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid #e0e4ea;
+  }
+  .rcard-cell {
+    padding: 12px 10px;
+    text-align: center;
+    border-right: 1px solid #e0e4ea;
+  }
+  .rcard-cell:last-child { border-right: none; }
+  .rcard-cell .lbl {
+    font-size: 10px; color: #666;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+  .rcard-cell .val {
+    font-size: 18px; font-weight: 800;
+    margin-top: 4px;
+  }
+  .rcard-cell .sub {
+    font-size: 10px; color: #888;
+    margin-top: 3px;
+  }
+  .rcard-cell.expenses .val { color: #c62828; }
+  .rcard-cell.net .val      { color: #2e7d32; }
+  .rcard-cell.gross .val    { color: #1565c0; }
+
+  /* Daily averages — highlighted block */
+  .rcard-avgs {
+    background: linear-gradient(135deg, #263238, #37474f);
+    color: #fff;
+    padding: 14px 10px;
+  }
+  .rcard-avgs .avg-title {
+    text-align: center;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    opacity: 0.75;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .avg-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .avg-item {
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 10px 6px;
+    text-align: center;
+  }
+  .avg-item .avg-lbl {
+    font-size: 9px;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 700;
+  }
+  .avg-item .avg-val {
+    font-size: 14px;
+    font-weight: 800;
+    margin-top: 5px;
+    line-height: 1.2;
+  }
+  .avg-item.g .avg-val { color: #90caf9; }
+  .avg-item.e .avg-val { color: #ef9a9a; }
+  .avg-item.n .avg-val { color: #a5d6a7; }
+
+  /* Overall summary card (dark, at bottom) */
+  .overall-card {
+    background: linear-gradient(135deg, #0d47a1, #1565c0);
+    color: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(13,71,161,0.35);
+    margin-bottom: 14px;
+  }
+  .overall-card .oc-head {
+    padding: 14px 16px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .overall-card .oc-head .t {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.85;
+    font-weight: 700;
+  }
+  .overall-card .oc-head .s {
+    font-size: 11px;
+    opacity: 0.75;
+    margin-top: 3px;
+  }
+  .overall-card .oc-body {
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+  .overall-card .oc-cell {
+    padding: 14px 10px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.15);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .overall-card .oc-cell:nth-child(even) { border-right: none; }
+  .overall-card .oc-cell:nth-last-child(-n+2) { border-bottom: none; }
+  .overall-card .oc-lbl {
+    font-size: 10px;
+    opacity: 0.75;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+  .overall-card .oc-val {
+    font-size: 17px;
+    font-weight: 800;
+    margin-top: 5px;
+  }
+  .overall-card .oc-sub {
+    font-size: 10px;
+    opacity: 0.75;
+    margin-top: 3px;
+  }
+  .overall-card .oc-val.g { color: #90caf9; }
+  .overall-card .oc-val.e { color: #ef9a9a; }
+  .overall-card .oc-val.n { color: #a5d6a7; }
+  .overall-card .oc-val.a { color: #ffd54f; }
+
+  /* Original daily data section */
+  .daily-section-title {
     font-size: 13px; font-weight: 700; color: #263238;
-    padding: 8px 4px 10px;
+    padding: 12px 4px 10px;
     letter-spacing: 0.3px;
     display: flex; align-items: center; gap: 8px;
   }
-  .section-title::before {
+  .daily-section-title::before {
     content: ''; width: 4px; height: 16px;
     background: #1e88e5; border-radius: 2px;
   }
@@ -296,7 +485,7 @@
   .table-scroll::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
 
   .data-table {
-    width: 100%; min-width: 720px;
+    width: 100%; min-width: 620px;
     border-collapse: collapse; font-size: 13px;
   }
   .data-table thead th {
@@ -317,16 +506,10 @@
     font-variant-numeric: tabular-nums;
   }
   .data-table tbody td.date { color: #555; font-size: 12px; }
-  .data-table tbody td.month-name {
-    font-weight: 700; color: #263238; font-size: 13px;
-  }
-  .data-table tbody td.days { color: #666; font-size: 12px; }
   .data-table tbody tr:nth-child(even) { background: #fafbfd; }
-
   .data-table td.gross { color: #1565c0; }
   .data-table td.exp   { color: #c62828; }
   .data-table td.net   { color: #2e7d32; }
-  .data-table td.avg   { color: #6a1b9a; font-style: italic; }
 
   .data-table tfoot td {
     padding: 12px 10px;
@@ -339,9 +522,6 @@
   .data-table tfoot td.gross { color: #90caf9; }
   .data-table tfoot td.exp   { color: #ef9a9a; }
   .data-table tfoot td.net   { color: #a5d6a7; }
-  .data-table tfoot td.avg   { color: #ce93d8; }
-
-  .table-scroll + .section-title { margin-top: 12px; }
 
   .status { text-align: center; padding: 40px 20px; color: #777; font-size: 14px; }
   .hint {
@@ -358,34 +538,20 @@
   <button id="tabAll" type="button">All Months</button>
 </div>
 
+<!-- ============= REPORT TAB (DEFAULT) ============= -->
 <div class="tab-content active" id="contentReport">
   <div id="dailyStatus" class="status">Loading report…</div>
 
   <div id="reportContent" style="display:none;">
-    <div class="report-section">
-      <div class="section-title">Monthly Report (with Per‑Day Averages)</div>
-      <div class="table-scroll">
-        <table class="data-table" id="monthlyReportTable">
-          <thead>
-            <tr>
-              <th>Month</th>
-              <th class="num">Days</th>
-              <th class="num">Gross (PKR)</th>
-              <th class="num">Expenses (PKR)</th>
-              <th class="num">Net Credited (PKR)</th>
-              <th class="num">Avg Gross/Day</th>
-              <th class="num">Avg Expenses/Day</th>
-              <th class="num">Avg Net/Day</th>
-            </tr>
-          </thead>
-          <tbody id="monthlyReportBody"></tbody>
-          <tfoot id="monthlyReportFoot"></tfoot>
-        </table>
-      </div>
-    </div>
+    <div class="report-wrap">
+      <!-- Month cards injected here -->
+      <div id="reportCards"></div>
 
-    <div class="report-section">
-      <div class="section-title">Daily Data</div>
+      <!-- Overall summary card injected here -->
+      <div id="reportOverall"></div>
+
+      <!-- Original daily data table -->
+      <div class="daily-section-title">Daily Data</div>
       <div class="table-scroll">
         <table class="data-table" id="dailyTable">
           <thead>
@@ -401,17 +567,18 @@
           <tfoot id="dailyFoot"></tfoot>
         </table>
       </div>
+      <div class="hint">← Swipe horizontally on the table to see all columns →</div>
     </div>
-
-    <div class="hint">← Swipe horizontally on a table to see all columns →</div>
   </div>
 </div>
 
+<!-- ============= LAST 2 MONTHS TAB ============= -->
 <div class="tab-content" id="contentLast2">
   <div id="statusLast2" class="status">Loading data…</div>
   <div class="carousel" id="carousel" style="display:none;"></div>
 </div>
 
+<!-- ============= ALL MONTHS TAB ============= -->
 <div class="tab-content" id="contentAll">
   <div id="statusAll" class="status">Loading data…</div>
   <div class="table-wrap" id="tableWrap" style="display:none;">
@@ -543,7 +710,6 @@ const MONTH_NUM = {
   september:9, oct:10, october:10, nov:11, november:11, dec:12, december:12
 };
 const MONTH_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const MONTH_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 function monthKey(rec) {
   const m = MONTH_NUM[rec.month.toLowerCase()] || 0;
@@ -572,6 +738,9 @@ function fmt(n) {
     minimumFractionDigits: 2, maximumFractionDigits: 2
   });
 }
+function fmtInt(n) {
+  return Math.round(n).toLocaleString();
+}
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
@@ -579,12 +748,7 @@ function esc(s) {
 }
 
 /* ============================================================
-   DATE PARSING — supports:
-   - "August 18, 2026" / "Aug 18 2026"
-   - "18 August 2026"
-   - "2026-08-18"
-   - "18/08/2026", "18-08-2026", "18.08.2026"
-   - "8/18/2026" (US, only if first part > 12)
+   DATE PARSING
    ============================================================ */
 function parseDateParts(s) {
   if (!s) return null;
@@ -597,32 +761,26 @@ function parseDateParts(s) {
     const mo = MONTH_NUM[m[1].toLowerCase()];
     if (mo) return { y: +m[3], m: mo, d: +m[2] };
   }
-
   /* "18 August 2026" */
   m = str.match(/^(\d{1,2})\s+([A-Za-z]+)(?:,)?\s+(\d{4})$/);
   if (m) {
     const mo = MONTH_NUM[m[2].toLowerCase()];
     if (mo) return { y: +m[3], m: mo, d: +m[1] };
   }
-
   /* YYYY-MM-DD */
   m = str.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
   if (m) return { y: +m[1], m: +m[2], d: +m[3] };
 
-  /* DD/MM/YYYY or MM/DD/YYYY — assume DD/MM unless first > 12 */
+  /* DD/MM/YYYY or MM/DD/YYYY */
   m = str.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
   if (m) {
     let a = +m[1], b = +m[2], y = +m[3];
     if (y < 100) y += 2000;
-    /* If a > 12 → clearly day-first (DD/MM) */
-    /* If b > 12 → clearly month-first (MM/DD) → swap */
     if (a > 12) return { y, m: b, d: a };
     if (b > 12) return { y, m: a, d: b };
-    /* Default: DD/MM (common in PK) */
     return { y, m: b, d: a };
   }
-
-  /* Fallback to native */
+  /* Fallback */
   const t = Date.parse(str);
   if (!isNaN(t)) {
     const dt = new Date(t);
@@ -631,11 +789,8 @@ function parseDateParts(s) {
   return null;
 }
 
-function daysInMonth(y, m) {
-  return new Date(y, m, 0).getDate();
-}
+function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
 
-/* Count unique calendar days in a group of records */
 function uniqueDays(rows) {
   const set = new Set();
   rows.forEach(r => {
@@ -643,6 +798,14 @@ function uniqueDays(rows) {
     if (p) set.add(`${p.y}-${p.m}-${p.d}`);
   });
   return set.size;
+}
+
+function fmtDateRange(a, b) {
+  if (!a && !b) return "—";
+  if (!a) return b;
+  if (!b) return a;
+  if (a === b) return a;
+  return `${a}  →  ${b}`;
 }
 
 /* ============================================================
@@ -877,22 +1040,11 @@ function buildAllMonthsTable(monthList) {
 }
 
 /* ============================================================
-   REPORT TAB
+   REPORT TAB — CARDS
    ============================================================ */
 
-/* ---- Table 1: Monthly report with per-day averages ---- */
-function renderMonthlyReport(rows) {
-  const body = document.getElementById("monthlyReportBody");
-  const foot = document.getElementById("monthlyReportFoot");
-  body.innerHTML = "";
-  foot.innerHTML = "";
-
-  if (!rows.length) {
-    body.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#999;padding:20px;">No data</td></tr>`;
-    return;
-  }
-
-  /* Group by month using START date first, fall back to END date */
+/* Group daily rows by month based on START date */
+function groupDailyByMonth(rows) {
   const groups = new Map();
   rows.forEach(r => {
     const p = parseDateParts(r.startDate) || parseDateParts(r.endDate);
@@ -901,61 +1053,179 @@ function renderMonthlyReport(rows) {
     if (!groups.has(key)) groups.set(key, { y: p.y, m: p.m, rows: [] });
     groups.get(key).rows.push(r);
   });
+  return groups;
+}
 
+/* Build one month card */
+function buildMonthCard(y, m, monthRows) {
+  const label = `${MONTH_SHORT[m - 1]} ${y}`;
+  const daysCount = uniqueDays(monthRows) || daysInMonth(y, m);
+
+  let gross = 0, exp = 0, net = 0;
+  monthRows.forEach(r => { gross += r.gross; exp += r.expenses; net += r.net; });
+
+  /* Date range (min start → max end) */
+  const starts = monthRows.map(r => parseDateParts(r.startDate)).filter(Boolean);
+  const ends   = monthRows.map(r => parseDateParts(r.endDate)).filter(Boolean);
+
+  let minStart = null, maxEnd = null;
+  starts.forEach(p => {
+    const key = p.y * 10000 + p.m * 100 + p.d;
+    if (!minStart || key < minStart.key) minStart = { key, p };
+  });
+  ends.forEach(p => {
+    const key = p.y * 10000 + p.m * 100 + p.d;
+    if (!maxEnd || key > maxEnd.key) maxEnd = { key, p };
+  });
+
+  function shortFmt(p) {
+    if (!p) return "—";
+    return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]} ${p.y}`;
+  }
+  const rangeText = minStart && maxEnd
+    ? (minStart.key === maxEnd.key
+        ? shortFmt(minStart.p)
+        : `${shortFmt(minStart.p)}  →  ${shortFmt(maxEnd.p)}`)
+    : "—";
+
+  /* Averages */
+  const avgGross = daysCount ? gross / daysCount : 0;
+  const avgExp   = daysCount ? exp   / daysCount : 0;
+  const avgNet   = daysCount ? net   / daysCount : 0;
+
+  const card = document.createElement("div");
+  card.className = "report-card";
+
+  card.innerHTML = `
+    <div class="rcard-head">
+      <div>
+        <div class="month-name">${esc(label)}</div>
+        <div class="date-range">${esc(rangeText)}</div>
+      </div>
+      <div class="days-pill">${daysCount} day${daysCount === 1 ? "" : "s"}</div>
+    </div>
+
+    <div class="rcard-total">
+      <div class="big-lbl">Total Gross Amount</div>
+      <div class="big-val">PKR ${fmtInt(gross)}</div>
+      <div class="big-sub">Across ${monthRows.length} row${monthRows.length === 1 ? "" : "s"}</div>
+    </div>
+
+    <div class="rcard-row">
+      <div class="rcard-cell expenses">
+        <div class="lbl">Total Expenses</div>
+        <div class="val">PKR ${fmtInt(exp)}</div>
+        <div class="sub">This month</div>
+      </div>
+      <div class="rcard-cell net">
+        <div class="lbl">Net Credited</div>
+        <div class="val">PKR ${fmtInt(net)}</div>
+        <div class="sub">This month</div>
+      </div>
+    </div>
+
+    <div class="rcard-avgs">
+      <div class="avg-title">Daily Averages</div>
+      <div class="avg-grid">
+        <div class="avg-item g">
+          <div class="avg-lbl">Avg Gross</div>
+          <div class="avg-val">${fmtInt(avgGross)}</div>
+        </div>
+        <div class="avg-item e">
+          <div class="avg-lbl">Avg Expenses</div>
+          <div class="avg-val">${fmtInt(avgExp)}</div>
+        </div>
+        <div class="avg-item n">
+          <div class="avg-lbl">Avg Net</div>
+          <div class="avg-val">${fmtInt(avgNet)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  return { card, gross, exp, net, daysCount };
+}
+
+/* Build overall summary card (all months combined) */
+function buildOverallCard(totals) {
+  const { gross, exp, net, days } = totals;
+  const avgGross = days ? gross / days : 0;
+  const avgExp   = days ? exp   / days : 0;
+  const avgNet   = days ? net   / days : 0;
+
+  const card = document.createElement("div");
+  card.className = "overall-card";
+  card.innerHTML = `
+    <div class="oc-head">
+      <div class="t">Overall Summary</div>
+      <div class="s">Across ${days} day${days === 1 ? "" : "s"}</div>
+    </div>
+    <div class="oc-body">
+      <div class="oc-cell">
+        <div class="oc-lbl">Total Gross</div>
+        <div class="oc-val g">${fmtInt(gross)}</div>
+      </div>
+      <div class="oc-cell">
+        <div class="oc-lbl">Total Expenses</div>
+        <div class="oc-val e">${fmtInt(exp)}</div>
+      </div>
+      <div class="oc-cell">
+        <div class="oc-lbl">Net Credited</div>
+        <div class="oc-val n">${fmtInt(net)}</div>
+      </div>
+      <div class="oc-cell">
+        <div class="oc-lbl">Avg Net / Day</div>
+        <div class="oc-val a">${fmtInt(avgNet)}</div>
+      </div>
+      <div class="oc-cell">
+        <div class="oc-lbl">Avg Gross / Day</div>
+        <div class="oc-val a">${fmtInt(avgGross)}</div>
+      </div>
+      <div class="oc-cell">
+        <div class="oc-lbl">Avg Exp / Day</div>
+        <div class="oc-val a">${fmtInt(avgExp)}</div>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+/* Render all report cards (per month + overall) */
+function renderReportCards(rows) {
+  const cardsEl   = document.getElementById("reportCards");
+  const overallEl = document.getElementById("reportOverall");
+  cardsEl.innerHTML = "";
+  overallEl.innerHTML = "";
+
+  if (!rows.length) {
+    cardsEl.innerHTML = `<div class="status">No data</div>`;
+    return;
+  }
+
+  const groups = groupDailyByMonth(rows);
   const keys = [...groups.keys()].sort((a, b) => a - b);
 
-  let tDays = 0, tGross = 0, tExp = 0, tNet = 0;
+  let totalGross = 0, totalExp = 0, totalNet = 0, totalDays = 0;
 
   keys.forEach(k => {
     const g = groups.get(k);
-    const label = `${MONTH_SHORT[g.m - 1]} ${g.y}`;
-    const daysCount = uniqueDays(g.rows) || daysInMonth(g.y, g.m);
-
-    let gross = 0, exp = 0, net = 0;
-    g.rows.forEach(r => {
-      gross += r.gross; exp += r.expenses; net += r.net;
-    });
-
-    const avgGross = daysCount ? gross / daysCount : 0;
-    const avgExp   = daysCount ? exp   / daysCount : 0;
-    const avgNet   = daysCount ? net   / daysCount : 0;
-
-    tDays += daysCount;
-    tGross += gross; tExp += exp; tNet += net;
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="month-name">${esc(label)}</td>
-      <td class="num days">${daysCount}</td>
-      <td class="num gross">${fmt(gross)}</td>
-      <td class="num exp">${fmt(exp)}</td>
-      <td class="num net">${fmt(net)}</td>
-      <td class="num avg">${fmt(avgGross)}</td>
-      <td class="num avg">${fmt(avgExp)}</td>
-      <td class="num avg">${fmt(avgNet)}</td>
-    `;
-    body.appendChild(tr);
+    const { card, gross, exp, net, daysCount } = buildMonthCard(g.y, g.m, g.rows);
+    cardsEl.appendChild(card);
+    totalGross += gross;
+    totalExp   += exp;
+    totalNet   += net;
+    totalDays  += daysCount;
   });
 
-  const totAvgGross = tDays ? tGross / tDays : 0;
-  const totAvgExp   = tDays ? tExp   / tDays : 0;
-  const totAvgNet   = tDays ? tNet   / tDays : 0;
-
-  foot.innerHTML = `
-    <tr>
-      <td>TOTAL (${keys.length} month${keys.length === 1 ? "" : "s"})</td>
-      <td class="num days" style="color:#fff;">${tDays}</td>
-      <td class="num gross">${fmt(tGross)}</td>
-      <td class="num exp">${fmt(tExp)}</td>
-      <td class="num net">${fmt(tNet)}</td>
-      <td class="num avg">${fmt(totAvgGross)}</td>
-      <td class="num avg">${fmt(totAvgExp)}</td>
-      <td class="num avg">${fmt(totAvgNet)}</td>
-    </tr>
-  `;
+  overallEl.appendChild(buildOverallCard({
+    gross: totalGross,
+    exp:   totalExp,
+    net:   totalNet,
+    days:  totalDays
+  }));
 }
 
-/* ---- Table 2: Daily data ---- */
+/* ---- Original daily data table ---- */
 function renderDailyTable(rows) {
   const body = document.getElementById("dailyBody");
   const foot = document.getElementById("dailyFoot");
@@ -1008,7 +1278,7 @@ function renderReport(rows) {
     return;
   }
 
-  renderMonthlyReport(rows);
+  renderReportCards(rows);
   renderDailyTable(rows);
 
   statusEl.style.display = "none";
