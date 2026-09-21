@@ -13,7 +13,6 @@
     overflow-x: hidden;
   }
 
-  /* ============ TAB BAR ============ */
   .tab-bar {
     max-width: 480px; margin: 0 auto 12px;
     background: #fff; border-radius: 12px;
@@ -25,8 +24,7 @@
     background: transparent; color: #666;
     font-size: 12.5px; font-weight: 600;
     border-radius: 8px; cursor: pointer;
-    font-family: inherit;
-    transition: all 0.18s;
+    font-family: inherit; transition: all 0.18s;
     white-space: nowrap;
   }
   .tab-bar button.active {
@@ -34,33 +32,26 @@
     box-shadow: 0 2px 6px rgba(30,136,229,0.4);
   }
 
-  /* ============ TAB CONTENT ============ */
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
-  /* ============ CAROUSEL (last 2 months) ============ */
   .carousel {
-    display: flex;
-    overflow-x: auto;
+    display: flex; overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 0 12px;
-    gap: 12px;
+    padding: 0 12px; gap: 12px;
   }
   .carousel::-webkit-scrollbar { display: none; }
 
   .page {
     flex: 0 0 calc(100% - 24px);
-    max-width: 480px;
-    scroll-snap-align: center;
-    background: #fff;
-    border-radius: 14px;
+    max-width: 480px; scroll-snap-align: center;
+    background: #fff; border-radius: 14px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     overflow: hidden;
   }
 
-  /* ============ CARD ============ */
   .rc-head {
     background: linear-gradient(135deg, #1e88e5, #1565c0);
     color: #fff; padding: 14px; text-align: center;
@@ -191,10 +182,8 @@
   .diffbar.neg { background: #ffebee; color: #c62828; }
   .diffbar.zero { background: #f0f2f6; color: #555; }
 
-  /* ============ ALL MONTHS TABLE ============ */
   .table-wrap {
-    max-width: 100%;
-    overflow-x: auto;
+    max-width: 100%; overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding: 0 12px 12px;
   }
@@ -202,13 +191,10 @@
   .table-wrap::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
 
   .mtable {
-    display: inline-grid;
-    grid-auto-flow: column;
-    border-radius: 12px;
-    overflow: hidden;
+    display: inline-grid; grid-auto-flow: column;
+    border-radius: 12px; overflow: hidden;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    background: #fff;
-    min-width: 100%;
+    background: #fff; min-width: 100%;
   }
 
   .mcol {
@@ -234,10 +220,8 @@
 
   .mrow {
     display: flex; flex-direction: column;
-    padding: 7px 9px;
-    border-bottom: 1px dashed #e5e8ee;
-    min-height: 50px;
-    justify-content: center;
+    padding: 7px 9px; border-bottom: 1px dashed #e5e8ee;
+    min-height: 50px; justify-content: center;
   }
   .mrow .top {
     display: flex; align-items: center; gap: 5px;
@@ -255,8 +239,7 @@
   .mcol:nth-child(even) .mrow .amt { color: #2e7d32; }
 
   .mcol-total {
-    background: #f7f9fc;
-    border-top: 2px solid #e0e4ea;
+    background: #f7f9fc; border-top: 2px solid #e0e4ea;
     padding: 10px 8px; text-align: center;
   }
   .mcol-total .lbl {
@@ -288,10 +271,8 @@
   .mcol-grand .mcol-total { background: #1a232a; border-top: 2px solid #ffb300; }
   .mcol-grand .mcol-total .val { color: #ffd54f; }
 
-  /* ============ REPORT TAB ============ */
   .report-section {
-    max-width: 100%;
-    padding: 0 12px 20px;
+    max-width: 100%; padding: 0 12px 20px;
   }
   .section-title {
     font-size: 13px; font-weight: 700; color: #263238;
@@ -305,8 +286,7 @@
   }
 
   .table-scroll {
-    max-width: 100%;
-    overflow-x: auto;
+    max-width: 100%; overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
@@ -316,19 +296,14 @@
   .table-scroll::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
 
   .data-table {
-    width: 100%;
-    min-width: 700px;
-    border-collapse: collapse;
-    font-size: 13px;
+    width: 100%; min-width: 720px;
+    border-collapse: collapse; font-size: 13px;
   }
   .data-table thead th {
     background: linear-gradient(135deg, #1e88e5, #1565c0);
-    color: #fff;
-    padding: 12px 10px;
-    text-align: left;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 0.3px;
+    color: #fff; padding: 12px 10px;
+    text-align: left; font-weight: 700;
+    font-size: 12px; letter-spacing: 0.3px;
     white-space: nowrap;
   }
   .data-table thead th.num { text-align: right; }
@@ -338,17 +313,14 @@
     white-space: nowrap;
   }
   .data-table tbody td.num {
-    text-align: right;
-    font-weight: 700;
+    text-align: right; font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
   .data-table tbody td.date { color: #555; font-size: 12px; }
   .data-table tbody td.month-name {
     font-weight: 700; color: #263238; font-size: 13px;
   }
-  .data-table tbody td.days {
-    color: #666; font-size: 12px;
-  }
+  .data-table tbody td.days { color: #666; font-size: 12px; }
   .data-table tbody tr:nth-child(even) { background: #fafbfd; }
 
   .data-table td.gross { color: #1565c0; }
@@ -358,10 +330,8 @@
 
   .data-table tfoot td {
     padding: 12px 10px;
-    background: #263238;
-    color: #fff;
-    font-weight: 800;
-    font-size: 13px;
+    background: #263238; color: #fff;
+    font-weight: 800; font-size: 13px;
     border-top: 2px solid #ffb300;
     white-space: nowrap;
   }
@@ -371,7 +341,6 @@
   .data-table tfoot td.net   { color: #a5d6a7; }
   .data-table tfoot td.avg   { color: #ce93d8; }
 
-  /* Two tables stacked with a bit of spacing */
   .table-scroll + .section-title { margin-top: 12px; }
 
   .status { text-align: center; padding: 40px 20px; color: #777; font-size: 14px; }
@@ -383,20 +352,16 @@
 </head>
 <body>
 
-<!-- Main tabs -->
 <div class="tab-bar">
   <button id="tabReport" class="active" type="button">Report</button>
   <button id="tabLast2" type="button">Last 2 Months</button>
   <button id="tabAll" type="button">All Months</button>
 </div>
 
-<!-- ============= REPORT TAB (DEFAULT) ============= -->
 <div class="tab-content active" id="contentReport">
   <div id="dailyStatus" class="status">Loading report…</div>
 
   <div id="reportContent" style="display:none;">
-
-    <!-- Table 1: Monthly report with per-day averages -->
     <div class="report-section">
       <div class="section-title">Monthly Report (with Per‑Day Averages)</div>
       <div class="table-scroll">
@@ -419,7 +384,6 @@
       </div>
     </div>
 
-    <!-- Table 2: Original daily data -->
     <div class="report-section">
       <div class="section-title">Daily Data</div>
       <div class="table-scroll">
@@ -443,13 +407,11 @@
   </div>
 </div>
 
-<!-- ============= LAST 2 MONTHS TAB ============= -->
 <div class="tab-content" id="contentLast2">
   <div id="statusLast2" class="status">Loading data…</div>
   <div class="carousel" id="carousel" style="display:none;"></div>
 </div>
 
-<!-- ============= ALL MONTHS TAB ============= -->
 <div class="tab-content" id="contentAll">
   <div id="statusAll" class="status">Loading data…</div>
   <div class="table-wrap" id="tableWrap" style="display:none;">
@@ -581,6 +543,7 @@ const MONTH_NUM = {
   september:9, oct:10, october:10, nov:11, november:11, dec:12, december:12
 };
 const MONTH_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTH_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 function monthKey(rec) {
   const m = MONTH_NUM[rec.month.toLowerCase()] || 0;
@@ -615,24 +578,52 @@ function esc(s) {
   }[c]));
 }
 
-/* Date parsing — returns {y, m (1-12), d} or null */
+/* ============================================================
+   DATE PARSING — supports:
+   - "August 18, 2026" / "Aug 18 2026"
+   - "18 August 2026"
+   - "2026-08-18"
+   - "18/08/2026", "18-08-2026", "18.08.2026"
+   - "8/18/2026" (US, only if first part > 12)
+   ============================================================ */
 function parseDateParts(s) {
   if (!s) return null;
+  const str = s.toString().trim();
+  if (!str) return null;
+
+  /* "August 18, 2026"  or  "Aug 18 2026" */
+  let m = str.match(/^([A-Za-z]+)\s+(\d{1,2})(?:,)?\s+(\d{4})$/);
+  if (m) {
+    const mo = MONTH_NUM[m[1].toLowerCase()];
+    if (mo) return { y: +m[3], m: mo, d: +m[2] };
+  }
+
+  /* "18 August 2026" */
+  m = str.match(/^(\d{1,2})\s+([A-Za-z]+)(?:,)?\s+(\d{4})$/);
+  if (m) {
+    const mo = MONTH_NUM[m[2].toLowerCase()];
+    if (mo) return { y: +m[3], m: mo, d: +m[1] };
+  }
 
   /* YYYY-MM-DD */
-  let m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
+  m = str.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
   if (m) return { y: +m[1], m: +m[2], d: +m[3] };
 
-  /* DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY */
-  m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  /* DD/MM/YYYY or MM/DD/YYYY — assume DD/MM unless first > 12 */
+  m = str.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
   if (m) {
-    let d = +m[1], mo = +m[2], y = +m[3];
+    let a = +m[1], b = +m[2], y = +m[3];
     if (y < 100) y += 2000;
-    return { y, m: mo, d };
+    /* If a > 12 → clearly day-first (DD/MM) */
+    /* If b > 12 → clearly month-first (MM/DD) → swap */
+    if (a > 12) return { y, m: b, d: a };
+    if (b > 12) return { y, m: a, d: b };
+    /* Default: DD/MM (common in PK) */
+    return { y, m: b, d: a };
   }
 
   /* Fallback to native */
-  const t = Date.parse(s);
+  const t = Date.parse(str);
   if (!isNaN(t)) {
     const dt = new Date(t);
     return { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() };
@@ -640,7 +631,6 @@ function parseDateParts(s) {
   return null;
 }
 
-/* Days in month */
 function daysInMonth(y, m) {
   return new Date(y, m, 0).getDate();
 }
@@ -887,7 +877,7 @@ function buildAllMonthsTable(monthList) {
 }
 
 /* ============================================================
-   REPORT TAB — 2 tables
+   REPORT TAB
    ============================================================ */
 
 /* ---- Table 1: Monthly report with per-day averages ---- */
@@ -902,8 +892,8 @@ function renderMonthlyReport(rows) {
     return;
   }
 
-  /* Group rows by year+month */
-  const groups = new Map();  // key: yyyymm -> { y, m, rows: [] }
+  /* Group by month using START date first, fall back to END date */
+  const groups = new Map();
   rows.forEach(r => {
     const p = parseDateParts(r.startDate) || parseDateParts(r.endDate);
     if (!p) return;
@@ -912,7 +902,6 @@ function renderMonthlyReport(rows) {
     groups.get(key).rows.push(r);
   });
 
-  /* Sort chronologically */
   const keys = [...groups.keys()].sort((a, b) => a - b);
 
   let tDays = 0, tGross = 0, tExp = 0, tNet = 0;
@@ -920,17 +909,11 @@ function renderMonthlyReport(rows) {
   keys.forEach(k => {
     const g = groups.get(k);
     const label = `${MONTH_SHORT[g.m - 1]} ${g.y}`;
-
-    /* Days = unique calendar days found in the raw data */
-    const uniqueDayCount = uniqueDays(g.rows);
-    /* Fallback: total days in that calendar month if no valid dates */
-    const daysCount = uniqueDayCount || daysInMonth(g.y, g.m);
+    const daysCount = uniqueDays(g.rows) || daysInMonth(g.y, g.m);
 
     let gross = 0, exp = 0, net = 0;
     g.rows.forEach(r => {
-      gross += r.gross;
-      exp   += r.expenses;
-      net   += r.net;
+      gross += r.gross; exp += r.expenses; net += r.net;
     });
 
     const avgGross = daysCount ? gross / daysCount : 0;
@@ -954,7 +937,6 @@ function renderMonthlyReport(rows) {
     body.appendChild(tr);
   });
 
-  /* Grand total across all months */
   const totAvgGross = tDays ? tGross / tDays : 0;
   const totAvgExp   = tDays ? tExp   / tDays : 0;
   const totAvgNet   = tDays ? tNet   / tDays : 0;
@@ -973,7 +955,7 @@ function renderMonthlyReport(rows) {
   `;
 }
 
-/* ---- Table 2: Original daily data ---- */
+/* ---- Table 2: Daily data ---- */
 function renderDailyTable(rows) {
   const body = document.getElementById("dailyBody");
   const foot = document.getElementById("dailyFoot");
@@ -985,7 +967,6 @@ function renderDailyTable(rows) {
     return;
   }
 
-  /* Sort by start date ascending */
   rows.sort((a, b) => {
     const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
     if (da && db) {
@@ -1063,7 +1044,7 @@ async function loadDaily() {
 }
 
 /* ============================================================
-   MONTHLY DATA STATE (Last 2 / All Months tabs)
+   MONTHLY STATE
    ============================================================ */
 let allKeys = [];
 let byMonth = new Map();
