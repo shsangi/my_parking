@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Comparison</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0; padding: 12px; background: #f4f6f8; color: #222;
+  }
+  h2 { text-align: center; font-size: 18px; margin: 10px 0; }
+  .status { text-align: center; color: #666; padding: 20px; }
+  .month-headers {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .month-headers .mh {
+    background: #1e88e5; color: #fff; text-align: center;
+    padding: 8px; border-radius: 8px; font-weight: 600; font-size: 14px;
+  }
+  .month-headers .mh:last-child { background: #43a047; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .cell {
+    background: #fff; border-radius: 8px; padding: 8px 10px;
+    font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    display: flex; justify-content: space-between; align-items: center;
+    min-height: 40px;
+  }
+  .cell .name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cell .amt { font-weight: 700; color: #1e88e5; margin-left: 6px; }
+  .cell.right .amt { color: #43a047; }
+  .cell .sr { font-size: 11px; color: #999; margin-right: 6px; }
+  .cell.missing { opacity: 0.35; font-style: italic; }
+
+  .subtotal {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-top: 10px; font-weight: 700;
+  }
+  .subtotal .cell { background: #e3f2fd; }
+  .subtotal .cell.right { background: #e8f5e9; }
+
+  .diff {
+    margin-top: 14px; padding: 14px; border-radius: 10px;
+    text-align: center; font-size: 15px; font-weight: 700;
+    background: #fff3e0; color: #e65100;
+  }
+  .diff.pos { background: #e8f5e9; color: #2e7d32; }
+  .diff.neg { background: #ffebee; color: #c62828; }
+  .label { font-size: 12px; color: #777; text-align: center; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<h2>Last 2 Months Comparison</h2>
+<div id="status" class="status">Loading data…</div>
+<div id="content" style="display:none;">
+  <div class="month-headers">
+    <div class="mh" id="h1">—</div>
+    <div class="mh" id="h2">—</div>
+  </div>
+  <div id="rows"></div>
+  <div class="subtotal" id="subtotals"></div>
+  <div class="diff" id="diff">—</div>
+  <div class="label">Difference (Right − Left)</div>
+</div>
+
+<script>
+// ==== CONFIG: paste your CSV export URLs here ====
+const SHEET1_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pub?output=csv";
+const SHEET2_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
+
+// Column header names (case-insensitive match)
+const COL = {
+  srno: ["sr. no.", "sr no", "srno", "sr"],
+  name: ["name/item", "name", "item"],
+  amount: ["amount"],
+  month: ["month"],
+  year: ["year"],
+  ts: ["updated timestamp", "timestamp"]
+};
+
+function parseCSV(text) {
+  const rows = [];
+  let cur = [], field = "", inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"' && text[i+1] === '"') { field += '"'; i++; }
+      else if (c === '"') inQ = false;
+      else field += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ',') { cur.push(field); field = ""; }
+      else if (c === '\n') { cur.push(field); rows.push(cur); cur = []; field = ""; }
+      else if (c === '\r') { /* skip */ }
+      else field += c;
+    }
+  }
+  if (field.length || cur.length) { cur.push(field); rows.push(cur); }
+  return rows.filter(r => r.some(c => c.trim() !== ""));
+}
+
+function findColIndex(headers, names) {
+  for (let i = 0; i < headers.length; i++) {
+    const h = (headers[i] || "").trim().toLowerCase().replace(/\s+/g, " ");
+    for (const n of names) if (h === n.toLowerCase()) return i;
+  }
+  return -1;
+}
+
+function normalizeRecords(rows) {
+  if (!rows.length) return [];
+  const headers = rows[0];
+  const idx = {
+    srno: findColIndex(headers, COL.srno),
+    name: findColIndex(headers, COL.name),
+    amount: findColIndex(headers, COL.amount),
+    month: findColIndex(headers, COL.month),
+    year: findColIndex(headers, COL.year)
+  };
+  const out = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    const name = (r[idx.name] || "").trim();
+    if (!name) continue;
+    out.push({
+      srno: idx.srno >= 0 ? (r[idx.srno] || "").trim() : String(i),
+      name,
+      amount: parseFloat((r[idx.amount] || "0").toString().replace(/[^0-9.\-]/g, "")) || 0,
+      month: idx.month >= 0 ? (r[idx.month] || "").trim() : "",
+      year: idx.year >= 0 ? (r[idx.year] || "").trim() : ""
+    });
+  }
+  return out;
+}
+
+const MONTH_NUM = {
+  jan:1, january:1, feb:2, february:2, mar:3, march:3, apr:4, april:4,
+  may:5, jun:6, june:6, jul:7, july:7, aug:8, august:8, sep:9, sept:9,
+  september:9, oct:10, october:10, nov:11, november:11, dec:12, december:12
+};
+
+function monthKey(rec) {
+  const m = MONTH_NUM[rec.month.toLowerCase()] || 0;
+  const y = parseInt(rec.year) || 0;
+  return y * 100 + m;
+}
+
+function monthLabel(rec) {
+  if (!rec) return "—";
+  return `${rec.month} ${rec.year}`.trim();
+}
+
+function groupKey(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+async function loadAll() {
+  const urls = [SHEET1_CSV, SHEET2_CSV];
+  let all = [];
+  for (const u of urls) {
+    try {
+      const res = await fetch(u);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const txt = await res.text();
+      const recs = normalizeRecords(parseCSV(txt));
+      all = all.concat(recs);
+    } catch (e) {
+      console.warn("Failed:", u, e);
+    }
+  }
+  return all;
+}
+
+function render(records) {
+  const status = document.getElementById("status");
+  if (!records.length) {
+    status.textContent = "No data available. Check that the sheets are published to the web as CSV.";
+    return;
+  }
+
+  // Find the last two distinct months
+  const keys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b)=>a-b);
+  if (keys.length < 2) {
+    status.textContent = "Need at least two months of data.";
+    return;
+  }
+  const kPrev = keys[keys.length - 2];
+  const kCurr = keys[keys.length - 1];
+
+  const prevRecs = records.filter(r => monthKey(r) === kPrev);
+  const currRecs = records.filter(r => monthKey(r) === kCurr);
+
+  document.getElementById("h1").textContent = monthLabel(prevRecs[0]);
+  document.getElementById("h2").textContent = monthLabel(currRecs[0]);
+
+  // Index by normalized name
+  const mapPrev = new Map();
+  prevRecs.forEach(r => {
+    const k = groupKey(r.name);
+    if (!mapPrev.has(k)) mapPrev.set(k, { ...r, amount: 0 });
+    mapPrev.get(k).amount += r.amount;
+  });
+  const mapCurr = new Map();
+  currRecs.forEach(r => {
+    const k = groupKey(r.name);
+    if (!mapCurr.has(k)) mapCurr.set(k, { ...r, amount: 0 });
+    mapCurr.get(k).amount += r.amount;
+  });
+
+  // Ordered union: preserve order from prev then any new in curr
+  const orderedKeys = [];
+  const seen = new Set();
+  prevRecs.forEach(r => {
+    const k = groupKey(r.name);
+    if (!seen.has(k)) { seen.add(k); orderedKeys.push(k); }
+  });
+  currRecs.forEach(r => {
+    const k = groupKey(r.name);
+    if (!seen.has(k)) { seen.add(k); orderedKeys.push(k); }
+  });
+
+  const rowsEl = document.getElementById("rows");
+  rowsEl.innerHTML = "";
+
+  let subPrev = 0, subCurr = 0;
+
+  orderedKeys.forEach(k => {
+    const p = mapPrev.get(k);
+    const c = mapCurr.get(k);
+
+    if (p) subPrev += p.amount;
+    if (c) subCurr += c.amount;
+
+    const left = p
+      ? `<div class="cell"><span><span class="sr">#${p.srno}</span><span class="name">${escapeHtml(p.name)}</span></span><span class="amt">${fmt(p.amount)}</span></div>`
+      : `<div class="cell missing"><span class="name">—</span></div>`;
+    const right = c
+      ? `<div class="cell right"><span><span class="sr">#${c.srno}</span><span class="name">${escapeHtml(c.name)}</span></span><span class="amt">${fmt(c.amount)}</span></div>`
+      : `<div class="cell missing"><span class="name">—</span></div>`;
+
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = left + right;
+    rowsEl.appendChild(row);
+  });
+
+  const subt = document.getElementById("subtotals");
+  subt.innerHTML = `
+    <div class="cell"><span>Subtotal</span><span class="amt">${fmt(subPrev)}</span></div>
+    <div class="cell right"><span>Subtotal</span><span class="amt">${fmt(subCurr)}</span></div>
+  `;
+
+  const diff = subCurr - subPrev;
+  const diffEl = document.getElementById("diff");
+  diffEl.className = "diff " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "");
+  diffEl.textContent = `${diff >= 0 ? "+" : ""}${fmt(diff)}`;
+
+  status.style.display = "none";
+  document.getElementById("content").style.display = "block";
+}
+
+function fmt(n) {
+  return (Math.round(n * 100) / 100).toLocaleString(undefined, {
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+  });
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+loadAll().then(render).catch(e => {
+  document.getElementById("status").textContent = "Error: " + e.message;
+  console.error(e);
+});
+</script>
+</body>
+</html>
