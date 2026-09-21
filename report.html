@@ -364,6 +364,40 @@
     font-weight: 800; color: #0d47a1; font-size: 16px;
   }
 
+  /* NEW: Combined row inside overall card */
+  .oc-row-combined {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 8px -18px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    border-left: 4px solid #2e7d32;
+  }
+  .oc-row-combined .cb-k {
+    font-size: 13px;
+    font-weight: 800;
+    color: #1b5e20;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .oc-row-combined .cb-sub {
+    font-size: 10px;
+    color: #2e7d32;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .oc-row-combined .cb-v {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1b5e20;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
   .section-label {
     font-size: 12px;
     font-weight: 800;
@@ -1168,16 +1202,19 @@ function buildAllMonthsTable(monthList) {
 
 /* ============================================================
    REPORT — Overall summary card
+   NEW: Title simplified to "Sangi Parking"
+   NEW: Row "Total Monthly ÷ 2 + Credit" under "Total Net Credited"
    ============================================================ */
 function buildOverallSummaryCard(totals) {
-  const { gross, exp, net, days, minStart, maxEnd } = totals;
+  const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal } = totals;
   const avgNet = days ? net / days : 0;
+  const combinedTotal = (monthlySheetTotal / 2) + net;
 
   const el = document.createElement("div");
   el.className = "overall-card";
   el.innerHTML = `
     <div class="oc-inner">
-      <div class="oc-title">Sangi Parking Daily<br>Average Earning</div>
+      <div class="oc-title">Sangi Parking</div>
       <table class="oc-table">
         <tr><td class="metric">Start Date</td><td class="detail">${esc(fmtDateLong(minStart))}</td></tr>
         <tr><td class="metric">End Date</td><td class="detail">${esc(fmtDateLong(maxEnd))}</td></tr>
@@ -1185,7 +1222,21 @@ function buildOverallSummaryCard(totals) {
         <tr><td class="metric">Total Gross Amount</td><td class="detail">${fmtInt(gross)} PKR</td></tr>
         <tr><td class="metric">Total Expenses</td><td class="detail">${fmtInt(exp)} PKR</td></tr>
         <tr><td class="metric">Total Net Amount<br>Credited</td><td class="detail">${fmtInt(net)} PKR</td></tr>
-        <tr><td class="metric">Average Daily<br>Earning (Net)</td><td class="detail highlight">${fmtDec2(avgNet)} PKR / day</td></tr>
+      </table>
+
+      <div class="oc-row-combined">
+        <div>
+          <div class="cb-k">Total Monthly ÷ 2 + Credit</div>
+          <div class="cb-sub">(Monthly Sheet Total ÷ 2) + Net Credited</div>
+        </div>
+        <div class="cb-v">${fmtInt(combinedTotal)} PKR</div>
+      </div>
+
+      <table class="oc-table" style="margin-top: 14px;">
+        <tr>
+          <td class="metric">Average Daily<br>Earning (Net)</td>
+          <td class="detail highlight">${fmtDec2(avgNet)} PKR / day</td>
+        </tr>
       </table>
     </div>
   `;
@@ -1308,6 +1359,12 @@ function computeMonthlySheetTotals(records) {
     t.count++;
   });
   return totals;
+}
+
+function sumMonthlySheetTotals(records) {
+  let sum = 0;
+  records.forEach(r => { sum += r.amount; });
+  return sum;
 }
 
 /* ============================================================
@@ -1459,12 +1516,14 @@ function renderReport(rows, monthlyRecords) {
   });
 
   const totalDays = (minStart && maxEnd) ? daysBetween(minStart, maxEnd) : 0;
+  const monthlySheetTotal = sumMonthlySheetTotals(monthlyRecords);
 
   const overallEl = document.getElementById("overallCard");
   overallEl.innerHTML = "";
   overallEl.appendChild(buildOverallSummaryCard({
     gross: totalGross, exp: totalExp, net: totalNet, days: totalDays,
-    minStart, maxEnd
+    minStart, maxEnd,
+    monthlySheetTotal
   }));
 
   const sheetTotals = computeMonthlySheetTotals(monthlyRecords);
