@@ -316,7 +316,6 @@
     font-weight: 800; color: #0d47a1; font-size: 16px;
   }
 
-  /* Section headings */
   .section-label {
     font-size: 12px;
     font-weight: 800;
@@ -327,8 +326,7 @@
   }
   .section-label:first-child { padding-top: 0; }
 
-  /* Monthly list */
-  .month-list {
+  .month-list, .period-list {
     background: #fff;
     border-radius: 14px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.07);
@@ -337,30 +335,30 @@
     margin-bottom: 6px;
   }
 
-  .month-row {
+  .month-row, .period-row {
     padding: 12px 14px;
     border-bottom: 1px solid #eef1f5;
   }
-  .month-row:last-child { border-bottom: none; }
+  .month-row:last-child, .period-row:last-child { border-bottom: none; }
+
   .month-row.current {
     background: linear-gradient(180deg, #fff8e1 0%, #fffdf7 100%);
     border-left: 3px solid #ffa726;
   }
 
-  .mr-head {
+  .mr-head, .pr-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     margin-bottom: 8px;
   }
+
   .mr-title {
     font-size: 14px;
     font-weight: 800;
     color: #1e3a5f;
     line-height: 1.2;
-    flex: 1;
-    min-width: 0;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -382,77 +380,7 @@
     font-weight: 600;
     margin-top: 2px;
   }
-  .mr-days {
-    background: #e3f2fd;
-    color: #0d47a1;
-    padding: 3px 9px;
-    border-radius: 10px;
-    font-size: 10.5px;
-    font-weight: 800;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
 
-  .mr-metrics {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-  }
-  .mr-metric {
-    text-align: center;
-    padding: 6px 2px;
-    border-radius: 8px;
-    background: #f8fafc;
-    min-width: 0;
-  }
-  .mr-metric .lbl {
-    font-size: 9px;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .mr-metric .val {
-    font-size: 12.5px;
-    font-weight: 800;
-    margin-top: 3px;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-  }
-  .mr-metric.credit .val { color: #2e7d32; }
-  .mr-metric.exp .val    { color: #c62828; }
-  .mr-metric.gross .val  { color: #1565c0; }
-  .mr-metric.avg {
-    background: #e8f0fe;
-  }
-  .mr-metric.avg .val { color: #0d47a1; }
-
-  /* Period list (compact) */
-  .period-list {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.07);
-    overflow: hidden;
-    border: 1px solid #eef1f5;
-    margin-bottom: 18px;
-  }
-
-  .period-row {
-    padding: 12px 14px;
-    border-bottom: 1px solid #eef1f5;
-  }
-  .period-row:last-child { border-bottom: none; }
-
-  .pr-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
   .pr-range {
     font-size: 13px;
     font-weight: 700;
@@ -464,7 +392,8 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .pr-days {
+
+  .mr-days, .pr-days {
     background: #e3f2fd;
     color: #0d47a1;
     padding: 3px 9px;
@@ -475,19 +404,19 @@
     flex-shrink: 0;
   }
 
-  .pr-metrics {
+  .mr-metrics, .pr-metrics {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 6px;
   }
-  .pr-metric {
+  .mr-metric, .pr-metric {
     text-align: center;
     padding: 6px 2px;
     border-radius: 8px;
     background: #f8fafc;
     min-width: 0;
   }
-  .pr-metric .lbl {
+  .mr-metric .lbl, .pr-metric .lbl {
     font-size: 9px;
     color: #64748b;
     text-transform: uppercase;
@@ -497,20 +426,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .pr-metric .val {
+  .mr-metric .val, .pr-metric .val {
     font-size: 12.5px;
     font-weight: 800;
     margin-top: 3px;
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
-  .pr-metric.credit .val { color: #2e7d32; }
-  .pr-metric.exp .val    { color: #c62828; }
-  .pr-metric.gross .val  { color: #1565c0; }
-  .pr-metric.avg {
-    background: #e8f0fe;
-  }
-  .pr-metric.avg .val { color: #0d47a1; }
+  .mr-metric.credit .val, .pr-metric.credit .val { color: #2e7d32; }
+  .mr-metric.exp .val, .pr-metric.exp .val       { color: #c62828; }
+  .mr-metric.gross .val, .pr-metric.gross .val   { color: #1565c0; }
+  .mr-metric.avg, .pr-metric.avg                 { background: #e8f0fe; }
+  .mr-metric.avg .val, .pr-metric.avg .val       { color: #0d47a1; }
 
   .daily-section-title {
     font-size: 13px; font-weight: 700; color: #263238;
@@ -834,6 +761,15 @@ function parseDateParts(s) {
   return null;
 }
 
+function dateKeyOf(p) {
+  return p ? (p.y * 10000 + p.m * 100 + p.d) : 0;
+}
+
+/* Compare two date-part objects */
+function dateCmp(a, b) {
+  return dateKeyOf(a) - dateKeyOf(b);
+}
+
 function daysBetween(p1, p2) {
   if (!p1 || !p2) return 0;
   const d1 = new Date(p1.y, p1.m - 1, p1.d);
@@ -853,10 +789,6 @@ function fmtDateLong(p) {
 function fmtDateShort(p) {
   if (!p) return "—";
   return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]} ${p.y}`;
-}
-function fmtDateShortNoYear(p) {
-  if (!p) return "—";
-  return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]}`;
 }
 
 /* ============================================================
@@ -1115,26 +1047,135 @@ function buildOverallSummaryCard(totals) {
 }
 
 /* ============================================================
-   REPORT — Monthly row
-   For each month: Start = 1st, End = last day of month
-   (or today if current month).
-   Averages divide by days in that month (or days elapsed for current month).
+   SMART MONTHLY BOUNDS CALCULATION
+   ------------------------------------------------------------
+   For every month that overlaps with any period:
+     - Start = earliest real start date found inside that month,
+               else fallback = 1st of the month
+     - End   = latest real end date found inside that month,
+               else fallback = last day of month (or today for current)
    ============================================================ */
-function buildMonthRow(y, m, monthRows, today) {
-  /* Totals */
-  let gross = 0, exp = 0, net = 0;
-  monthRows.forEach(r => { gross += r.gross; exp += r.expenses; net += r.net; });
+function computeSmartMonthBounds(rows) {
+  /* Key = YYYY*100 + MM */
+  const bounds = new Map();
 
-  /* Days calculation:
-     - For current month → days elapsed (1..today's day)
-     - For past month    → full calendar days of that month */
-  const isCurrentMonth = today && today.y === y && today.m === m;
-  const daysCount = isCurrentMonth ? today.d : daysInMonth(y, m);
+  const considerMonth = (y, m) => {
+    const key = y * 100 + m;
+    if (!bounds.has(key)) {
+      bounds.set(key, {
+        y, m,
+        minStart: null,   /* earliest start date found inside this month */
+        maxEnd:   null,   /* latest end date found inside this month */
+        rows:     []      /* rows that touch this month at all */
+      });
+    }
+    return bounds.get(key);
+  };
+
+  rows.forEach(r => {
+    const sp = parseDateParts(r.startDate);
+    const ep = parseDateParts(r.endDate) || sp;
+    if (!sp) return;
+
+    /* Which months does this period touch? */
+    const startKey = sp.y * 100 + sp.m;
+    const endKey   = ep ? (ep.y * 100 + ep.m) : startKey;
+
+    /* Walk from start month to end month (usually 1 or 2 months, sometimes more) */
+    let y = sp.y, m = sp.m;
+    while (true) {
+      const key = y * 100 + m;
+      const bucket = considerMonth(y, m);
+      bucket.rows.push(r);
+
+      /* Start bound for this month:
+         If period started in this month → use its real start.
+         If period started earlier but overlaps into this month → use 1st of month. */
+      if (y === sp.y && m === sp.m) {
+        if (!bucket.minStart || dateCmp(sp, bucket.minStart) < 0) {
+          bucket.minStart = { y: sp.y, m: sp.m, d: sp.d };
+        }
+      } else {
+        /* Period spills over into this month — start from 1st */
+        const first = { y, m, d: 1 };
+        if (!bucket.minStart || dateCmp(first, bucket.minStart) < 0) {
+          bucket.minStart = first;
+        }
+      }
+
+      /* End bound for this month:
+         If period ended in this month → use its real end.
+         If period continues into later months → use last day of month. */
+      if (ep && y === ep.y && m === ep.m) {
+        if (!bucket.maxEnd || dateCmp(ep, bucket.maxEnd) > 0) {
+          bucket.maxEnd = { y: ep.y, m: ep.m, d: ep.d };
+        }
+      } else {
+        /* Period continues past this month — end at last day of month */
+        const lastD = daysInMonth(y, m);
+        const last = { y, m, d: lastD };
+        if (!bucket.maxEnd || dateCmp(last, bucket.maxEnd) > 0) {
+          bucket.maxEnd = last;
+        }
+      }
+
+      if (key === endKey) break;
+      /* Advance to next month */
+      m++;
+      if (m > 12) { m = 1; y++; }
+    }
+  });
+
+  /* Post-process: apply "current month" cap & fallbacks */
+  const now = new Date();
+  const today = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
+
+  const result = [];
+  bounds.forEach((b, key) => {
+    /* Fallback if somehow minStart/maxEnd is null */
+    let startP = b.minStart || { y: b.y, m: b.m, d: 1 };
+    let endP   = b.maxEnd   || { y: b.y, m: b.m, d: daysInMonth(b.y, b.m) };
+
+    /* If current month and endP is after today → cap at today */
+    const isCurrentMonth = (today.y === b.y && today.m === b.m);
+    if (isCurrentMonth && dateCmp(endP, today) > 0) {
+      endP = { y: today.y, m: today.m, d: today.d };
+    }
+
+    /* Ensure startP is not after endP */
+    if (dateCmp(startP, endP) > 0) {
+      startP = endP;
+    }
+
+    const daysCount = daysBetween(startP, endP);
+
+    result.push({
+      y: b.y,
+      m: b.m,
+      startP,
+      endP,
+      daysCount,
+      isCurrentMonth,
+      rows: b.rows
+    });
+  });
+
+  /* Sort chronologically */
+  result.sort((a, b) => (a.y * 100 + a.m) - (b.y * 100 + b.m));
+
+  return result;
+}
+
+/* ============================================================
+   REPORT — Monthly row
+   ============================================================ */
+function buildMonthRow(monthInfo) {
+  const { y, m, startP, endP, daysCount, isCurrentMonth, rows } = monthInfo;
+
+  let gross = 0, exp = 0, net = 0;
+  rows.forEach(r => { gross += r.gross; exp += r.expenses; net += r.net; });
 
   const avgNet = daysCount ? net / daysCount : 0;
-
-  const startP = { y, m, d: 1 };
-  const endP   = { y, m, d: isCurrentMonth ? today.d : daysInMonth(y, m) };
 
   const row = document.createElement("div");
   row.className = "month-row" + (isCurrentMonth ? " current" : "");
@@ -1238,16 +1279,14 @@ function renderReport(rows) {
     const ep = parseDateParts(r.endDate) || sp;
 
     if (sp) {
-      const key = sp.y * 10000 + sp.m * 100 + sp.d;
-      if (!minStart || key < minStart.key) minStart = { key, p: sp };
+      if (!minStart || dateCmp(sp, minStart) < 0) minStart = sp;
     }
     if (ep) {
-      const key = ep.y * 10000 + ep.m * 100 + ep.d;
-      if (!maxEnd || key > maxEnd.key) maxEnd = { key, p: ep };
+      if (!maxEnd || dateCmp(ep, maxEnd) > 0) maxEnd = ep;
     }
   });
 
-  const totalDays = (minStart && maxEnd) ? daysBetween(minStart.p, maxEnd.p) : 0;
+  const totalDays = (minStart && maxEnd) ? daysBetween(minStart, maxEnd) : 0;
 
   /* Overall card */
   const overallEl = document.getElementById("overallCard");
@@ -1257,31 +1296,16 @@ function renderReport(rows) {
     exp:   totalExp,
     net:   totalNet,
     days:  totalDays,
-    minStart: minStart ? minStart.p : null,
-    maxEnd:   maxEnd   ? maxEnd.p   : null
+    minStart, maxEnd
   }));
 
-  /* Group rows by month (using START date) */
-  const monthGroups = new Map();
-  rows.forEach(r => {
-    const sp = parseDateParts(r.startDate);
-    if (!sp) return;
-    const key = sp.y * 100 + sp.m;
-    if (!monthGroups.has(key)) monthGroups.set(key, { y: sp.y, m: sp.m, rows: [] });
-    monthGroups.get(key).rows.push(r);
-  });
+  /* SMART Monthly Breakdown */
+  const monthInfos = computeSmartMonthBounds(rows);
 
-  /* Today */
-  const now = new Date();
-  const today = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
-
-  /* Monthly Breakdown */
   const monthEl = document.getElementById("monthList");
   monthEl.innerHTML = "";
-  const monthKeys = [...monthGroups.keys()].sort((a, b) => a - b);
-  monthKeys.forEach(k => {
-    const g = monthGroups.get(k);
-    monthEl.appendChild(buildMonthRow(g.y, g.m, g.rows, today));
+  monthInfos.forEach(info => {
+    monthEl.appendChild(buildMonthRow(info));
   });
 
   /* Period Breakdown */
@@ -1290,9 +1314,7 @@ function renderReport(rows) {
 
   const sortedRows = [...rows].sort((a, b) => {
     const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
-    if (da && db) {
-      return (da.y * 10000 + da.m * 100 + da.d) - (db.y * 10000 + db.m * 100 + db.d);
-    }
+    if (da && db) return dateCmp(da, db);
     return (a.startDate || "").localeCompare(b.startDate || "");
   });
 
@@ -1380,7 +1402,7 @@ async function loadDaily() {
 }
 
 /* ============================================================
-   MONTHLY STATE
+   MONTHLY STATE (for Last 2 / All Months tabs)
    ============================================================ */
 let allKeys = [];
 let byMonth = new Map();
