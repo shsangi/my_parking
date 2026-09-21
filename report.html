@@ -333,7 +333,7 @@
     font-size: 16px;
   }
 
-  /* ---------- Period rows (list of each daily period) ---------- */
+  /* ---------- Period list (compact single-line rows) ---------- */
   .section-label {
     font-size: 12px;
     font-weight: 800;
@@ -343,65 +343,88 @@
     padding: 6px 4px 10px;
   }
 
-  .period-card {
+  .period-list {
     background: #fff;
     border-radius: 14px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.07);
     overflow: hidden;
-    margin-bottom: 12px;
     border: 1px solid #eef1f5;
+    margin-bottom: 18px;
   }
-  .pc-head {
-    background: linear-gradient(135deg, #1e88e5, #1565c0);
-    color: #fff;
-    padding: 12px 16px;
+
+  .period-row {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eef1f5;
+  }
+  .period-row:last-child { border-bottom: none; }
+
+  /* Top line: date range + days pill */
+  .pr-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
   }
-  .pc-head .pc-range {
+  .pr-range {
     font-size: 13px;
     font-weight: 700;
+    color: #1e3a5f;
     line-height: 1.3;
-  }
-  .pc-head .pc-days {
-    background: rgba(255,255,255,0.22);
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 700;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .pc-body {
-    padding: 12px 14px;
-  }
-  .pc-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 8px 0;
-    border-bottom: 1px solid #eef1f5;
-    font-size: 14px;
-  }
-  .pc-row:last-child { border-bottom: none; }
-  .pc-row .mlbl { color: #475569; font-weight: 600; }
-  .pc-row .mval {
+  .pr-days {
+    background: #e3f2fd;
+    color: #0d47a1;
+    padding: 3px 9px;
+    border-radius: 10px;
+    font-size: 10.5px;
     font-weight: 800;
-    color: #1f2937;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Bottom line: 4 metrics in a row */
+  .pr-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .pr-metric {
+    text-align: center;
+    padding: 6px 2px;
+    border-radius: 8px;
+    background: #f8fafc;
+    min-width: 0;
+  }
+  .pr-metric .lbl {
+    font-size: 9px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pr-metric .val {
+    font-size: 12.5px;
+    font-weight: 800;
+    margin-top: 3px;
+    line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
-  .pc-row.credit .mval { color: #2e7d32; font-size: 16px; }
-  .pc-row.expenses .mval { color: #c62828; }
-  .pc-row.earning .mval { color: #0d47a1; font-size: 16px; }
-  .pc-row.avg {
-    background: #f0f7ff;
-    margin: 6px -14px 0;
-    padding: 10px 14px;
-    border-bottom: none;
+  .pr-metric.credit .val { color: #2e7d32; }
+  .pr-metric.exp .val    { color: #c62828; }
+  .pr-metric.gross .val  { color: #1565c0; }
+  .pr-metric.avg {
+    background: #e8f0fe;
   }
-  .pc-row.avg .mlbl { color: #0d47a1; font-weight: 700; }
-  .pc-row.avg .mval { color: #0d47a1; font-size: 15px; }
+  .pr-metric.avg .val { color: #0d47a1; }
 
   /* Daily data section */
   .daily-section-title {
@@ -485,14 +508,11 @@
   <div id="reportContent" style="display:none;">
     <div class="report-wrap">
 
-      <!-- Overall summary card -->
       <div id="overallCard"></div>
 
-      <!-- Per-period breakdown -->
       <div class="section-label">Period Breakdown</div>
-      <div id="periodCards"></div>
+      <div class="period-list" id="periodList"></div>
 
-      <!-- Daily data table -->
       <div class="daily-section-title">Daily Data</div>
       <div class="table-scroll">
         <table class="data-table" id="dailyTable">
@@ -730,7 +750,7 @@ function daysBetween(p1, p2) {
   if (!p1 || !p2) return 0;
   const d1 = new Date(p1.y, p1.m - 1, p1.d);
   const d2 = new Date(p2.y, p2.m - 1, p2.d);
-  const diff = Math.round((d2 - d1) / 86400000) + 1; /* inclusive of both ends */
+  const diff = Math.round((d2 - d1) / 86400000) + 1;
   return diff > 0 ? diff : 0;
 }
 
@@ -1020,54 +1040,43 @@ function buildOverallSummaryCard(totals) {
 }
 
 /* ============================================================
-   REPORT — Period cards (each row from daily sheet)
+   REPORT — Compact period row (single line)
    ============================================================ */
-function buildPeriodCard(period) {
-  const { startStr, endStr, startP, endP, gross, exp, net } = period;
+function buildPeriodRow(period) {
+  const { startP, endP, startStr, endStr, gross, exp, net } = period;
   const days = daysBetween(startP, endP) || 1;
   const avgNet = net / days;
-  const avgGross = gross / days;
-  const avgExp = exp / days;
 
-  const card = document.createElement("div");
-  card.className = "period-card";
+  const startLabel = startP ? fmtDateShort(startP) : (startStr || "—");
+  const endLabel   = endP   ? fmtDateShort(endP)   : (endStr   || "—");
 
-  const startLabel = startP ? fmtDateLong(startP) : (startStr || "—");
-  const endLabel   = endP   ? fmtDateLong(endP)   : (endStr   || "—");
-
-  card.innerHTML = `
-    <div class="pc-head">
-      <div class="pc-range">${esc(startLabel)}  →  ${esc(endLabel)}</div>
-      <div class="pc-days">${days} day${days === 1 ? "" : "s"}</div>
+  const row = document.createElement("div");
+  row.className = "period-row";
+  row.innerHTML = `
+    <div class="pr-head">
+      <div class="pr-range">${esc(startLabel)} → ${esc(endLabel)}</div>
+      <div class="pr-days">${days}d</div>
     </div>
-    <div class="pc-body">
-      <div class="pc-row credit">
-        <span class="mlbl">Total Credit (Net)</span>
-        <span class="mval">${fmtInt(net)} PKR</span>
+    <div class="pr-metrics">
+      <div class="pr-metric credit">
+        <div class="lbl">Credit</div>
+        <div class="val">${fmtInt(net)}</div>
       </div>
-      <div class="pc-row expenses">
-        <span class="mlbl">Total Expenses</span>
-        <span class="mval">${fmtInt(exp)} PKR</span>
+      <div class="pr-metric exp">
+        <div class="lbl">Expenses</div>
+        <div class="val">${fmtInt(exp)}</div>
       </div>
-      <div class="pc-row earning">
-        <span class="mlbl">Total Earning (Gross)</span>
-        <span class="mval">${fmtInt(gross)} PKR</span>
+      <div class="pr-metric gross">
+        <div class="lbl">Gross</div>
+        <div class="val">${fmtInt(gross)}</div>
       </div>
-      <div class="pc-row avg">
-        <span class="mlbl">Daily Earning (Avg Net)</span>
-        <span class="mval">${fmtDec2(avgNet)} PKR / day</span>
-      </div>
-      <div class="pc-row avg">
-        <span class="mlbl">Avg Gross / Day</span>
-        <span class="mval">${fmtDec2(avgGross)} PKR</span>
-      </div>
-      <div class="pc-row avg">
-        <span class="mlbl">Avg Expenses / Day</span>
-        <span class="mval">${fmtDec2(avgExp)} PKR</span>
+      <div class="pr-metric avg">
+        <div class="lbl">Avg/Day</div>
+        <div class="val">${fmtInt(avgNet)}</div>
       </div>
     </div>
   `;
-  return card;
+  return row;
 }
 
 /* ============================================================
@@ -1082,7 +1091,7 @@ function renderReport(rows) {
     return;
   }
 
-  /* Compute overall stats */
+  /* Overall stats */
   let minStart = null, maxEnd = null;
   let totalGross = 0, totalExp = 0, totalNet = 0;
 
@@ -1104,7 +1113,6 @@ function renderReport(rows) {
     }
   });
 
-  /* Total days = inclusive days between earliest start and latest end */
   const totalDays = (minStart && maxEnd) ? daysBetween(minStart.p, maxEnd.p) : 0;
 
   /* Overall card */
@@ -1119,11 +1127,10 @@ function renderReport(rows) {
     maxEnd:   maxEnd   ? maxEnd.p   : null
   }));
 
-  /* Period cards — one per daily row */
-  const periodEl = document.getElementById("periodCards");
+  /* Period list */
+  const periodEl = document.getElementById("periodList");
   periodEl.innerHTML = "";
 
-  /* Sort by start date ascending */
   const sortedRows = [...rows].sort((a, b) => {
     const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
     if (da && db) {
@@ -1135,7 +1142,7 @@ function renderReport(rows) {
   sortedRows.forEach(r => {
     const startP = parseDateParts(r.startDate);
     const endP   = parseDateParts(r.endDate) || startP;
-    periodEl.appendChild(buildPeriodCard({
+    periodEl.appendChild(buildPeriodRow({
       startStr: r.startDate,
       endStr:   r.endDate,
       startP, endP,
@@ -1145,7 +1152,6 @@ function renderReport(rows) {
     }));
   });
 
-  /* Daily table */
   renderDailyTable(sortedRows);
 
   statusEl.style.display = "none";
