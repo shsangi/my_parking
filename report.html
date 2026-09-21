@@ -19,7 +19,6 @@
     overflow: hidden;
   }
 
-  /* Header */
   .rc-head {
     background: linear-gradient(135deg, #1e88e5, #1565c0);
     color: #fff; padding: 16px; text-align: center;
@@ -27,7 +26,6 @@
   .rc-head h1 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
   .rc-head p { margin: 4px 0 0; font-size: 12px; opacity: 0.9; }
 
-  /* Person count summary */
   .counts {
     display: grid; grid-template-columns: 1fr 1fr;
     background: #f7f9fc; border-bottom: 1px solid #e0e4ea;
@@ -42,7 +40,6 @@
   .counts .c1 { color: #1565c0; }
   .counts .c2 { color: #2e7d32; }
 
-  /* Header row: SR | Month1 | Month2 */
   .months {
     display: grid;
     grid-template-columns: 34px 1fr 1fr;
@@ -59,15 +56,22 @@
   .months .m2 { color: #2e7d32; }
   .months .sr-h { color: #999; font-size: 11px; }
 
-  /* Item row: SR | M1 cell | M2 cell */
+  .sec {
+    background: #eef1f5; padding: 6px 12px;
+    font-size: 11px; font-weight: 700; color: #666;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    border-top: 1px solid #e0e4ea;
+    border-bottom: 1px solid #e0e4ea;
+  }
+  .sec.ok  { background: #e8f5e9; color: #2e7d32; }
+  .sec.warn{ background: #fff3e0; color: #e65100; }
+
   .item {
     display: grid;
     grid-template-columns: 34px 1fr 1fr;
     border-bottom: 1px dashed #e5e8ee;
+    background: #fff;
   }
-  .item.matched { background: #fbfdfa; }
-  .item.unmatched { background: #fffdf7; }
-
   .item > div {
     padding: 9px 8px; min-height: 48px;
     display: flex; flex-direction: column; justify-content: center;
@@ -92,12 +96,11 @@
   .m2-cell .amt { color: #2e7d32; }
 
   .missing {
-    color: #b0b8c4; font-style: italic; font-size: 11px;
+    color: #cbd0d8; font-style: italic; font-size: 11px;
     display: flex; align-items: center; justify-content: center;
     text-align: center;
   }
 
-  /* Diff badge */
   .diff-badge {
     font-size: 9px; font-weight: 700;
     padding: 1px 4px; border-radius: 4px; margin-left: auto;
@@ -107,7 +110,6 @@
   .diff-badge.down { background: #ffebee; color: #c62828; }
   .diff-badge.same { background: #f0f2f6; color: #666; }
 
-  /* Totals row */
   .total-row {
     display: grid;
     grid-template-columns: 34px 1fr 1fr;
@@ -125,7 +127,6 @@
   .total-row .v2 { color: #2e7d32; }
   .total-row .sr-blank { background: #f4f6f9; }
 
-  /* Grand total */
   .grand {
     background: linear-gradient(135deg, #263238, #37474f);
     color: #fff; padding: 16px; text-align: center;
@@ -134,7 +135,6 @@
   .grand .val { font-size: 26px; font-weight: 800; margin-top: 4px; letter-spacing: 0.5px; }
   .grand .cnt { font-size: 11px; opacity: 0.85; margin-top: 6px; }
 
-  /* Difference pill */
   .diffbar {
     margin: 10px 12px 14px; padding: 10px 14px;
     border-radius: 10px; display: flex;
@@ -194,9 +194,6 @@ const COL = {
   year:   ["year", "yr"]
 };
 
-/* ============================================================
-   CSV PARSER
-   ============================================================ */
 function parseCSV(text) {
   const rows = [];
   let cur = [], field = "", inQ = false;
@@ -210,7 +207,7 @@ function parseCSV(text) {
       if (c === '"') inQ = true;
       else if (c === ',') { cur.push(field); field = ""; }
       else if (c === '\n') { cur.push(field); rows.push(cur); cur = []; field = ""; }
-      else if (c === '\r') { /* skip */ }
+      else if (c === '\r') { }
       else field += c;
     }
   }
@@ -251,9 +248,6 @@ function normalizeRecords(rows) {
   return out;
 }
 
-/* ============================================================
-   MONTH HELPERS
-   ============================================================ */
 const MONTH_NUM = {
   jan:1, january:1, feb:2, february:2, mar:3, march:3, apr:4, april:4,
   may:5, jun:6, june:6, jul:7, july:7, aug:8, august:8, sep:9, sept:9,
@@ -272,9 +266,6 @@ function nameKey(name) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
-/* ============================================================
-   LOAD + RENDER
-   ============================================================ */
 async function loadAll() {
   let all = [];
   for (const u of [SHEET1_CSV, SHEET2_CSV]) {
@@ -283,9 +274,7 @@ async function loadAll() {
       if (!res.ok) throw new Error("HTTP " + res.status);
       const txt = await res.text();
       all = all.concat(normalizeRecords(parseCSV(txt)));
-    } catch (e) {
-      console.warn("Fetch failed:", u, e);
-    }
+    } catch (e) { console.warn("Fetch failed:", u, e); }
   }
   return all;
 }
@@ -323,7 +312,6 @@ function render(records) {
   document.getElementById("h1").textContent = monthLabel(prevRecs[0]);
   document.getElementById("h2").textContent = monthLabel(currRecs[0]);
 
-  /* Group by name */
   const mapPrev = new Map();
   prevRecs.forEach(r => {
     const k = nameKey(r.name);
@@ -340,7 +328,7 @@ function render(records) {
   const cntPrev = mapPrev.size;
   const cntCurr = mapCurr.size;
 
-  /* Order: matched (prev order) first, then only-prev, then only-curr */
+  /* Buckets */
   const matchedKeys   = [];
   const onlyPrevKeys  = [];
   const onlyCurrKeys  = [];
@@ -358,17 +346,15 @@ function render(records) {
     onlyCurrKeys.push(k);
   });
 
-  const orderedKeys = [...matchedKeys, ...onlyPrevKeys, ...onlyCurrKeys];
-
   /* Build HTML */
   const body = document.getElementById("body");
   body.innerHTML = "";
 
   let subPrev = 0, subCurr = 0;
+  let srCounter = 0;
 
+  /* Row builder */
   const buildRow = (p, c, sr, showDiff) => {
-    const isMatched = p && c;
-
     const left = p
       ? `<div class="m1-cell">
            <div class="name-line"><span class="nm">${esc(p.name)}</span></div>
@@ -393,26 +379,48 @@ function render(records) {
       : `<div class="m2-cell"><div class="missing">—</div></div>`;
 
     const row = document.createElement("div");
-    row.className = "item " + (isMatched ? "matched" : "unmatched");
-    row.innerHTML = `
-      <div class="sr-cell">${sr}</div>
-      ${left}
-      ${right}
-    `;
+    row.className = "item";
+    row.innerHTML = `<div class="sr-cell">${sr}</div>${left}${right}`;
     return row;
   };
 
-  orderedKeys.forEach((k, i) => {
-    const p = mapPrev.get(k) || null;
-    const c = mapCurr.get(k) || null;
-    if (p) subPrev += p.amount;
-    if (c) subCurr += c.amount;
+  /* ===== MATCHED SECTION ===== */
+  if (matchedKeys.length) {
+    const sec = document.createElement("div");
+    sec.className = "sec ok";
+    sec.textContent = `✓ Matched Persons (${matchedKeys.length})`;
+    body.appendChild(sec);
 
-    const isMatched = p && c;
-    body.appendChild(buildRow(p, c, i + 1, !!isMatched));
-  });
+    matchedKeys.forEach(k => {
+      const p = mapPrev.get(k), c = mapCurr.get(k);
+      subPrev += p.amount;
+      subCurr += c.amount;
+      body.appendChild(buildRow(p, c, ++srCounter, true));
+    });
+  }
 
-  /* Subtotal row */
+  /* ===== UNMATCHED SECTION — pair left-over with right-over ===== */
+  if (onlyPrevKeys.length || onlyCurrKeys.length) {
+    const sec = document.createElement("div");
+    sec.className = "sec warn";
+    sec.textContent = `⚠ Unmatched Persons (${onlyPrevKeys.length + onlyCurrKeys.length})`;
+    body.appendChild(sec);
+
+    const maxLen = Math.max(onlyPrevKeys.length, onlyCurrKeys.length);
+    for (let i = 0; i < maxLen; i++) {
+      const pKey = onlyPrevKeys[i];
+      const cKey = onlyCurrKeys[i];
+      const p = pKey ? mapPrev.get(pKey) : null;
+      const c = cKey ? mapCurr.get(cKey) : null;
+
+      if (p) subPrev += p.amount;
+      if (c) subCurr += c.amount;
+
+      body.appendChild(buildRow(p, c, ++srCounter, false));
+    }
+  }
+
+  /* ===== SUBTOTAL ===== */
   const totals = document.createElement("div");
   totals.className = "total-row";
   totals.innerHTML = `
@@ -422,7 +430,7 @@ function render(records) {
   `;
   body.appendChild(totals);
 
-  /* Grand total */
+  /* ===== GRAND TOTAL ===== */
   const grand = document.createElement("div");
   grand.className = "grand";
   grand.innerHTML = `
@@ -436,7 +444,7 @@ function render(records) {
   `;
   body.appendChild(grand);
 
-  /* Difference bar */
+  /* ===== DIFFERENCE ===== */
   const diff = subCurr - subPrev;
   const diffEl = document.getElementById("diffbar");
   diffEl.className = "diffbar " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
@@ -447,7 +455,6 @@ function render(records) {
     <span>${arrow} ${sign}${fmt(diff)}</span>
   `;
 
-  /* Counts header */
   document.getElementById("cnt1").textContent = cntPrev;
   document.getElementById("cnt2").textContent = cntCurr;
 
@@ -457,12 +464,10 @@ function render(records) {
     `${monthLabel(prevRecs[0])}  vs  ${monthLabel(currRecs[0])}`;
 }
 
-loadAll()
-  .then(render)
-  .catch(e => {
-    document.getElementById("status").textContent = "Error: " + e.message;
-    console.error(e);
-  });
+loadAll().then(render).catch(e => {
+  document.getElementById("status").textContent = "Error: " + e.message;
+  console.error(e);
+});
 </script>
 </body>
 </html>
