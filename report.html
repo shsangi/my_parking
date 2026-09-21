@@ -764,11 +764,7 @@ function parseDateParts(s) {
 function dateKeyOf(p) {
   return p ? (p.y * 10000 + p.m * 100 + p.d) : 0;
 }
-
-/* Compare two date-part objects */
-function dateCmp(a, b) {
-  return dateKeyOf(a) - dateKeyOf(b);
-}
+function dateCmp(a, b) { return dateKeyOf(a) - dateKeyOf(b); }
 
 function daysBetween(p1, p2) {
   if (!p1 || !p2) return 0;
@@ -777,11 +773,9 @@ function daysBetween(p1, p2) {
   const diff = Math.round((d2 - d1) / 86400000) + 1;
   return diff > 0 ? diff : 0;
 }
-
 function daysInMonth(y, m) {
   return new Date(y, m, 0).getDate();
 }
-
 function fmtDateLong(p) {
   if (!p) return "—";
   return `${MONTH_LONG[p.m - 1]} ${p.d}, ${p.y}`;
@@ -1047,29 +1041,31 @@ function buildOverallSummaryCard(totals) {
 }
 
 /* ============================================================
-   SMART MONTHLY BOUNDS CALCULATION
+   SMART MONTHLY BOUNDS — with proportional amount split
    ------------------------------------------------------------
-   For every month that overlaps with any period:
-     - Start = earliest real start date found inside that month,
-               else fallback = 1st of the month
-     - End   = latest real end date found inside that month,
-               else fallback = last day of month (or today for current)
+   For every month that a period touches:
+     - Start of month   = real start date if period starts here,
+                          else 1st of month
+     - End of month     = real end date if period ends here,
+                          else last day of month
+     - Period's amount for this month = row amount × (days_in_month / total_period_days)
    ============================================================ */
-function computeSmartMonthBounds(rows) {
-  /* Key = YYYY*100 + MM */
-  const bounds = new Map();
+function computeMonthlySplit(rows) {
+  const buckets = new Map();
 
-  const considerMonth = (y, m) => {
+  const ensure = (y, m) => {
     const key = y * 100 + m;
-    if (!bounds.has(key)) {
-      bounds.set(key, {
+    if (!buckets.has(key)) {
+      buckets.set(key, {
         y, m,
-        minStart: null,   /* earliest start date found inside this month */
-        maxEnd:   null,   /* latest end date found inside this month */
-        rows:     []      /* rows that touch this month at all */
+        minStart: null,
+        maxEnd:   null,
+        gross: 0,
+        exp:   0,
+        net:   0
       });
     }
-    return bounds.get(key);
+    return buckets.get(key);
   };
 
   rows.forEach(r => {
@@ -1077,75 +1073,73 @@ function computeSmartMonthBounds(rows) {
     const ep = parseDateParts(r.endDate) || sp;
     if (!sp) return;
 
-    /* Which months does this period touch? */
-    const startKey = sp.y * 100 + sp.m;
-    const endKey   = ep ? (ep.y * 100 + ep.m) : startKey;
+    const periodDays = daysBetween(sp, ep) || 1;
 
-    /* Walk from start month to end month (usually 1 or 2 months, sometimes more) */
+    /* Distribute this row's amounts across months it touches */
     let y = sp.y, m = sp.m;
     while (true) {
-      const key = y * 100 + m;
-      const bucket = considerMonth(y, m);
-      bucket.rows.push(r);
+      const bucket = ensure(y, m);
 
-      /* Start bound for this month:
-         If period started in this month → use its real start.
-         If period started earlier but overlaps into this month → use 1st of month. */
-      if (y === sp.y && m === sp.m) {
+      /* Segment of this row inside month (y, m) */
+      const monthFirst = { y, m, d: 1 };
+      const monthLast  = { y, m, d: daysInMonth(y, m) };
+
+      const segStart = dateCmp(sp, monthFirst) > 0 ? sp : monthFirst;
+      const segEnd   = (ep && dateCmp(ep, monthLast) < 0) ? ep : monthLast;
+
+      const segDays = daysBetween(segStart, segEnd);
+      const frac = periodDays ? segDays / periodDays : 0;
+
+      bucket.gross += r.gross * frac;
+      bucket.exp   += r.expenses * frac;
+      bucket.net   += r.net * frac;
+
+      /* Track bounds inside this month */
+      if (sp.y === y && sp.m === m) {
         if (!bucket.minStart || dateCmp(sp, bucket.minStart) < 0) {
           bucket.minStart = { y: sp.y, m: sp.m, d: sp.d };
         }
       } else {
-        /* Period spills over into this month — start from 1st */
-        const first = { y, m, d: 1 };
-        if (!bucket.minStart || dateCmp(first, bucket.minStart) < 0) {
-          bucket.minStart = first;
+        if (!bucket.minStart || dateCmp(monthFirst, bucket.minStart) < 0) {
+          bucket.minStart = monthFirst;
         }
       }
 
-      /* End bound for this month:
-         If period ended in this month → use its real end.
-         If period continues into later months → use last day of month. */
-      if (ep && y === ep.y && m === ep.m) {
+      if (ep && ep.y === y && ep.m === m) {
         if (!bucket.maxEnd || dateCmp(ep, bucket.maxEnd) > 0) {
           bucket.maxEnd = { y: ep.y, m: ep.m, d: ep.d };
         }
       } else {
-        /* Period continues past this month — end at last day of month */
-        const lastD = daysInMonth(y, m);
-        const last = { y, m, d: lastD };
-        if (!bucket.maxEnd || dateCmp(last, bucket.maxEnd) > 0) {
-          bucket.maxEnd = last;
+        if (!bucket.maxEnd || dateCmp(monthLast, bucket.maxEnd) > 0) {
+          bucket.maxEnd = monthLast;
         }
       }
 
-      if (key === endKey) break;
-      /* Advance to next month */
+      /* Move to next month, stop when past the period's end month */
+      if (ep && y === ep.y && m === ep.m) break;
+      if (!ep && y === sp.y && m === sp.m) break;
+
       m++;
       if (m > 12) { m = 1; y++; }
+      /* Safety: stop if we've passed the end month */
+      if (ep && (y > ep.y || (y === ep.y && m > ep.m))) break;
     }
   });
 
-  /* Post-process: apply "current month" cap & fallbacks */
+  /* Apply caps & fallbacks */
   const now = new Date();
   const today = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
 
   const result = [];
-  bounds.forEach((b, key) => {
-    /* Fallback if somehow minStart/maxEnd is null */
+  buckets.forEach(b => {
     let startP = b.minStart || { y: b.y, m: b.m, d: 1 };
     let endP   = b.maxEnd   || { y: b.y, m: b.m, d: daysInMonth(b.y, b.m) };
 
-    /* If current month and endP is after today → cap at today */
     const isCurrentMonth = (today.y === b.y && today.m === b.m);
     if (isCurrentMonth && dateCmp(endP, today) > 0) {
       endP = { y: today.y, m: today.m, d: today.d };
     }
-
-    /* Ensure startP is not after endP */
-    if (dateCmp(startP, endP) > 0) {
-      startP = endP;
-    }
+    if (dateCmp(startP, endP) > 0) startP = endP;
 
     const daysCount = daysBetween(startP, endP);
 
@@ -1156,25 +1150,21 @@ function computeSmartMonthBounds(rows) {
       endP,
       daysCount,
       isCurrentMonth,
-      rows: b.rows
+      gross: b.gross,
+      exp:   b.exp,
+      net:   b.net
     });
   });
 
-  /* Sort chronologically */
   result.sort((a, b) => (a.y * 100 + a.m) - (b.y * 100 + b.m));
-
   return result;
 }
 
 /* ============================================================
    REPORT — Monthly row
    ============================================================ */
-function buildMonthRow(monthInfo) {
-  const { y, m, startP, endP, daysCount, isCurrentMonth, rows } = monthInfo;
-
-  let gross = 0, exp = 0, net = 0;
-  rows.forEach(r => { gross += r.gross; exp += r.expenses; net += r.net; });
-
+function buildMonthRow(info) {
+  const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
 
   const row = document.createElement("div");
@@ -1215,7 +1205,7 @@ function buildMonthRow(monthInfo) {
 }
 
 /* ============================================================
-   REPORT — Compact period row
+   REPORT — Period row
    ============================================================ */
 function buildPeriodRow(period) {
   const { startP, endP, startStr, endStr, gross, exp, net } = period;
@@ -1278,12 +1268,8 @@ function renderReport(rows) {
     const sp = parseDateParts(r.startDate);
     const ep = parseDateParts(r.endDate) || sp;
 
-    if (sp) {
-      if (!minStart || dateCmp(sp, minStart) < 0) minStart = sp;
-    }
-    if (ep) {
-      if (!maxEnd || dateCmp(ep, maxEnd) > 0) maxEnd = ep;
-    }
+    if (sp && (!minStart || dateCmp(sp, minStart) < 0)) minStart = sp;
+    if (ep && (!maxEnd   || dateCmp(ep, maxEnd)   > 0)) maxEnd   = ep;
   });
 
   const totalDays = (minStart && maxEnd) ? daysBetween(minStart, maxEnd) : 0;
@@ -1292,23 +1278,17 @@ function renderReport(rows) {
   const overallEl = document.getElementById("overallCard");
   overallEl.innerHTML = "";
   overallEl.appendChild(buildOverallSummaryCard({
-    gross: totalGross,
-    exp:   totalExp,
-    net:   totalNet,
-    days:  totalDays,
+    gross: totalGross, exp: totalExp, net: totalNet, days: totalDays,
     minStart, maxEnd
   }));
 
-  /* SMART Monthly Breakdown */
-  const monthInfos = computeSmartMonthBounds(rows);
-
+  /* Monthly breakdown (proportional) */
+  const monthInfos = computeMonthlySplit(rows);
   const monthEl = document.getElementById("monthList");
   monthEl.innerHTML = "";
-  monthInfos.forEach(info => {
-    monthEl.appendChild(buildMonthRow(info));
-  });
+  monthInfos.forEach(info => monthEl.appendChild(buildMonthRow(info)));
 
-  /* Period Breakdown */
+  /* Period breakdown */
   const periodEl = document.getElementById("periodList");
   periodEl.innerHTML = "";
 
@@ -1325,9 +1305,7 @@ function renderReport(rows) {
       startStr: r.startDate,
       endStr:   r.endDate,
       startP, endP,
-      gross: r.gross,
-      exp:   r.expenses,
-      net:   r.net
+      gross: r.gross, exp: r.expenses, net: r.net
     }));
   });
 
@@ -1402,7 +1380,7 @@ async function loadDaily() {
 }
 
 /* ============================================================
-   MONTHLY STATE (for Last 2 / All Months tabs)
+   MONTHLY STATE (for Last 2 / All Months)
    ============================================================ */
 let allKeys = [];
 let byMonth = new Map();
@@ -1494,9 +1472,7 @@ function switchTab(tab) {
   document.getElementById("contentLast2").classList.toggle("active", tab === "last2");
   document.getElementById("contentAll").classList.toggle("active", tab === "all");
 
-  if (tab === "last2" || tab === "all") {
-    loadMonthlyOnce();
-  }
+  if (tab === "last2" || tab === "all") loadMonthlyOnce();
 }
 
 document.getElementById("tabReport").addEventListener("click", () => switchTab("report"));
