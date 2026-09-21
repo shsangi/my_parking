@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sangi Parking — Reports</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #f4f6fa;
+    --card: #ffffff;
+    --line: #e8ecf2;
+    --text: #0f172a;
+    --muted: #64748b;
+    --brand: #1565c0;
+    --brand-2: #1e88e5;
+    --green: #16a34a;
+    --green-dark: #15803d;
+    --red: #dc2626;
+    --amber: #f59e0b;
+    --purple: #7c3aed;
+    --purple-dark: #5b21b6;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 2px 8px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    margin: 0; padding: 0 0 24px; background: var(--bg); color: var(--text);
+    font-size: 14px; line-height: 1.45;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ TAB BAR ============ */
+  .tab-bar {
+    max-width: 520px; margin: 12px auto 14px;
+    background: var(--card); border-radius: 14px;
+    padding: 5px; display: flex; gap: 3px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--line);
+  }
+  .tab-bar button {
+    flex: 1; padding: 11px 6px; border: none;
+    background: transparent; color: var(--muted);
+    font-size: 12.5px; font-weight: 600;
+    border-radius: 10px; cursor: pointer;
+    font-family: inherit; transition: all 0.2s ease;
+    white-space: nowrap;
+    letter-spacing: 0.1px;
+  }
+  .tab-bar button.active {
+    background: linear-gradient(135deg, var(--brand-2), var(--brand));
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(30, 136, 229, 0.35);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .carousel {
+    display: flex; overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 12px; gap: 12px;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .page {
+    flex: 0 0 calc(100% - 24px);
+    max-width: 520px; scroll-snap-align: center;
+    background: var(--card); border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+
+  /* ============ REPORT ============ */
+  .report-wrap {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 12px;
+  }
+
+  /* ---------- Overall card ---------- */
+  .overall-card {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 18px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .oc-head {
+    background: linear-gradient(135deg, #0d47a1 0%, #1565c0 50%, #1e88e5 100%);
+    color: #fff;
+    padding: 20px 18px 18px;
+    text-align: center;
+    position: relative;
+  }
+  .oc-head::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ffb300, #ffd54f, #ffb300);
+  }
+  .oc-eyebrow {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    opacity: 0.85;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .oc-title {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+  }
+  .oc-body {
+    padding: 4px 18px 16px;
+  }
+  .oc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    gap: 12px;
+  }
+  .oc-row:last-child { border-bottom: none; }
+  .oc-row .k {
+    color: var(--muted);
+    font-size: 12.5px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .oc-row .v {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 14px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    word-break: break-word;
+  }
+  .oc-row.primary .v {
+    font-size: 16px;
+    color: #0d47a1;
+  }
+  .oc-row.highlight {
+    background: linear-gradient(90deg, #e8f0fe 0%, #f5f9ff 100%);
+    margin: 6px -18px 0;
+    padding: 14px 18px;
+    border-bottom: none;
+    border-radius: 0;
+  }
+  .oc-row.highlight .k {
+    color: #0d47a1;
+    font-weight: 800;
+    font-size: 13px;
+  }
+  .oc-row.highlight .v {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0d47a1;
+    letter-spacing: -0.2px;
+  }
+  .oc-row.highlight .v .unit {
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.7;
+    margin-left: 3px;
+  }
+
+  /* ---------- Section labels ---------- */
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 4px 10px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .section-count {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    background: #e8ecf2;
+    padding: 3px 9px;
+    border-radius: 10px;
+  }
+
+  /* ---------- Monthly list ---------- */
+  .month-list, .period-list {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    margin-bottom: 6px;
+  }
+
+  .month-row, .period-row {
+    padding: 14px 14px 14px 12px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    align-items: start;
+    transition: background 0.15s ease;
+  }
+  .month-row:last-child, .period-row:last-child { border-bottom: none; }
+
+  .month-row.current {
+    background: linear-gradient(180deg, #fffdf5 0%, #fffbf0 100%);
+    position: relative;
+  }
+  .month-row.current::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--amber), #fbbf24);
+  }
+
+  .row-sr {
+    font-size: 12px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-align: center;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 5px 0;
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+    min-height: 26px;
+  }
+
+  /* ---------- Month / Period header ---------- */
+  .mr-head, .pr-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .mr-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    letter-spacing: -0.2px;
+  }
+  .mr-badge {
+    background: linear-gradient(135deg, #fbbf24, var(--amber));
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2.5px 8px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 1px 3px rgba(245, 158, 11, 0.35);
+  }
+  .mr-range {
+    font-size: 11.5px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-top: 3px;
+    letter-spacing: 0.1px;
+  }
+
+  .pr-range {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.3;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: -0.1px;
+  }
+
+  .mr-days, .pr-days {
+    background: linear-gradient(135deg, #e3f2fd, #dbeafe);
+    color: #0d47a1;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1px solid rgba(21, 101, 192, 0.12);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Metrics grid ---------- */
+  .mr-metrics, .pr-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .mr-metric, .pr-metric {
+    text-align: center;
+    padding: 8px 3px 7px;
+    border-radius: 10px;
+    background: #f8fafc;
+    min-width: 0;
+    border: 1px solid #eef2f7;
+  }
+  .mr-metric .lbl, .pr-metric .lbl {
+    font-size: 9px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+  .mr-metric .val, .pr-metric .val {
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.2px;
+  }
+  .mr-metric.credit, .pr-metric.credit {
+    background: #f0fdf4;
+    border-color: #dcfce7;
+  }
+  .mr-metric.credit .val, .pr-metric.credit .val { color: var(--green-dark); }
+  .mr-metric.exp, .pr-metric.exp {
+    background: #fef2f2;
+    border-color: #fee2e2;
+  }
+  .mr-metric.exp .val, .pr-metric.exp .val { color: var(--red); }
+  .mr-metric.gross, .pr-metric.gross {
+    background: #eff6ff;
+    border-color: #dbeafe;
+  }
+  .mr-metric.gross .val, .pr-metric.gross .val { color: var(--brand); }
+  .mr-metric.avg, .pr-metric.avg {
+    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+    border-color: #ddd6fe;
+  }
+  .mr-metric.avg .val, .pr-metric.avg .val { color: var(--purple-dark); }
+
+  /* ---------- Monthly sheet total strip ---------- */
+  .mr-sheet-strip {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border: 1px solid #e9d5ff;
+    border-left: 3px solid var(--purple);
+  }
+  .mr-sheet-strip .lbl-block { min-width: 0; flex: 1; }
+  .mr-sheet-strip .sheet-lbl {
+    font-size: 10px;
+    color: var(--purple-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 800;
+  }
+  .mr-sheet-strip .sheet-sub {
+    font-size: 10px;
+    color: #7c3aed;
+    font-weight: 600;
+    margin-top: 2px;
+    opacity: 0.85;
+  }
+  .mr-sheet-strip .val-block {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .mr-sheet-strip .sheet-val {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--purple-dark);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+  }
+  .mr-sheet-strip .sheet-val .unit {
+    font-size: 10px;
+    font-weight: 600;
+    opacity: 0.65;
+    margin-left: 2px;
+  }
+
+  /* ---------- Combined strip ---------- */
+  .mr-combined-strip {
+    margin-top: 8px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(6, 95, 70, 0.2);
+  }
+  .mr-combined-strip .lbl-block { min-width: 0; flex: 1; }
+  .mr-combined-strip .c-lbl {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    font-weight: 800;
+    opacity: 0.92;
+  }
+  .mr-combined-strip .c-sub {
+    font-size: 10px;
+    font-weight: 600;
+    margin-top: 3px;
+    opacity: 0.82;
+    letter-spacing: 0.05px;
+  }
+  .mr-combined-strip .c-val {
+    font-size: 17px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  .mr-combined-strip .c-val .unit {
+    font-size: 10px;
+    font-weight: 600;
+    opacity: 0.8;
+    margin-left: 3px;
+  }
+
+  /* ---------- Daily data section ---------- */
+  .daily-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 20px 4px 10px;
+  }
+
+  .table-scroll {
+    max-width: 100%; overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 14px;
+    box-shadow: var(--shadow-md);
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .table-scroll::-webkit-scrollbar { height: 5px; }
+  .table-scroll::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
+
+  .data-table {
+    width: 100%; min-width: 620px;
+    border-collapse: collapse; font-size: 13px;
+  }
+  .data-table thead th {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: #fff; padding: 12px 12px;
+    text-align: left; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .data-table thead th.num { text-align: right; }
+  .data-table tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .data-table tbody td.num {
+    text-align: right; font-weight: 700;
+  }
+  .data-table tbody td.date { color: var(--muted); font-size: 12px; font-weight: 500; }
+  .data-table tbody tr:nth-child(even) { background: #fafbfd; }
+  .data-table td.gross { color: var(--brand); }
+  .data-table td.exp   { color: var(--red); }
+  .data-table td.net   { color: var(--green-dark); }
+
+  .data-table tfoot td {
+    padding: 13px 12px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: #fff;
+    font-weight: 800; font-size: 13px;
+    border-top: 2px solid var(--amber);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .data-table tfoot td.num { text-align: right; }
+  .data-table tfoot td.gross { color: #90caf9; }
+  .data-table tfoot td.exp   { color: #fca5a5; }
+  .data-table tfoot td.net   { color: #86efac; }
+
+  .status { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+  .hint {
+    text-align: center; font-size: 11px; color: var(--muted);
+    padding: 10px 0 4px;
+    font-weight: 500;
+  }
+
+  /* ---------- Compare card (Last 2 Months) ---------- */
+  .rc-head {
+    background: linear-gradient(135deg, #0d47a1, #1565c0);
+    color: #fff; padding: 18px 16px; text-align: center;
+  }
+  .rc-head h1 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
+  .rc-head p { margin: 4px 0 0; font-size: 12px; opacity: 0.85; font-weight: 500; }
+
+  .counts {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: #f8fafc; border-bottom: 1px solid var(--line);
+  }
+  .counts > div {
+    padding: 14px 10px; text-align: center;
+    border-right: 1px solid var(--line);
+  }
+  .counts > div:last-child { border-right: none; }
+  .counts .num { font-size: 22px; font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; }
+  .counts .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; font-weight: 700; }
+  .counts .c1 { color: var(--brand); }
+  .counts .c2 { color: var(--green-dark); }
+
+  .months {
+    display: grid;
+    grid-template-columns: 34px 1fr 1fr;
+    background: #f8fafc; border-bottom: 2px solid var(--line);
+    font-size: 11.5px; font-weight: 700;
+  }
+  .months .hd {
+    padding: 10px 6px; text-align: center;
+    border-right: 1px solid var(--line);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .months .hd:last-child { border-right: none; }
+  .months .m1 { color: var(--brand); }
+  .months .m2 { color: var(--green-dark); }
+  .months .sr-h { color: #94a3b8; font-size: 10px; }
+
+  .sec {
+    padding: 8px 14px;
+    font-size: 10.5px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.7px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .sec.ok   { background: #ecfdf5; color: var(--green-dark); }
+  .sec.warn { background: #fff7ed; color: #c2410c; }
+
+  .item {
+    display: grid;
+    grid-template-columns: 34px 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+    background: var(--card);
+  }
+  .item > div {
+    padding: 10px 8px; min-height: 52px;
+    display: flex; flex-direction: column; justify-content: center;
+    border-right: 1px solid #f1f5f9;
+    overflow: hidden;
+  }
+  .item > div:last-child { border-right: none; }
+
+  .sr-cell {
+    font-size: 11px; font-weight: 800; color: #94a3b8;
+    text-align: center; background: #f8fafc;
+  }
+
+  .name-line {
+    display: flex; align-items: baseline; gap: 4px;
+    font-weight: 700; font-size: 12.5px;
+    white-space: nowrap; overflow: hidden;
+    color: #0f172a;
+  }
+  .name-line .nm { overflow: hidden; text-overflow: ellipsis; }
+  .amt { font-size: 13.5px; font-weight: 800; margin-top: 3px; letter-spacing: -0.2px; }
+  .m1-cell .amt { color: var(--brand); }
+  .m2-cell .amt { color: var(--green-dark); }
+
+  .missing {
+    color: #cbd5e1; font-style: italic; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .diff-badge {
+    font-size: 9px; font-weight: 800;
+    padding: 2px 5px; border-radius: 5px; margin-left: auto;
+    flex-shrink: 0;
+  }
+  .diff-badge.up { background: #ecfdf5; color: var(--green-dark); }
+  .diff-badge.down { background: #fef2f2; color: var(--red); }
+  .diff-badge.same { background: #f1f5f9; color: var(--muted); }
+
+  .total-row {
+    display: grid;
+    grid-template-columns: 34px 1fr 1fr;
+    background: #f8fafc; border-top: 2px solid var(--line);
+    font-weight: 700;
+  }
+  .total-row > div {
+    padding: 12px 6px; text-align: center;
+    border-right: 1px solid var(--line);
+  }
+  .total-row > div:last-child { border-right: none; }
+  .total-row .mname {
+    font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .total-row .mname.v1 { color: var(--brand); }
+  .total-row .mname.v2 { color: var(--green-dark); }
+  .total-row .val { font-size: 15px; margin-top: 4px; font-weight: 800; letter-spacing: -0.2px; }
+  .total-row .val.v1 { color: var(--brand); }
+  .total-row .val.v2 { color: var(--green-dark); }
+  .total-row .cnt { font-size: 10px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  .total-row .sr-blank { background: #f8fafc; }
+
+  .grand {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #fff; padding: 16px; text-align: center;
+  }
+  .grand .lbl { font-size: 10.5px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  .grand .val { font-size: 24px; font-weight: 800; margin-top: 5px; letter-spacing: -0.5px; }
+  .grand .cnt { font-size: 11px; opacity: 0.75; margin-top: 6px; }
+
+  .diffbar {
+    margin: 12px 14px 16px; padding: 12px 16px;
+    border-radius: 10px; display: flex;
+    justify-content: space-between; align-items: center;
+    font-weight: 800; font-size: 14px;
+    letter-spacing: -0.1px;
+  }
+  .diffbar.pos { background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: var(--green-dark); }
+  .diffbar.neg { background: linear-gradient(135deg, #fef2f2, #fecaca); color: var(--red); }
+  .diffbar.zero { background: #f1f5f9; color: var(--muted); }
+
+  /* ---------- All Months table ---------- */
+  .table-wrap {
+    max-width: 100%; overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 12px 12px;
+  }
+  .table-wrap::-webkit-scrollbar { height: 6px; }
+  .table-wrap::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
+
+  .mtable {
+    display: inline-grid; grid-auto-flow: column;
+    border-radius: 14px; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    background: var(--card); min-width: 100%;
+    border: 1px solid var(--line);
+  }
+
+  .mcol {
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--line);
+    min-width: 150px; max-width: 150px;
+  }
+  .mcol:last-child { border-right: none; }
+
+  .mcol-head {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    color: #fff; padding: 12px 10px; text-align: center;
+    font-weight: 800; font-size: 13px;
+    letter-spacing: -0.1px;
+  }
+  .mcol:nth-child(even) .mcol-head {
+    background: linear-gradient(135deg, #43a047, #2e7d32);
+  }
+  .mcol-head .mname { font-size: 13px; }
+  .mcol-head .mcount {
+    font-size: 10px; opacity: 0.9; margin-top: 4px; font-weight: 500;
+  }
+  .mcol-body { flex: 1; }
+
+  .mrow {
+    display: flex; flex-direction: column;
+    padding: 9px 10px; border-bottom: 1px solid var(--line);
+    min-height: 54px; justify-content: center;
+  }
+  .mrow .top {
+    display: flex; align-items: center; gap: 6px;
+    font-weight: 700; font-size: 12.5px;
+    white-space: nowrap; overflow: hidden;
+  }
+  .mrow .top .srn {
+    font-size: 10px; color: #94a3b8; font-weight: 800;
+    background: #f1f5f9; padding: 2px 6px; border-radius: 5px;
+    flex-shrink: 0;
+  }
+  .mrow .top .nm { overflow: hidden; text-overflow: ellipsis; }
+  .mrow .amt { font-size: 13px; font-weight: 800; margin-top: 3px; letter-spacing: -0.2px; }
+  .mcol:nth-child(odd) .mrow .amt { color: var(--brand); }
+  .mcol:nth-child(even) .mrow .amt { color: var(--green-dark); }
+
+  .mcol-total {
+    background: #f8fafc; border-top: 2px solid var(--line);
+    padding: 12px 10px; text-align: center;
+  }
+  .mcol-total .lbl {
+    font-size: 10px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 800;
+  }
+  .mcol-total .val { font-size: 15px; font-weight: 800; margin-top: 4px; letter-spacing: -0.2px; }
+  .mcol:nth-child(odd) .mcol-total .val { color: var(--brand); }
+  .mcol:nth-child(even) .mcol-total .val { color: var(--green-dark); }
+  .mcol-total .cnt { font-size: 10px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+
+  .mcol-grand {
+    display: flex; flex-direction: column;
+    min-width: 160px; max-width: 160px;
+    background: linear-gradient(180deg, #0f172a, #1e293b);
+    color: #fff;
+    border-left: 3px solid var(--amber);
+  }
+  .mcol-grand .mcol-head { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .mcol-grand .mcol-body {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 16px 12px; text-align: center; flex: 1;
+  }
+  .mcol-grand .big-lbl { font-size: 10px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 800; }
+  .mcol-grand .big-val { font-size: 22px; font-weight: 800; margin-top: 6px; color: #ffd54f; letter-spacing: -0.4px; }
+  .mcol-grand .sub { font-size: 10px; opacity: 0.8; margin-top: 8px; }
+  .mcol-grand .divider { height: 1px; background: rgba(255,255,255,0.18); margin: 12px 0; }
+  .mcol-grand .avg-lbl { font-size: 9px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
+  .mcol-grand .avg-val { font-size: 13px; font-weight: 800; margin-top: 4px; }
+  .mcol-grand .mcol-total { background: rgba(0,0,0,0.3); border-top: 2px solid var(--amber); }
+  .mcol-grand .mcol-total .val { color: #ffd54f; }
+  .mcol-grand .mcol-total .lbl { color: #ffd54f; opacity: 0.9; }
+  .mcol-grand .mcol-total .cnt { color: #ffd54f; opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <button id="tabReport" class="active" type="button">Report</button>
+  <button id="tabLast2" type="button">Last 2 Months</button>
+  <button id="tabAll" type="button">All Months</button>
+</div>
+
+<div class="tab-content active" id="contentReport">
+  <div id="dailyStatus" class="status">Loading report…</div>
+
+  <div id="reportContent" style="display:none;">
+    <div class="report-wrap">
+
+      <div id="overallCard"></div>
+
+      <div class="section-head">
+        <div class="section-label">Monthly Breakdown</div>
+        <div class="section-count" id="monthCount">—</div>
+      </div>
+      <div class="month-list" id="monthList"></div>
+
+      <div class="section-head">
+        <div class="section-label">Period Breakdown</div>
+        <div class="section-count" id="periodCount">—</div>
+      </div>
+      <div class="period-list" id="periodList"></div>
+
+      <div class="daily-section-title">Daily Data</div>
+      <div class="table-scroll">
+        <table class="data-table" id="dailyTable">
+          <thead>
+            <tr>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th class="num">Gross</th>
+              <th class="num">Expenses</th>
+              <th class="num">Net</th>
+            </tr>
+          </thead>
+          <tbody id="dailyBody"></tbody>
+          <tfoot id="dailyFoot"></tfoot>
+        </table>
+      </div>
+      <div class="hint">← Swipe horizontally on the table →</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="contentLast2">
+  <div id="statusLast2" class="status">Loading data…</div>
+  <div class="carousel" id="carousel" style="display:none;"></div>
+</div>
+
+<div class="tab-content" id="contentAll">
+  <div id="statusAll" class="status">Loading data…</div>
+  <div class="table-wrap" id="tableWrap" style="display:none;">
+    <div class="mtable" id="mtable"></div>
+  </div>
+  <div class="hint" id="tableHint" style="display:none;">← Swipe horizontally to see all months →</div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const SHEET1_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pub?output=csv";
+const SHEET2_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
+const SHEET_DAILY_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1810247989";
+
+const COL = {
+  name:   ["name/item", "name", "item", "person", "party"],
+  amount: ["amount", "amt", "value"],
+  month:  ["month", "mnth"],
+  year:   ["year", "yr"]
+};
+
+const DAILY_COL = {
+  startDate: ["start date", "startdate", "from", "from date"],
+  endDate:   ["end date", "enddate", "to", "to date"],
+  gross:     ["total gross amount (pkr)", "total gross amount", "gross amount", "gross"],
+  expenses:  ["total expenses (pkr)", "total expenses", "expenses", "expense"],
+  net:       ["total net amount credited (pkr)", "total net amount credited", "net amount credited", "net amount", "net"]
+};
+
+/* ============================================================
+   CSV UTIL
+   ============================================================ */
+function parseCSV(text) {
+  const rows = [];
+  let cur = [], field = "", inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"' && text[i+1] === '"') { field += '"'; i++; }
+      else if (c === '"') inQ = false;
+      else field += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ',') { cur.push(field); field = ""; }
+      else if (c === '\n') { cur.push(field); rows.push(cur); cur = []; field = ""; }
+      else if (c === '\r') { }
+      else field += c;
+    }
+  }
+  if (field.length || cur.length) { cur.push(field); rows.push(cur); }
+  return rows.filter(r => r.some(c => c.trim() !== ""));
+}
+
+function findCol(headers, names) {
+  for (let i = 0; i < headers.length; i++) {
+    const h = (headers[i] || "").trim().toLowerCase().replace(/\s+/g, " ");
+    for (const n of names) if (h === n.toLowerCase()) return i;
+  }
+  return -1;
+}
+
+function normalizeRecords(rows) {
+  if (!rows.length) return [];
+  const headers = rows[0];
+  const idx = {
+    name:   findCol(headers, COL.name),
+    amount: findCol(headers, COL.amount),
+    month:  findCol(headers, COL.month),
+    year:   findCol(headers, COL.year)
+  };
+  const out = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    const name = (r[idx.name] || "").trim();
+    if (!name) continue;
+    const amtRaw = (r[idx.amount] || "0").toString().replace(/[^0-9.\-]/g, "");
+    out.push({
+      name,
+      amount: parseFloat(amtRaw) || 0,
+      month:  idx.month >= 0 ? (r[idx.month] || "").trim() : "",
+      year:   idx.year  >= 0 ? (r[idx.year]  || "").trim() : ""
+    });
+  }
+  return out;
+}
+
+function normalizeDaily(rows) {
+  if (!rows.length) return [];
+  const headers = rows[0];
+  const idx = {
+    startDate: findCol(headers, DAILY_COL.startDate),
+    endDate:   findCol(headers, DAILY_COL.endDate),
+    gross:     findCol(headers, DAILY_COL.gross),
+    expenses:  findCol(headers, DAILY_COL.expenses),
+    net:       findCol(headers, DAILY_COL.net)
+  };
+  const out = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r.some(c => (c || "").trim() !== "")) continue;
+
+    const startDate = idx.startDate >= 0 ? (r[idx.startDate] || "").trim() : "";
+    const endDate   = idx.endDate   >= 0 ? (r[idx.endDate]   || "").trim() : "";
+    const gross     = idx.gross     >= 0 ? parseNum(r[idx.gross])     : 0;
+    const expenses  = idx.expenses  >= 0 ? parseNum(r[idx.expenses])  : 0;
+    const net       = idx.net       >= 0 ? parseNum(r[idx.net])       : 0;
+
+    if (!startDate && !endDate && !gross && !expenses && !net) continue;
+
+    out.push({ startDate, endDate, gross, expenses, net });
+  }
+  return out;
+}
+
+function parseNum(v) {
+  if (v == null) return 0;
+  const s = v.toString().replace(/[^0-9.\-]/g, "");
+  return parseFloat(s) || 0;
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const MONTH_NUM = {
+  jan:1, january:1, feb:2, february:2, mar:3, march:3, apr:4, april:4,
+  may:5, jun:6, june:6, jul:7, july:7, aug:8, august:8, sep:9, sept:9,
+  september:9, oct:10, october:10, nov:11, november:11, dec:12, december:12
+};
+const MONTH_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTH_LONG  = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function monthKey(rec) {
+  const m = MONTH_NUM[rec.month.toLowerCase()] || 0;
+  const y = parseInt(rec.year) || 0;
+  return y * 100 + m;
+}
+function monthLabel(rec) {
+  if (!rec) return "—";
+  return `${rec.month} ${rec.year}`.trim();
+}
+function nameKey(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ""); }
+function groupByName(recs) {
+  const m = new Map();
+  recs.forEach(r => {
+    const k = nameKey(r.name);
+    if (!m.has(k)) m.set(k, { name: r.name, amount: 0 });
+    m.get(k).amount += r.amount;
+  });
+  return m;
+}
+function fmt(n) {
+  const sign = n < 0 ? "-" : "";
+  return sign + Math.abs(n).toLocaleString(undefined, {
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+  });
+}
+function fmtInt(n) { return Math.round(n).toLocaleString(); }
+function fmtDec2(n) {
+  return n.toLocaleString(undefined, {
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+  });
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+/* ============================================================
+   DATE PARSING
+   ============================================================ */
+function parseDateParts(s) {
+  if (!s) return null;
+  const str = s.toString().trim();
+  if (!str) return null;
+
+  let m = str.match(/^([A-Za-z]+)\s+(\d{1,2})(?:,)?\s+(\d{4})$/);
+  if (m) {
+    const mo = MONTH_NUM[m[1].toLowerCase()];
+    if (mo) return { y: +m[3], m: mo, d: +m[2] };
+  }
+  m = str.match(/^(\d{1,2})\s+([A-Za-z]+)(?:,)?\s+(\d{4})$/);
+  if (m) {
+    const mo = MONTH_NUM[m[2].toLowerCase()];
+    if (mo) return { y: +m[3], m: mo, d: +m[1] };
+  }
+  m = str.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
+  if (m) return { y: +m[1], m: +m[2], d: +m[3] };
+
+  m = str.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+  if (m) {
+    let a = +m[1], b = +m[2], y = +m[3];
+    if (y < 100) y += 2000;
+    if (a > 12) return { y, m: b, d: a };
+    if (b > 12) return { y, m: a, d: b };
+    return { y, m: b, d: a };
+  }
+  const t = Date.parse(str);
+  if (!isNaN(t)) {
+    const dt = new Date(t);
+    return { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() };
+  }
+  return null;
+}
+
+function dateKeyOf(p) { return p ? (p.y * 10000 + p.m * 100 + p.d) : 0; }
+function dateCmp(a, b) { return dateKeyOf(a) - dateKeyOf(b); }
+
+function daysBetween(p1, p2) {
+  if (!p1 || !p2) return 0;
+  const d1 = new Date(p1.y, p1.m - 1, p1.d);
+  const d2 = new Date(p2.y, p2.m - 1, p2.d);
+  const diff = Math.round((d2 - d1) / 86400000) + 1;
+  return diff > 0 ? diff : 0;
+}
+function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
+function fmtDateLong(p) {
+  if (!p) return "—";
+  return `${MONTH_LONG[p.m - 1]} ${p.d}, ${p.y}`;
+}
+function fmtDateShort(p) {
+  if (!p) return "—";
+  return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]} ${p.y}`;
+}
+
+/* ============================================================
+   COMPARE CARD
+   ============================================================ */
+function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
+  const mapPrev = groupByName(prevRecs);
+  const mapCurr = groupByName(currRecs);
+  const cntPrev = mapPrev.size;
+  const cntCurr = mapCurr.size;
+
+  const matchedKeys = [], onlyPrevKeys = [], onlyCurrKeys = [];
+  const seen = new Set();
+  mapPrev.forEach((v, k) => {
+    if (seen.has(k)) return; seen.add(k);
+    if (mapCurr.has(k)) matchedKeys.push(k); else onlyPrevKeys.push(k);
+  });
+  mapCurr.forEach((v, k) => {
+    if (seen.has(k)) return; seen.add(k);
+    onlyCurrKeys.push(k);
+  });
+
+  let subPrev = 0, subCurr = 0, sr = 0;
+  const page = document.createElement("div");
+  page.className = "page";
+
+  page.innerHTML = `
+    <div class="rc-head">
+      <h1>Monthly Comparison</h1>
+      <p>${esc(prevLabel)}  vs  ${esc(currLabel)}</p>
+    </div>
+    <div class="counts">
+      <div><div class="num c1">${cntPrev}</div><div class="lbl">${esc(prevLabel)}</div></div>
+      <div><div class="num c2">${cntCurr}</div><div class="lbl">${esc(currLabel)}</div></div>
+    </div>
+    <div class="months">
+      <div class="hd sr-h">#</div>
+      <div class="hd m1">${esc(prevLabel)}</div>
+      <div class="hd m2">${esc(currLabel)}</div>
+    </div>
+  `;
+
+  const body = document.createElement("div");
+  const buildRow = (p, c, srNum, showDiff) => {
+    const left = p
+      ? `<div class="m1-cell">
+           <div class="name-line"><span class="nm">${esc(p.name)}</span></div>
+           <div class="amt">${fmtInt(p.amount)}</div>
+         </div>`
+      : `<div class="m1-cell"><div class="missing">—</div></div>`;
+
+    let rightName = "";
+    if (c) {
+      let badge = "";
+      if (showDiff && p) {
+        const d = c.amount - p.amount;
+        if (Math.abs(d) < 0.5) badge = `<span class="diff-badge same">same</span>`;
+        else if (d > 0)        badge = `<span class="diff-badge up">▲${fmtInt(d)}</span>`;
+        else                   badge = `<span class="diff-badge down">▼${fmtInt(Math.abs(d))}</span>`;
+      }
+      rightName = `<div class="name-line"><span class="nm">${esc(c.name)}</span>${badge}</div>`;
+    }
+    const right = c
+      ? `<div class="m2-cell">${rightName}<div class="amt">${fmtInt(c.amount)}</div></div>`
+      : `<div class="m2-cell"><div class="missing">—</div></div>`;
+
+    const row = document.createElement("div");
+    row.className = "item";
+    row.innerHTML = `<div class="sr-cell">${srNum}</div>${left}${right}`;
+    return row;
+  };
+
+  if (matchedKeys.length) {
+    const sec = document.createElement("div");
+    sec.className = "sec ok";
+    sec.textContent = `✓ Matched (${matchedKeys.length})`;
+    body.appendChild(sec);
+    matchedKeys.forEach(k => {
+      const p = mapPrev.get(k), c = mapCurr.get(k);
+      subPrev += p.amount; subCurr += c.amount;
+      body.appendChild(buildRow(p, c, ++sr, true));
+    });
+  }
+
+  if (onlyPrevKeys.length || onlyCurrKeys.length) {
+    const sec = document.createElement("div");
+    sec.className = "sec warn";
+    sec.textContent = `⚠ Unmatched (${onlyPrevKeys.length + onlyCurrKeys.length})`;
+    body.appendChild(sec);
+    const maxLen = Math.max(onlyPrevKeys.length, onlyCurrKeys.length);
+    for (let i = 0; i < maxLen; i++) {
+      const p = onlyPrevKeys[i] ? mapPrev.get(onlyPrevKeys[i]) : null;
+      const c = onlyCurrKeys[i] ? mapCurr.get(onlyCurrKeys[i]) : null;
+      if (p) subPrev += p.amount;
+      if (c) subCurr += c.amount;
+      body.appendChild(buildRow(p, c, ++sr, false));
+    }
+  }
+
+  const totals = document.createElement("div");
+  totals.className = "total-row";
+  totals.innerHTML = `
+    <div class="sr-blank"></div>
+    <div>
+      <div class="mname v1">${esc(prevLabel)}</div>
+      <div class="val v1">${fmtInt(subPrev)}</div>
+      <div class="cnt">${cntPrev} person${cntPrev === 1 ? "" : "s"}</div>
+    </div>
+    <div>
+      <div class="mname v2">${esc(currLabel)}</div>
+      <div class="val v2">${fmtInt(subCurr)}</div>
+      <div class="cnt">${cntCurr} person${cntCurr === 1 ? "" : "s"}</div>
+    </div>
+  `;
+  body.appendChild(totals);
+
+  const grand = document.createElement("div");
+  grand.className = "grand";
+  grand.innerHTML = `
+    <div class="lbl">Grand Total</div>
+    <div class="val">${fmtInt(subPrev + subCurr)}</div>
+    <div class="cnt">
+      Matched: ${matchedKeys.length} • Only ${esc(prevLabel)}: ${onlyPrevKeys.length} • Only ${esc(currLabel)}: ${onlyCurrKeys.length}
+    </div>
+  `;
+  body.appendChild(grand);
+
+  const diff = subCurr - subPrev;
+  const diffEl = document.createElement("div");
+  diffEl.className = "diffbar " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
+  const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "=";
+  const sign  = diff > 0 ? "+" : "";
+  diffEl.innerHTML = `
+    <span>Difference</span>
+    <span>${arrow} ${sign}${fmtInt(diff)}</span>
+  `;
+  body.appendChild(diffEl);
+
+  page.appendChild(body);
+  return page;
+}
+
+/* ============================================================
+   ALL MONTHS TABLE
+   ============================================================ */
+function buildAllMonthsTable(monthList) {
+  const table = document.getElementById("mtable");
+  table.innerHTML = "";
+
+  let grandTotal = 0, grandPersons = 0, totalMonthsWithData = 0;
+
+  monthList.forEach(m => {
+    const map = groupByName(m.recs);
+    const label = m.label;
+
+    const col = document.createElement("div");
+    col.className = "mcol";
+
+    const head = document.createElement("div");
+    head.className = "mcol-head";
+    head.innerHTML = `
+      <div class="mname">${esc(label)}</div>
+      <div class="mcount">${map.size} person${map.size === 1 ? "" : "s"}</div>
+    `;
+    col.appendChild(head);
+
+    const bodyEl = document.createElement("div");
+    bodyEl.className = "mcol-body";
+
+    let sr = 0, total = 0;
+    map.forEach(v => {
+      sr++; total += v.amount;
+      const row = document.createElement("div");
+      row.className = "mrow";
+      row.innerHTML = `
+        <div class="top">
+          <span class="srn">${sr}</span>
+          <span class="nm">${esc(v.name)}</span>
+        </div>
+        <div class="amt">${fmtInt(v.amount)}</div>
+      `;
+      bodyEl.appendChild(row);
+    });
+    col.appendChild(bodyEl);
+
+    const tot = document.createElement("div");
+    tot.className = "mcol-total";
+    tot.innerHTML = `
+      <div class="lbl">${esc(label)}</div>
+      <div class="val">${fmtInt(total)}</div>
+      <div class="cnt">${map.size} ppl</div>
+    `;
+    col.appendChild(tot);
+
+    table.appendChild(col);
+
+    grandTotal += total;
+    grandPersons += map.size;
+    if (map.size) totalMonthsWithData++;
+  });
+
+  const avgPerMonth = totalMonthsWithData ? grandTotal / totalMonthsWithData : 0;
+
+  const grandCol = document.createElement("div");
+  grandCol.className = "mcol-grand";
+  grandCol.innerHTML = `
+    <div class="mcol-head">
+      <div class="mname">GRAND</div>
+      <div class="mcount">${monthList.length} mo</div>
+    </div>
+    <div class="mcol-body">
+      <div class="big-lbl">Combined</div>
+      <div class="big-val">${fmtInt(grandTotal)}</div>
+      <div class="sub">${grandPersons} entries</div>
+      <div class="divider"></div>
+      <div class="avg-lbl">Avg / Month</div>
+      <div class="avg-val">${fmtInt(avgPerMonth)}</div>
+    </div>
+    <div class="mcol-total">
+      <div class="lbl">GRAND</div>
+      <div class="val">${fmtInt(grandTotal)}</div>
+      <div class="cnt">${monthList.length} mo</div>
+    </div>
+  `;
+  table.appendChild(grandCol);
+}
+
+/* ============================================================
+   OVERALL SUMMARY CARD
+   ============================================================ */
+function buildOverallSummaryCard(totals) {
+  const { gross, exp, net, days, minStart, maxEnd } = totals;
+  const avgNet = days ? net / days : 0;
+
+  const el = document.createElement("div");
+  el.className = "overall-card";
+  el.innerHTML = `
+    <div class="oc-head">
+      <div class="oc-eyebrow">Sangi Parking</div>
+      <div class="oc-title">Daily Average Earning</div>
+    </div>
+    <div class="oc-body">
+      <div class="oc-row">
+        <span class="k">Start Date</span>
+        <span class="v">${esc(fmtDateLong(minStart))}</span>
+      </div>
+      <div class="oc-row">
+        <span class="k">End Date</span>
+        <span class="v">${esc(fmtDateLong(maxEnd))}</span>
+      </div>
+      <div class="oc-row">
+        <span class="k">Total Days</span>
+        <span class="v">${days} day${days === 1 ? "" : "s"}</span>
+      </div>
+      <div class="oc-row primary">
+        <span class="k">Total Gross</span>
+        <span class="v">${fmtInt(gross)} PKR</span>
+      </div>
+      <div class="oc-row">
+        <span class="k">Total Expenses</span>
+        <span class="v">${fmtInt(exp)} PKR</span>
+      </div>
+      <div class="oc-row">
+        <span class="k">Total Net Credited</span>
+        <span class="v">${fmtInt(net)} PKR</span>
+      </div>
+      <div class="oc-row highlight">
+        <span class="k">Avg Daily Earning</span>
+        <span class="v">${fmtDec2(avgNet)}<span class="unit">PKR/day</span></span>
+      </div>
+    </div>
+  `;
+  return el;
+}
+
+/* ============================================================
+   SMART MONTHLY SPLIT
+   ============================================================ */
+function computeMonthlySplit(rows) {
+  const buckets = new Map();
+
+  const ensure = (y, m) => {
+    const key = y * 100 + m;
+    if (!buckets.has(key)) {
+      buckets.set(key, {
+        y, m,
+        minStart: null, maxEnd: null,
+        gross: 0, exp: 0, net: 0
+      });
+    }
+    return buckets.get(key);
+  };
+
+  rows.forEach(r => {
+    const sp = parseDateParts(r.startDate);
+    const ep = parseDateParts(r.endDate) || sp;
+    if (!sp) return;
+
+    const periodDays = daysBetween(sp, ep) || 1;
+
+    let y = sp.y, m = sp.m;
+    while (true) {
+      const bucket = ensure(y, m);
+
+      const monthFirst = { y, m, d: 1 };
+      const monthLast  = { y, m, d: daysInMonth(y, m) };
+
+      const segStart = dateCmp(sp, monthFirst) > 0 ? sp : monthFirst;
+      const segEnd   = (ep && dateCmp(ep, monthLast) < 0) ? ep : monthLast;
+
+      const segDays = daysBetween(segStart, segEnd);
+      const frac = periodDays ? segDays / periodDays : 0;
+
+      bucket.gross += r.gross * frac;
+      bucket.net   += r.net   * frac;
+
+      if (y === sp.y && m === sp.m) bucket.exp += r.expenses;
+
+      if (sp.y === y && sp.m === m) {
+        if (!bucket.minStart || dateCmp(sp, bucket.minStart) < 0)
+          bucket.minStart = { y: sp.y, m: sp.m, d: sp.d };
+      } else {
+        if (!bucket.minStart || dateCmp(monthFirst, bucket.minStart) < 0)
+          bucket.minStart = monthFirst;
+      }
+
+      if (ep && ep.y === y && ep.m === m) {
+        if (!bucket.maxEnd || dateCmp(ep, bucket.maxEnd) > 0)
+          bucket.maxEnd = { y: ep.y, m: ep.m, d: ep.d };
+      } else {
+        if (!bucket.maxEnd || dateCmp(monthLast, bucket.maxEnd) > 0)
+          bucket.maxEnd = monthLast;
+      }
+
+      if (ep && y === ep.y && m === ep.m) break;
+      if (!ep && y === sp.y && m === sp.m) break;
+
+      m++;
+      if (m > 12) { m = 1; y++; }
+      if (ep && (y > ep.y || (y === ep.y && m > ep.m))) break;
+    }
+  });
+
+  const now = new Date();
+  const today = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
+
+  const result = [];
+  buckets.forEach(b => {
+    let startP = b.minStart || { y: b.y, m: b.m, d: 1 };
+    let endP   = b.maxEnd   || { y: b.y, m: b.m, d: daysInMonth(b.y, b.m) };
+
+    const isCurrentMonth = (today.y === b.y && today.m === b.m);
+    if (isCurrentMonth && dateCmp(endP, today) > 0) {
+      endP = { y: today.y, m: today.m, d: today.d };
+    }
+    if (dateCmp(startP, endP) > 0) startP = endP;
+
+    const daysCount = daysBetween(startP, endP);
+
+    result.push({
+      y: b.y, m: b.m,
+      startP, endP, daysCount,
+      isCurrentMonth,
+      gross: b.gross, exp: b.exp, net: b.net
+    });
+  });
+
+  result.sort((a, b) => (b.y * 100 + b.m) - (a.y * 100 + a.m));
+  return result;
+}
+
+function computeMonthlySheetTotals(records) {
+  const totals = new Map();
+  records.forEach(r => {
+    const k = monthKey(r);
+    if (!k) return;
+    if (!totals.has(k)) totals.set(k, { amount: 0, count: 0 });
+    const t = totals.get(k);
+    t.amount += r.amount;
+    t.count++;
+  });
+  return totals;
+}
+
+/* ============================================================
+   MONTH ROW
+   ============================================================ */
+function buildMonthRow(info, srNo, sheetTotal) {
+  const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
+  const avgNet = daysCount ? net / daysCount : 0;
+
+  let sheetStrip = "";
+  let combinedStrip = "";
+  if (sheetTotal) {
+    const sheetAmt = sheetTotal.amount;
+    const halfSheet = sheetAmt / 2;
+    const combined = halfSheet + net;
+
+    sheetStrip = `
+      <div class="mr-sheet-strip">
+        <div class="lbl-block">
+          <div class="sheet-lbl">Monthly Sheet Total</div>
+          <div class="sheet-sub">${sheetTotal.count} entr${sheetTotal.count === 1 ? "y" : "ies"}</div>
+        </div>
+        <div class="val-block">
+          <div class="sheet-val">${fmtInt(sheetAmt)}<span class="unit">PKR</span></div>
+        </div>
+      </div>
+    `;
+
+    combinedStrip = `
+      <div class="mr-combined-strip">
+        <div class="lbl-block">
+          <div class="c-lbl">Combined Total</div>
+          <div class="c-sub">(Sheet ÷ 2) + Credit</div>
+        </div>
+        <div class="c-val">${fmtInt(combined)}<span class="unit">PKR</span></div>
+      </div>
+    `;
+  }
+
+  const row = document.createElement("div");
+  row.className = "month-row" + (isCurrentMonth ? " current" : "");
+  row.innerHTML = `
+    <div class="row-sr">${srNo}</div>
+    <div>
+      <div class="mr-head">
+        <div>
+          <div class="mr-title">
+            ${esc(MONTH_LONG[m - 1])} ${y}
+            ${isCurrentMonth ? '<span class="mr-badge">Current</span>' : ''}
+          </div>
+          <div class="mr-range">
+            ${esc(fmtDateShort(startP))} → ${esc(fmtDateShort(endP))}
+          </div>
+        </div>
+        <div class="mr-days">${daysCount}d</div>
+      </div>
+      <div class="mr-metrics">
+        <div class="mr-metric credit">
+          <div class="lbl">Credit</div>
+          <div class="val">${fmtInt(net)}</div>
+        </div>
+        <div class="mr-metric exp">
+          <div class="lbl">Expenses</div>
+          <div class="val">${fmtInt(exp)}</div>
+        </div>
+        <div class="mr-metric gross">
+          <div class="lbl">Gross</div>
+          <div class="val">${fmtInt(gross)}</div>
+        </div>
+        <div class="mr-metric avg">
+          <div class="lbl">Avg/Day</div>
+          <div class="val">${fmtInt(avgNet)}</div>
+        </div>
+      </div>
+      ${sheetStrip}
+      ${combinedStrip}
+    </div>
+  `;
+  return row;
+}
+
+/* ============================================================
+   PERIOD ROW
+   ============================================================ */
+function buildPeriodRow(period, srNo) {
+  const { startP, endP, startStr, endStr, gross, exp, net } = period;
+  const days = daysBetween(startP, endP) || 1;
+  const avgNet = net / days;
+
+  const startLabel = startP ? fmtDateShort(startP) : (startStr || "—");
+  const endLabel   = endP   ? fmtDateShort(endP)   : (endStr   || "—");
+
+  const row = document.createElement("div");
+  row.className = "period-row";
+  row.innerHTML = `
+    <div class="row-sr">${srNo}</div>
+    <div>
+      <div class="pr-head">
+        <div class="pr-range">${esc(startLabel)} → ${esc(endLabel)}</div>
+        <div class="pr-days">${days}d</div>
+      </div>
+      <div class="pr-metrics">
+        <div class="pr-metric credit">
+          <div class="lbl">Credit</div>
+          <div class="val">${fmtInt(net)}</div>
+        </div>
+        <div class="pr-metric exp">
+          <div class="lbl">Expenses</div>
+          <div class="val">${fmtInt(exp)}</div>
+        </div>
+        <div class="pr-metric gross">
+          <div class="lbl">Gross</div>
+          <div class="val">${fmtInt(gross)}</div>
+        </div>
+        <div class="pr-metric avg">
+          <div class="lbl">Avg/Day</div>
+          <div class="val">${fmtInt(avgNet)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  return row;
+}
+
+/* ============================================================
+   MAIN RENDER
+   ============================================================ */
+function renderReport(rows, monthlyRecords) {
+  const statusEl = document.getElementById("dailyStatus");
+  const contentEl = document.getElementById("reportContent");
+
+  if (!rows.length) {
+    statusEl.textContent = "No daily data found. Make sure the Daily sheet is published as CSV.";
+    return;
+  }
+
+  let minStart = null, maxEnd = null;
+  let totalGross = 0, totalExp = 0, totalNet = 0;
+
+  rows.forEach(r => {
+    totalGross += r.gross;
+    totalExp   += r.expenses;
+    totalNet   += r.net;
+    const sp = parseDateParts(r.startDate);
+    const ep = parseDateParts(r.endDate) || sp;
+    if (sp && (!minStart || dateCmp(sp, minStart) < 0)) minStart = sp;
+    if (ep && (!maxEnd   || dateCmp(ep, maxEnd)   > 0)) maxEnd   = ep;
+  });
+
+  const totalDays = (minStart && maxEnd) ? daysBetween(minStart, maxEnd) : 0;
+
+  const overallEl = document.getElementById("overallCard");
+  overallEl.innerHTML = "";
+  overallEl.appendChild(buildOverallSummaryCard({
+    gross: totalGross, exp: totalExp, net: totalNet, days: totalDays,
+    minStart, maxEnd
+  }));
+
+  const sheetTotals = computeMonthlySheetTotals(monthlyRecords);
+
+  const monthInfos = computeMonthlySplit(rows);
+  const monthEl = document.getElementById("monthList");
+  monthEl.innerHTML = "";
+  monthInfos.forEach((info, i) => {
+    const k = info.y * 100 + info.m;
+    const sheetTotal = sheetTotals.get(k) || null;
+    monthEl.appendChild(buildMonthRow(info, i + 1, sheetTotal));
+  });
+
+  /* Month count */
+  document.getElementById("monthCount").textContent =
+    `${monthInfos.length} month${monthInfos.length === 1 ? "" : "s"}`;
+
+  const periodEl = document.getElementById("periodList");
+  periodEl.innerHTML = "";
+
+  const sortedRows = [...rows].sort((a, b) => {
+    const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
+    if (da && db) return dateCmp(db, da);
+    return (b.startDate || "").localeCompare(a.startDate || "");
+  });
+
+  sortedRows.forEach((r, i) => {
+    const startP = parseDateParts(r.startDate);
+    const endP   = parseDateParts(r.endDate) || startP;
+    periodEl.appendChild(buildPeriodRow({
+      startStr: r.startDate,
+      endStr:   r.endDate,
+      startP, endP,
+      gross: r.gross, exp: r.expenses, net: r.net
+    }, i + 1));
+  });
+
+  /* Period count */
+  document.getElementById("periodCount").textContent =
+    `${sortedRows.length} period${sortedRows.length === 1 ? "" : "s"}`;
+
+  renderDailyTable(sortedRows);
+
+  statusEl.style.display = "none";
+  contentEl.style.display = "block";
+}
+
+function renderDailyTable(rows) {
+  const body = document.getElementById("dailyBody");
+  const foot = document.getElementById("dailyFoot");
+  body.innerHTML = "";
+  foot.innerHTML = "";
+
+  if (!rows.length) {
+    body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">No data</td></tr>`;
+    return;
+  }
+
+  let tGross = 0, tExp = 0, tNet = 0;
+  rows.forEach(r => {
+    tGross += r.gross; tExp += r.expenses; tNet += r.net;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="date">${esc(r.startDate) || "—"}</td>
+      <td class="date">${esc(r.endDate) || "—"}</td>
+      <td class="num gross">${fmtInt(r.gross)}</td>
+      <td class="num exp">${fmtInt(r.expenses)}</td>
+      <td class="num net">${fmtInt(r.net)}</td>
+    `;
+    body.appendChild(tr);
+  });
+
+  foot.innerHTML = `
+    <tr>
+      <td colspan="2">TOTAL (${rows.length})</td>
+      <td class="num gross">${fmtInt(tGross)}</td>
+      <td class="num exp">${fmtInt(tExp)}</td>
+      <td class="num net">${fmtInt(tNet)}</td>
+    </tr>
+  `;
+}
+
+/* ============================================================
+   DATA LOADING
+   ============================================================ */
+async function loadMonthly() {
+  let all = [];
+  for (const u of [SHEET1_CSV, SHEET2_CSV]) {
+    try {
+      const res = await fetch(u, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const txt = await res.text();
+      all = all.concat(normalizeRecords(parseCSV(txt)));
+    } catch (e) { console.warn("Monthly fetch failed:", u, e); }
+  }
+  return all;
+}
+
+async function loadDaily() {
+  try {
+    const res = await fetch(SHEET_DAILY_CSV, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const txt = await res.text();
+    return normalizeDaily(parseCSV(txt));
+  } catch (e) {
+    console.warn("Daily fetch failed:", SHEET_DAILY_CSV, e);
+    return [];
+  }
+}
+
+/* ============================================================
+   MONTHLY STATE
+   ============================================================ */
+let allKeys = [];
+let byMonth = new Map();
+let monthlyLoaded = false;
+let monthlyRecordsCache = [];
+
+function renderLast2() {
+  const statusEl = document.getElementById("statusLast2");
+  const carousel = document.getElementById("carousel");
+  carousel.innerHTML = "";
+
+  if (allKeys.length < 2) {
+    statusEl.textContent = "Need at least two months of data.";
+    statusEl.style.display = "block";
+    carousel.style.display = "none";
+    return;
+  }
+
+  const kPrev = allKeys[allKeys.length - 2];
+  const kCurr = allKeys[allKeys.length - 1];
+  const prevRecs = byMonth.get(kPrev) || [];
+  const currRecs = byMonth.get(kCurr) || [];
+
+  carousel.appendChild(
+    buildCompareCard(prevRecs, currRecs, monthLabel(prevRecs[0]), monthLabel(currRecs[0]))
+  );
+
+  statusEl.style.display = "none";
+  carousel.style.display = "flex";
+}
+
+function renderAllMonths() {
+  const statusEl = document.getElementById("statusAll");
+  const tableWrap = document.getElementById("tableWrap");
+  const hint = document.getElementById("tableHint");
+
+  if (allKeys.length < 2) {
+    statusEl.textContent = "Need at least two months of data.";
+    statusEl.style.display = "block";
+    tableWrap.style.display = "none";
+    hint.style.display = "none";
+    return;
+  }
+
+  const monthList = allKeys.map(k => {
+    const recs = byMonth.get(k) || [];
+    return { recs, label: monthLabel(recs[0]) };
+  }).filter(m => m.recs.length);
+
+  buildAllMonthsTable(monthList);
+  statusEl.style.display = "none";
+  tableWrap.style.display = "block";
+  hint.style.display = monthList.length > 1 ? "block" : "none";
+}
+
+async function loadMonthlyOnce() {
+  if (monthlyLoaded) return;
+  monthlyLoaded = true;
+
+  const records = await loadMonthly();
+  monthlyRecordsCache = records;
+
+  if (!records.length) {
+    document.getElementById("statusLast2").textContent = "No monthly data available.";
+    document.getElementById("statusAll").textContent = "No monthly data available.";
+    return;
+  }
+
+  allKeys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
+
+  byMonth = new Map();
+  records.forEach(r => {
+    const k = monthKey(r);
+    if (!byMonth.has(k)) byMonth.set(k, []);
+    byMonth.get(k).push(r);
+  });
+
+  renderLast2();
+  renderAllMonths();
+}
+
+/* ============================================================
+   TAB SWITCHING
+   ============================================================ */
+function switchTab(tab) {
+  document.getElementById("tabReport").classList.toggle("active", tab === "report");
+  document.getElementById("tabLast2").classList.toggle("active", tab === "last2");
+  document.getElementById("tabAll").classList.toggle("active", tab === "all");
+
+  document.getElementById("contentReport").classList.toggle("active", tab === "report");
+  document.getElementById("contentLast2").classList.toggle("active", tab === "last2");
+  document.getElementById("contentAll").classList.toggle("active", tab === "all");
+
+  if (tab === "last2" || tab === "all") loadMonthlyOnce();
+}
+
+document.getElementById("tabReport").addEventListener("click", () => switchTab("report"));
+document.getElementById("tabLast2").addEventListener("click", () => switchTab("last2"));
+document.getElementById("tabAll").addEventListener("click", () => switchTab("all"));
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+Promise.all([loadDaily(), loadMonthly()])
+  .then(([dailyRows, monthlyRecords]) => {
+    monthlyRecordsCache = monthlyRecords;
+    renderReport(dailyRows, monthlyRecords);
+  })
+  .catch(e => {
+    document.getElementById("dailyStatus").textContent = "Error: " + e.message;
+    console.error(e);
+  });
+</script>
+</body>
+</html>
