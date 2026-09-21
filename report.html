@@ -13,7 +13,6 @@
     overflow-x: hidden;
   }
 
-  /* Tab bar */
   .tab-bar {
     max-width: 480px; margin: 0 auto 12px;
     background: #fff; border-radius: 12px;
@@ -36,7 +35,6 @@
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
-  /* Carousel (last 2 months) */
   .carousel {
     display: flex; overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -184,7 +182,6 @@
   .diffbar.neg { background: #ffebee; color: #c62828; }
   .diffbar.zero { background: #f0f2f6; color: #555; }
 
-  /* All months table */
   .table-wrap {
     max-width: 100%; overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -281,7 +278,7 @@
     padding: 0 12px 20px;
   }
 
-  /* ---------- Overall summary card (image style) ---------- */
+  /* Overall summary card */
   .overall-card {
     background: linear-gradient(180deg, #eef1f6 0%, #e3e8ef 100%);
     border-radius: 16px;
@@ -292,7 +289,7 @@
   .oc-inner {
     background: #f8fafc;
     border-radius: 12px;
-    padding: 20px 18px 16px;
+    padding: 20px 18px 18px;
     border: 1px solid #e5eaf1;
   }
   .oc-title {
@@ -320,7 +317,7 @@
   .oc-table td.metric {
     font-weight: 700;
     color: #1e3a5f;
-    width: 45%;
+    width: 48%;
     font-size: 15px;
     line-height: 1.25;
   }
@@ -335,48 +332,10 @@
     color: #0d47a1;
     font-size: 16px;
   }
-  .oc-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid #e2e8f0;
-  }
-  .oc-logo {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: #1e3a5f;
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-weight: 800; font-size: 15px;
-    font-style: italic;
-  }
-  .oc-cal {
-    width: 32px; height: 32px;
-    color: #1e3a5f;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .oc-cal svg { width: 24px; height: 24px; }
-  .oc-footer {
-    text-align: center;
-    font-size: 11px;
-    color: #64748b;
-    font-style: italic;
-    padding-top: 10px;
-    border-top: 1px solid #e2e8f0;
-    margin-top: 10px;
-  }
 
-  /* ---------- Monthly cards ---------- */
+  /* Monthly cards */
   .monthly-cards {
     margin-bottom: 18px;
-  }
-  .section-label {
-    font-size: 12px;
-    font-weight: 800;
-    color: #475569;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    padding: 6px 4px 10px;
   }
 
   .month-card {
@@ -424,16 +383,19 @@
     padding: 8px 0;
     border-bottom: 1px solid #eef1f5;
     font-size: 14px;
+    gap: 10px;
   }
   .mc-row:last-child { border-bottom: none; }
   .mc-row .mlbl {
     color: #475569;
     font-weight: 600;
+    flex-shrink: 0;
   }
   .mc-row .mval {
     font-weight: 800;
     color: #1f2937;
     font-variant-numeric: tabular-nums;
+    text-align: right;
   }
   .mc-row.highlight .mval { color: #0d47a1; font-size: 16px; }
   .mc-row.expenses .mval { color: #c62828; }
@@ -523,7 +485,6 @@
   <button id="tabAll" type="button">All Months</button>
 </div>
 
-<!-- ============= REPORT TAB ============= -->
 <div class="tab-content active" id="contentReport">
   <div id="dailyStatus" class="status">Loading report…</div>
 
@@ -533,11 +494,10 @@
       <!-- Overall summary card -->
       <div id="overallCard"></div>
 
-      <!-- Monthly averages (till month ends) -->
-      <div class="section-label">Monthly Averages (Full Month)</div>
+      <!-- Monthly cards -->
       <div class="monthly-cards" id="monthlyCards"></div>
 
-      <!-- Daily data -->
+      <!-- Daily data table -->
       <div class="daily-section-title">Daily Data</div>
       <div class="table-scroll">
         <table class="data-table" id="dailyTable">
@@ -559,13 +519,11 @@
   </div>
 </div>
 
-<!-- ============= LAST 2 MONTHS TAB ============= -->
 <div class="tab-content" id="contentLast2">
   <div id="statusLast2" class="status">Loading data…</div>
   <div class="carousel" id="carousel" style="display:none;"></div>
 </div>
 
-<!-- ============= ALL MONTHS TAB ============= -->
 <div class="tab-content" id="contentAll">
   <div id="statusAll" class="status">Loading data…</div>
   <div class="table-wrap" id="tableWrap" style="display:none;">
@@ -724,13 +682,9 @@ function fmt(n) {
     minimumFractionDigits: 2, maximumFractionDigits: 2
   });
 }
-function fmtInt(n) {
-  return Math.round(n).toLocaleString();
-}
-function fmtDecimal2(n) {
-  return n.toLocaleString(undefined, {
-    minimumFractionDigits: 2, maximumFractionDigits: 2
-  });
+function fmtInt(n) { return Math.round(n).toLocaleString(); }
+function fmtDec2(n) {
+  return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({
@@ -781,13 +735,9 @@ function fmtDateLong(p) {
   if (!p) return "—";
   return `${MONTH_LONG[p.m - 1]} ${p.d}, ${p.y}`;
 }
-function fmtDateShort(p) {
-  if (!p) return "—";
-  return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]} ${p.y}`;
-}
 
 /* ============================================================
-   LAST-2-MONTHS CARD
+   LAST-2-MONTHS CARD (unchanged)
    ============================================================ */
 function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
   const mapPrev = groupByName(prevRecs);
@@ -929,7 +879,7 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
 }
 
 /* ============================================================
-   ALL MONTHS TABLE
+   ALL MONTHS TABLE (unchanged)
    ============================================================ */
 function buildAllMonthsTable(monthList) {
   const table = document.getElementById("mtable");
@@ -1016,7 +966,9 @@ function buildAllMonthsTable(monthList) {
 }
 
 /* ============================================================
-   REPORT — overall summary card (image style)
+   REPORT — Overall summary card
+   Start Date, End Date, Total Days, Daily Earning (avg),
+   Total Amount Credited, Total Expenses, Total Earning
    ============================================================ */
 function buildOverallSummaryCard(totals) {
   const { gross, exp, net, days, minStart, maxEnd } = totals;
@@ -1041,52 +993,35 @@ function buildOverallSummaryCard(totals) {
           <td class="detail">${days} Day${days === 1 ? "" : "s"}</td>
         </tr>
         <tr>
-          <td class="metric">Total Gross Amount</td>
-          <td class="detail">${fmtInt(gross)} PKR</td>
+          <td class="metric">Daily Earning (Avg)</td>
+          <td class="detail highlight">${fmtDec2(avgNet)} PKR / day</td>
+        </tr>
+        <tr>
+          <td class="metric">Total Amount Credited</td>
+          <td class="detail">${fmtInt(net)} PKR</td>
         </tr>
         <tr>
           <td class="metric">Total Expenses</td>
           <td class="detail">${fmtInt(exp)} PKR</td>
         </tr>
         <tr>
-          <td class="metric">Total Net Amount<br>Credited</td>
-          <td class="detail">${fmtInt(net)} PKR</td>
-        </tr>
-        <tr>
-          <td class="metric">Average Daily<br>Earning (Net)</td>
-          <td class="detail highlight">${fmtDecimal2(avgNet)} PKR / day</td>
+          <td class="metric">Total Earning</td>
+          <td class="detail">${fmtInt(gross)} PKR</td>
         </tr>
       </table>
-      <div class="oc-bottom">
-        <div class="oc-logo">P</div>
-        <div class="oc-cal">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <rect x="7" y="14" width="3" height="3"></rect>
-            <rect x="14" y="14" width="3" height="3"></rect>
-          </svg>
-        </div>
-      </div>
-      <div class="oc-footer">Sangi Enterprises - Financial Report v1.2</div>
     </div>
   `;
   return el;
 }
 
 /* ============================================================
-   REPORT — monthly card
-   Months are grouped by START date's month.
-   Days = full calendar days of that month (till month ends),
-   OR capped at today if the month is the current month.
+   REPORT — Monthly card
+   Start Period, End of Month Date, Total Days, Daily Earning (Avg),
+   Total Amount Credited, Total Expenses, Total Earning
    ============================================================ */
 function buildMonthCard(y, m, monthRows, today) {
   const label = `${MONTH_SHORT[m - 1]} ${y}`;
 
-  /* Days used for averaging = calendar days in that month
-     but if this is the current month → days elapsed so far */
   const isCurrentMonth = (today && today.y === y && today.m === m);
   const fullDays  = daysInMonth(y, m);
   const daysCount = isCurrentMonth ? today.d : fullDays;
@@ -1094,29 +1029,18 @@ function buildMonthCard(y, m, monthRows, today) {
   let gross = 0, exp = 0, net = 0;
   monthRows.forEach(r => { gross += r.gross; exp += r.expenses; net += r.net; });
 
-  /* Date range */
+  /* Start period = earliest start date in the month */
   const starts = monthRows.map(r => parseDateParts(r.startDate)).filter(Boolean);
-  const ends   = monthRows.map(r => parseDateParts(r.endDate)).filter(Boolean);
-
-  let minStart = null, maxEnd = null;
+  let minStart = null;
   starts.forEach(p => {
     const key = p.y * 10000 + p.m * 100 + p.d;
     if (!minStart || key < minStart.key) minStart = { key, p };
   });
-  ends.forEach(p => {
-    const key = p.y * 10000 + p.m * 100 + p.d;
-    if (!maxEnd || key > maxEnd.key) maxEnd = { key, p };
-  });
 
-  const rangeText = minStart && maxEnd
-    ? (minStart.key === maxEnd.key
-        ? fmtDateShort(minStart.p)
-        : `${fmtDateShort(minStart.p)}  →  ${fmtDateShort(maxEnd.p)}`)
-    : "—";
+  /* End of month date = last calendar day of the month */
+  const endOfMonth = { y, m, d: fullDays };
 
-  const avgGross = daysCount ? gross / daysCount : 0;
-  const avgExp   = daysCount ? exp   / daysCount : 0;
-  const avgNet   = daysCount ? net   / daysCount : 0;
+  const avgNet = daysCount ? net / daysCount : 0;
 
   const card = document.createElement("div");
   card.className = "month-card";
@@ -1124,34 +1048,38 @@ function buildMonthCard(y, m, monthRows, today) {
     <div class="mc-head">
       <div>
         <div class="mname">${esc(label)}</div>
-        <div class="mrange">${esc(rangeText)}</div>
+        <div class="mrange">${esc(fmtDateLong(minStart ? minStart.p : null))}  →  ${esc(fmtDateLong(endOfMonth))}</div>
       </div>
       <div class="mdays">${daysCount} day${daysCount === 1 ? "" : "s"}</div>
     </div>
     <div class="mc-body">
-      <div class="mc-row highlight">
-        <span class="mlbl">Total Gross Amount</span>
-        <span class="mval">${fmtInt(gross)} PKR</span>
+      <div class="mc-row">
+        <span class="mlbl">Start Period</span>
+        <span class="mval">${esc(fmtDateLong(minStart ? minStart.p : null))}</span>
+      </div>
+      <div class="mc-row">
+        <span class="mlbl">End of Month</span>
+        <span class="mval">${esc(fmtDateLong(endOfMonth))}</span>
+      </div>
+      <div class="mc-row">
+        <span class="mlbl">Total Days</span>
+        <span class="mval">${daysCount} Day${daysCount === 1 ? "" : "s"}</span>
+      </div>
+      <div class="mc-row avg">
+        <span class="mlbl">Daily Earning (Avg)</span>
+        <span class="mval">${fmtDec2(avgNet)} PKR / day</span>
+      </div>
+      <div class="mc-row net">
+        <span class="mlbl">Total Amount Credited</span>
+        <span class="mval">${fmtInt(net)} PKR</span>
       </div>
       <div class="mc-row expenses">
         <span class="mlbl">Total Expenses</span>
         <span class="mval">${fmtInt(exp)} PKR</span>
       </div>
-      <div class="mc-row net">
-        <span class="mlbl">Total Net Credited</span>
-        <span class="mval">${fmtInt(net)} PKR</span>
-      </div>
-      <div class="mc-row avg">
-        <span class="mlbl">Avg Net / Day</span>
-        <span class="mval">${fmtDecimal2(avgNet)} PKR</span>
-      </div>
-      <div class="mc-row avg">
-        <span class="mlbl">Avg Gross / Day</span>
-        <span class="mval">${fmtDecimal2(avgGross)} PKR</span>
-      </div>
-      <div class="mc-row avg">
-        <span class="mlbl">Avg Expenses / Day</span>
-        <span class="mval">${fmtDecimal2(avgExp)} PKR</span>
+      <div class="mc-row highlight">
+        <span class="mlbl">Total Earning</span>
+        <span class="mval">${fmtInt(gross)} PKR</span>
       </div>
     </div>
   `;
@@ -1180,8 +1108,9 @@ function renderReport(rows) {
     groups.get(key).rows.push(r);
   });
 
-  /* Global date range */
-  let minStart = null, maxEnd = null, totalUniqueDays = new Set();
+  /* Global aggregates */
+  let minStart = null, maxEnd = null;
+  const uniqueDaysSet = new Set();
   let totalGross = 0, totalExp = 0, totalNet = 0;
 
   rows.forEach(r => {
@@ -1194,7 +1123,7 @@ function renderReport(rows) {
     if (sp) {
       const key = sp.y * 10000 + sp.m * 100 + sp.d;
       if (!minStart || key < minStart.key) minStart = { key, p: sp };
-      totalUniqueDays.add(`${sp.y}-${sp.m}-${sp.d}`);
+      uniqueDaysSet.add(`${sp.y}-${sp.m}-${sp.d}`);
     }
     if (ep) {
       const key = ep.y * 10000 + ep.m * 100 + ep.d;
@@ -1202,9 +1131,9 @@ function renderReport(rows) {
     }
   });
 
-  /* Overall card uses full calendar days between min & max for consistency with the image style */
-  const totalDays = totalUniqueDays.size;
+  const totalDays = uniqueDaysSet.size;
 
+  /* Overall card */
   const overallEl = document.getElementById("overallCard");
   overallEl.innerHTML = "";
   overallEl.appendChild(buildOverallSummaryCard({
@@ -1216,11 +1145,10 @@ function renderReport(rows) {
     maxEnd:   maxEnd   ? maxEnd.p   : null
   }));
 
-  /* Today (for the current-month cap) */
+  /* Monthly cards */
   const now = new Date();
   const today = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
 
-  /* Monthly cards */
   const cardsEl = document.getElementById("monthlyCards");
   cardsEl.innerHTML = "";
   const keys = [...groups.keys()].sort((a, b) => a - b);
@@ -1236,7 +1164,7 @@ function renderReport(rows) {
   contentEl.style.display = "block";
 }
 
-/* ---- Original daily data table ---- */
+/* ---- Daily data table ---- */
 function renderDailyTable(rows) {
   const body = document.getElementById("dailyBody");
   const foot = document.getElementById("dailyFoot");
