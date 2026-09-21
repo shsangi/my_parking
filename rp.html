@@ -63,7 +63,7 @@
     padding: 0 12px;
   }
 
-  /* ============ REPORT ============ */
+  /* ============ REPORT — OVERALL CARD ============ */
   .overall-card {
     background: var(--card);
     border-radius: 16px;
@@ -123,6 +123,8 @@
     font-size: 16px;
     color: #0d47a1;
   }
+
+  /* Blue highlight — Avg Daily Earning */
   .oc-row.highlight {
     background: linear-gradient(90deg, #e8f0fe 0%, #f5f9ff 100%);
     margin: 6px -18px 0;
@@ -147,14 +149,13 @@
     margin-left: 3px;
   }
 
-  /* NEW: Combined row (Total Monthly / 2 + Credit) */
+  /* Green — Combined Total */
   .oc-row.combined {
     background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
-    margin: 6px -18px 0;
-    padding: 14px 18px;
+    margin: 8px -18px -16px;
+    padding: 16px 18px;
     border-bottom: none;
     color: #fff;
-    border-radius: 0;
   }
   .oc-row.combined .k {
     color: #fff;
@@ -163,7 +164,7 @@
     opacity: 0.95;
   }
   .oc-row.combined .v {
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 800;
     color: #fff;
     letter-spacing: -0.2px;
@@ -1140,7 +1141,7 @@ function fmtDateShort(p) {
 }
 
 /* ============================================================
-   COMPARE CARD
+   COMPARE CARD — Last 2 Months
    ============================================================ */
 function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
   const mapPrev = groupByName(prevRecs);
@@ -1368,11 +1369,12 @@ function buildAllMonthsTable(monthList) {
 
 /* ============================================================
    OVERALL SUMMARY CARD
-   - Title simplified to "Sangi Parking"
-   - New row: Total Monthly / 2 + Credit
+   - Title: "Sangi Parking" (simple)
+   - Rows include: Start, End, Days, Gross, Expenses, Net, Avg Daily Earning, Combined Total
    ============================================================ */
 function buildOverallSummaryCard(totals) {
   const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal } = totals;
+  const avgNet = days ? net / days : 0;
   const combinedTotal = (monthlySheetTotal / 2) + net;
 
   const el = document.createElement("div");
@@ -1388,6 +1390,10 @@ function buildOverallSummaryCard(totals) {
       <div class="oc-row primary"><span class="k">Total Gross</span><span class="v">${fmtInt(gross)} PKR</span></div>
       <div class="oc-row"><span class="k">Total Expenses</span><span class="v">${fmtInt(exp)} PKR</span></div>
       <div class="oc-row"><span class="k">Total Net Credited</span><span class="v">${fmtInt(net)} PKR</span></div>
+      <div class="oc-row highlight">
+        <span class="k">Avg Daily Earning</span>
+        <span class="v">${fmtDec2(avgNet)}<span class="unit">PKR/day</span></span>
+      </div>
       <div class="oc-row combined">
         <span class="k">Total Monthly ÷ 2 + Credit</span>
         <span class="v">${fmtInt(combinedTotal)}<span class="unit">PKR</span></span>
@@ -1634,8 +1640,6 @@ function renderReport(rows, monthlyRecords) {
   });
 
   const totalDays = (minStart && maxEnd) ? daysBetween(minStart, maxEnd) : 0;
-
-  /* Total Monthly sheet = sum of all monthly sheet amounts */
   const monthlySheetTotal = sumMonthlySheetTotals(monthlyRecords);
 
   const overallEl = document.getElementById("overallCard");
@@ -1756,7 +1760,7 @@ async function loadDaily() {
 }
 
 /* ============================================================
-   MONTHLY STATE
+   MONTHLY STATE (Last 2 / All Months)
    ============================================================ */
 let allKeys = [];
 let byMonth = new Map();
