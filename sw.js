@@ -1,8 +1,7 @@
-/* Sangi Parking — Service Worker */
-const CACHE_NAME = 'sangi-parking-v1';
+const CACHE_NAME = 'sangi-parking-v2';
 const ASSETS = [
   './',
-  './parking.html',
+  './index.html',
   './parkinglogo.jpg',
   './manifest.json'
 ];
@@ -33,7 +32,7 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Never cache Google Sheets data — always fetch fresh
+  // Never cache Google Sheets — always fetch fresh
   if (url.hostname.includes('docs.google.com')) {
     event.respondWith(fetch(req).catch(() => caches.match(req)));
     return;
@@ -49,7 +48,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
         }
         return res;
-      }).catch(() => caches.match('./parking.html'));
+      }).catch(() => caches.match('./index.html'));
     })
   );
 });
