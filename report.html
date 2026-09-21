@@ -455,44 +455,30 @@
   .mr-metric.avg, .pr-metric.avg                 { background: #e8f0fe; }
   .mr-metric.avg .val, .pr-metric.avg .val       { color: #0d47a1; }
 
-  /* Monthly sheet total card strip inside month rows */
-  .mr-sheet-strip {
+  /* Combined total strip */
+  .mr-total-strip {
     margin-top: 8px;
-    padding: 8px 10px;
-    background: linear-gradient(135deg, #f3e5f5 0%, #ede7f6 100%);
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #e8eaf6 0%, #f3e5f5 100%);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    border-left: 3px solid #8e24aa;
+    border-left: 3px solid #5e35b1;
   }
-  .mr-sheet-strip .sheet-lbl {
-    font-size: 10px;
-    color: #6a1b9a;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
+  .mr-total-strip .total-lbl {
+    font-size: 12px;
+    color: #4527a0;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .mr-total-strip .total-val {
+    font-size: 16px;
     font-weight: 800;
-  }
-  .mr-sheet-strip .sheet-sub {
-    font-size: 9px;
-    color: #8e24aa;
-    font-weight: 600;
-    margin-top: 1px;
-  }
-  .mr-sheet-strip .sheet-val {
-    font-size: 15px;
-    font-weight: 800;
-    color: #6a1b9a;
+    color: #4527a0;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
-  }
-  .mr-sheet-strip .sheet-cnt {
-    font-size: 10px;
-    color: #8e24aa;
-    font-weight: 600;
-    text-align: right;
-    margin-top: 1px;
   }
 
   .daily-section-title {
@@ -1136,7 +1122,6 @@ function computeMonthlySplit(rows) {
       bucket.gross += r.gross * frac;
       bucket.net   += r.net   * frac;
 
-      /* Expenses → full to start month */
       if (y === sp.y && m === sp.m) {
         bucket.exp += r.expenses;
       }
@@ -1203,7 +1188,7 @@ function computeMonthlySplit(rows) {
    MONTHLY SHEET TOTALS (from monthly sheet)
    ============================================================ */
 function computeMonthlySheetTotals(records) {
-  const totals = new Map(); /* key: YYYY*100 + MM → { amount, count } */
+  const totals = new Map();
   records.forEach(r => {
     const k = monthKey(r);
     if (!k) return;
@@ -1222,19 +1207,16 @@ function buildMonthRow(info, srNo, sheetTotal) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
 
-  /* Sheet total strip (from Monthly sheet) */
+  const monthTitle = `${MONTH_LONG[m - 1]} ${y}`;
+
+  /* Combined total strip: credit (from daily) + monthly sheet total */
   let sheetStrip = "";
-  if (sheetTotal) {
+  if (sheetTotal && sheetTotal.amount) {
+    const combined = net + sheetTotal.amount;
     sheetStrip = `
-      <div class="mr-sheet-strip">
-        <div>
-          <div class="sheet-lbl">Monthly Sheet Total</div>
-          <div class="sheet-sub">${sheetTotal.count} entr${sheetTotal.count === 1 ? "y" : "ies"}</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="sheet-val">${fmtInt(sheetTotal.amount)} PKR</div>
-          <div class="sheet-cnt">from Monthly sheet</div>
-        </div>
+      <div class="mr-total-strip">
+        <div class="total-lbl">${esc(monthTitle)} - Total :</div>
+        <div class="total-val">${fmtInt(combined)} PKR</div>
       </div>
     `;
   }
@@ -1247,7 +1229,7 @@ function buildMonthRow(info, srNo, sheetTotal) {
       <div class="mr-head">
         <div>
           <div class="mr-title">
-            ${esc(MONTH_LONG[m - 1])} ${y}
+            ${esc(monthTitle)}
             ${isCurrentMonth ? '<span class="mr-badge">Current</span>' : ''}
           </div>
           <div class="mr-range">
