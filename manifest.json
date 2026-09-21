@@ -2,7 +2,7 @@
   "name": "Sangi Parking — Reports",
   "short_name": "Sangi Parking",
   "description": "Parking reports dashboard with monthly comparisons and daily data.",
-  "start_url": "parking.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
