@@ -10,15 +10,18 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0; padding: 12px 0 20px; background: #eef1f5; color: #1a1a1a;
     font-size: 14px;
-    overflow-x: hidden;
   }
 
   /* ============ TOGGLE BAR ============ */
   .toggle-bar {
-    max-width: 480px; margin: 0 auto 12px;
+    max-width: 960px; margin: 0 auto 12px;
     background: #fff; border-radius: 12px;
     padding: 10px; display: flex; justify-content: center; gap: 6px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-left: 12px; margin-right: 12px;
+  }
+  @media (min-width: 960px) {
+    .toggle-bar { margin-left: auto; margin-right: auto; }
   }
   .toggle-bar label {
     flex: 1; display: flex; align-items: center; justify-content: center;
@@ -28,16 +31,15 @@
     user-select: none;
   }
   .toggle-bar input { display: none; }
-  .toggle-bar input:checked + span {
-    background: #1e88e5; color: #fff;
-    padding: 9px 10px; border-radius: 8px; margin: -9px -10px;
-  }
   .toggle-bar span {
     display: block; width: 100%; text-align: center;
-    transition: all 0.18s;
+    padding: 9px 10px; border-radius: 8px; transition: all 0.18s;
+  }
+  .toggle-bar input:checked + span {
+    background: #1e88e5; color: #fff;
   }
 
-  /* ============ CAROUSEL ============ */
+  /* ============ COMPARE CAROUSEL ============ */
   .carousel {
     display: flex;
     overflow-x: auto;
@@ -72,7 +74,7 @@
     background: #1e88e5; width: 22px; border-radius: 4px;
   }
 
-  /* ============ CARD CONTENT ============ */
+  /* ============ CARD CONTENT (compare view) ============ */
   .rc-head {
     background: linear-gradient(135deg, #1e88e5, #1565c0);
     color: #fff; padding: 14px; text-align: center;
@@ -84,7 +86,6 @@
     display: grid; grid-template-columns: 1fr 1fr;
     background: #f7f9fc; border-bottom: 1px solid #e0e4ea;
   }
-  .counts.single { grid-template-columns: 1fr; }
   .counts > div {
     padding: 10px 8px; text-align: center;
     border-right: 1px solid #e0e4ea;
@@ -94,7 +95,6 @@
   .counts .lbl { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
   .counts .c1 { color: #1565c0; }
   .counts .c2 { color: #2e7d32; }
-  .counts .cSingle { color: #1565c0; }
 
   .months {
     display: grid;
@@ -103,7 +103,6 @@
     position: sticky; top: 0; z-index: 5;
     font-size: 12px; font-weight: 700;
   }
-  .months.single { grid-template-columns: 34px 1fr; }
   .months .hd {
     padding: 9px 6px; text-align: center;
     border-right: 1px solid #e0e4ea;
@@ -129,7 +128,6 @@
     border-bottom: 1px dashed #e5e8ee;
     background: #fff;
   }
-  .item.single { grid-template-columns: 34px 1fr; }
   .item > div {
     padding: 8px 7px; min-height: 46px;
     display: flex; flex-direction: column; justify-content: center;
@@ -173,7 +171,6 @@
     background: #f7f9fc; border-top: 2px solid #e0e4ea;
     font-weight: 700;
   }
-  .total-row.single { grid-template-columns: 34px 1fr; }
   .total-row > div {
     padding: 10px 6px; text-align: center;
     border-right: 1px solid #e0e4ea;
@@ -188,9 +185,7 @@
   .total-row .val { font-size: 15px; margin-top: 3px; }
   .total-row .val.v1 { color: #1565c0; }
   .total-row .val.v2 { color: #2e7d32; }
-  .total-row .cnt {
-    font-size: 10px; color: #777; font-weight: 500; margin-top: 2px;
-  }
+  .total-row .cnt { font-size: 10px; color: #777; font-weight: 500; margin-top: 2px; }
   .total-row .sr-blank { background: #f4f6f9; }
 
   .grand {
@@ -217,6 +212,111 @@
     text-align: center; font-size: 11px; color: #888;
     padding: 4px 0 10px;
   }
+
+  /* ============ ALL MONTHS TABLE VIEW ============ */
+  .table-wrap {
+    max-width: 100%;
+    margin: 0 12px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .table-header {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    color: #fff; padding: 14px; text-align: center;
+  }
+  .table-header h1 { margin: 0; font-size: 16px; font-weight: 700; }
+  .table-header p { margin: 3px 0 0; font-size: 12px; opacity: 0.9; }
+
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .table-scroll::-webkit-scrollbar { height: 8px; }
+  .table-scroll::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 4px; }
+  .table-scroll::-webkit-scrollbar-track { background: #f0f2f6; }
+
+  table.all-months {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 100%;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  table.all-months th,
+  table.all-months td {
+    padding: 9px 10px;
+    border-bottom: 1px solid #eef1f5;
+    border-right: 1px solid #f4f6f9;
+    text-align: right;
+  }
+  table.all-months th:first-child,
+  table.all-months td:first-child { text-align: left; }
+
+  table.all-months thead th {
+    background: #f7f9fc;
+    color: #1565c0;
+    font-weight: 700;
+    font-size: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-bottom: 2px solid #e0e4ea;
+  }
+  /* Sticky first column (names) */
+  table.all-months th:first-child,
+  table.all-months td:first-child {
+    position: sticky;
+    left: 0;
+    background: #fff;
+    z-index: 1;
+    font-weight: 600;
+    box-shadow: 2px 0 4px -2px rgba(0,0,0,0.08);
+    min-width: 120px;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  table.all-months thead th:first-child {
+    background: #f7f9fc;
+    z-index: 3;
+    color: #999;
+  }
+  table.all-months tbody tr:nth-child(even) td {
+    background: #fcfdfe;
+  }
+  table.all-months tbody tr:nth-child(even) td:first-child {
+    background: #fcfdfe;
+  }
+  table.all-months td.num { color: #1565c0; font-weight: 600; }
+  table.all-months td.zero { color: #cbd0d8; font-weight: 400; }
+
+  /* Footer rows: total & count */
+  table.all-months tfoot td {
+    background: #f7f9fc;
+    font-weight: 700;
+    border-top: 2px solid #e0e4ea;
+    border-bottom: none;
+  }
+  table.all-months tfoot tr.count-row td {
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    background: #fbfcfe;
+  }
+  table.all-months tfoot td.total-cell {
+    color: #2e7d32;
+  }
+  table.all-months tfoot td:first-child {
+    color: #555;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .hide { display: none !important; }
 </style>
 </head>
 <body>
@@ -235,9 +335,25 @@
 
 <div id="status" class="status">Loading data…</div>
 
+<!-- Compare view -->
 <div class="carousel" id="carousel" style="display:none;"></div>
 <div class="dots" id="dots" style="display:none;"></div>
 <div class="swipe-hint" id="swipeHint" style="display:none;">← Swipe to see other months →</div>
+
+<!-- All months table view -->
+<div class="table-wrap hide" id="tableWrap">
+  <div class="table-header">
+    <h1>All Months Report</h1>
+    <p id="tableSubtitle">—</p>
+  </div>
+  <div class="table-scroll">
+    <table class="all-months" id="allTable">
+      <thead></thead>
+      <tbody></tbody>
+      <tfoot></tfoot>
+    </table>
+  </div>
+</div>
 
 <script>
 /* ============================================================
@@ -361,10 +477,8 @@ function groupByName(recs) {
 }
 
 /* ============================================================
-   PAGE BUILDERS
+   COMPARE VIEW BUILDER (same as before)
    ============================================================ */
-
-/* ---------- Page: Compare 2 months (existing layout) ---------- */
 function buildComparePage(prevRecs, currRecs, prevLabel, currLabel) {
   const mapPrev = groupByName(prevRecs);
   const mapCurr = groupByName(currRecs);
@@ -449,7 +563,6 @@ function buildComparePage(prevRecs, currRecs, prevLabel, currLabel) {
     sec.className = "sec ok";
     sec.textContent = `✓ Matched Persons (${matchedKeys.length})`;
     body.appendChild(sec);
-
     matchedKeys.forEach(k => {
       const p = mapPrev.get(k), c = mapCurr.get(k);
       subPrev += p.amount; subCurr += c.amount;
@@ -462,7 +575,6 @@ function buildComparePage(prevRecs, currRecs, prevLabel, currLabel) {
     sec.className = "sec warn";
     sec.textContent = `⚠ Unmatched Persons (${onlyPrevKeys.length + onlyCurrKeys.length})`;
     body.appendChild(sec);
-
     const maxLen = Math.max(onlyPrevKeys.length, onlyCurrKeys.length);
     for (let i = 0; i < maxLen; i++) {
       const p = onlyPrevKeys[i] ? mapPrev.get(onlyPrevKeys[i]) : null;
@@ -518,140 +630,156 @@ function buildComparePage(prevRecs, currRecs, prevLabel, currLabel) {
   return page;
 }
 
-/* ---------- Page: Single month (all persons) ---------- */
-function buildMonthPage(recs, label) {
-  const map = groupByName(recs);
-  const cnt = map.size;
-  let sub = 0;
+/* ============================================================
+   ALL MONTHS TABLE BUILDER
+   ============================================================ */
+function buildAllMonthsTable(keys, byMonth) {
+  /* Build a unified person index and per-month values */
+  const personIndex = new Map(); // nameKey -> { displayName, perMonth: {key: amount} }
 
-  const page = document.createElement("div");
-  page.className = "page";
-
-  page.innerHTML = `
-    <div class="rc-head">
-      <h1>Monthly Report</h1>
-      <p>${esc(label)}</p>
-    </div>
-    <div class="counts single">
-      <div>
-        <div class="num cSingle">${cnt}</div>
-        <div class="lbl">Persons (${esc(label)})</div>
-      </div>
-    </div>
-    <div class="months single">
-      <div class="hd sr-h">#</div>
-      <div class="hd m1">${esc(label)}</div>
-    </div>
-  `;
-
-  const body = document.createElement("div");
-
-  let sr = 0;
-  map.forEach((v) => {
-    sub += v.amount;
-    const row = document.createElement("div");
-    row.className = "item single";
-    row.innerHTML = `
-      <div class="sr-cell">${++sr}</div>
-      <div class="m1-cell">
-        <div class="name-line"><span class="nm">${esc(v.name)}</span></div>
-        <div class="amt">${fmt(v.amount)}</div>
-      </div>
-    `;
-    body.appendChild(row);
+  keys.forEach(k => {
+    const recs = byMonth.get(k) || [];
+    const grouped = groupByName(recs);
+    grouped.forEach((v, nk) => {
+      if (!personIndex.has(nk)) {
+        personIndex.set(nk, { displayName: v.name, perMonth: {} });
+      }
+      personIndex.get(nk).perMonth[k] = v.amount;
+    });
   });
 
-  const totals = document.createElement("div");
-  totals.className = "total-row single";
-  totals.innerHTML = `
-    <div class="sr-blank"></div>
-    <div>
-      <div class="mname v1">${esc(label)}</div>
-      <div class="val v1">${fmt(sub)}</div>
-      <div class="cnt">${cnt} person${cnt === 1 ? "" : "s"}</div>
-    </div>
-  `;
-  body.appendChild(totals);
+  /* Sort persons alphabetically */
+  const sortedPersons = [...personIndex.values()].sort((a, b) =>
+    a.displayName.localeCompare(b.displayName, undefined, { sensitivity: "base" })
+  );
 
-  const grand = document.createElement("div");
-  grand.className = "grand";
-  grand.innerHTML = `
-    <div class="lbl">Month Total</div>
-    <div class="val">${fmt(sub)}</div>
-    <div class="cnt">${cnt} unique person${cnt === 1 ? "" : "s"}</div>
-  `;
-  body.appendChild(grand);
+  /* Build header */
+  const thead = document.querySelector("#allTable thead");
+  const tbody = document.querySelector("#allTable tbody");
+  const tfoot = document.querySelector("#allTable tfoot");
+  thead.innerHTML = "";
+  tbody.innerHTML = "";
+  tfoot.innerHTML = "";
 
-  page.appendChild(body);
-  return page;
+  const headRow = document.createElement("tr");
+  let headHtml = `<th>Name / Item</th>`;
+  keys.forEach(k => {
+    const recs = byMonth.get(k) || [];
+    const label = recs.length ? monthLabel(recs[0]) : "";
+    headHtml += `<th>${esc(label)}</th>`;
+  });
+  headRow.innerHTML = headHtml;
+  thead.appendChild(headRow);
+
+  /* Body rows */
+  sortedPersons.forEach(p => {
+    const tr = document.createElement("tr");
+    let html = `<td title="${esc(p.displayName)}">${esc(p.displayName)}</td>`;
+    keys.forEach(k => {
+      const val = p.perMonth[k];
+      if (val === undefined) {
+        html += `<td class="zero">—</td>`;
+      } else {
+        html += `<td class="num">${fmt(val)}</td>`;
+      }
+    });
+    tr.innerHTML = html;
+    tbody.appendChild(tr);
+  });
+
+  /* Footer: totals + counts per month */
+  const totalTr = document.createElement("tr");
+  let totalHtml = `<td>Total</td>`;
+  const monthTotals = {};
+  const monthCounts = {};
+  keys.forEach(k => {
+    const recs = byMonth.get(k) || [];
+    const grouped = groupByName(recs);
+    let sum = 0;
+    grouped.forEach(v => sum += v.amount);
+    monthTotals[k] = sum;
+    monthCounts[k] = grouped.size;
+    totalHtml += `<td class="total-cell">${fmt(sum)}</td>`;
+  });
+  totalTr.innerHTML = totalHtml;
+  tfoot.appendChild(totalTr);
+
+  const countTr = document.createElement("tr");
+  countTr.className = "count-row";
+  let cntHtml = `<td>Persons</td>`;
+  keys.forEach(k => {
+    cntHtml += `<td>${monthCounts[k]}</td>`;
+  });
+  countTr.innerHTML = cntHtml;
+  tfoot.appendChild(countTr);
+
+  /* Subtitle */
+  document.getElementById("tableSubtitle").textContent =
+    `${keys.length} months • ${sortedPersons.length} unique persons`;
 }
 
 /* ============================================================
-   STATE + RENDER
+   STATE + VIEW SWITCH
    ============================================================ */
-let allRecords = [];
 let allKeys = [];
 let byMonth = new Map();
 let currentView = "compare";
 
-function renderView() {
+function renderCompareView() {
   const carousel = document.getElementById("carousel");
   const dotsEl = document.getElementById("dots");
   carousel.innerHTML = "";
   dotsEl.innerHTML = "";
   carousel.scrollLeft = 0;
 
-  const pages = [];
+  if (allKeys.length < 2) return;
 
-  if (currentView === "compare") {
-    /* Only last 2 months */
-    if (allKeys.length < 2) return;
-    const kPrev = allKeys[allKeys.length - 2];
-    const kCurr = allKeys[allKeys.length - 1];
-    const prevRecs = byMonth.get(kPrev) || [];
-    const currRecs = byMonth.get(kCurr) || [];
-    const prevLabel = monthLabel(prevRecs[0]);
-    const currLabel = monthLabel(currRecs[0]);
-    pages.push(buildComparePage(prevRecs, currRecs, prevLabel, currLabel));
-  } else {
-    /* One page per month, chronological */
-    allKeys.forEach(k => {
-      const recs = byMonth.get(k) || [];
-      if (!recs.length) return;
-      const label = monthLabel(recs[0]);
-      pages.push(buildMonthPage(recs, label));
-    });
-  }
+  const kPrev = allKeys[allKeys.length - 2];
+  const kCurr = allKeys[allKeys.length - 1];
+  const prevRecs = byMonth.get(kPrev) || [];
+  const currRecs = byMonth.get(kCurr) || [];
+  const prevLabel = monthLabel(prevRecs[0]);
+  const currLabel = monthLabel(currRecs[0]);
 
-  pages.forEach((page, idx) => {
-    carousel.appendChild(page);
-    const dot = document.createElement("div");
-    dot.className = "dot" + (idx === 0 ? " active" : "");
-    dot.dataset.idx = idx;
-    dot.addEventListener("click", () => {
-      const pageW = carousel.querySelector(".page").offsetWidth + 12;
-      carousel.scrollTo({ left: idx * pageW, behavior: "smooth" });
-    });
-    dotsEl.appendChild(dot);
-  });
+  carousel.appendChild(buildComparePage(prevRecs, currRecs, prevLabel, currLabel));
 
-  dotsEl.style.display = pages.length > 1 ? "flex" : "none";
-  document.getElementById("swipeHint").style.display = pages.length > 1 ? "block" : "none";
+  const dot = document.createElement("div");
+  dot.className = "dot active";
+  dotsEl.appendChild(dot);
+
+  dotsEl.style.display = "none";
+  document.getElementById("swipeHint").style.display = "none";
 }
 
-function attachScrollListener() {
+function renderAllMonthsView() {
+  buildAllMonthsTable(allKeys, byMonth);
+}
+
+function showView(v) {
+  currentView = v;
   const carousel = document.getElementById("carousel");
-  carousel.addEventListener("scroll", () => {
-    const pageEl = carousel.querySelector(".page");
-    if (!pageEl) return;
-    const pageW = pageEl.offsetWidth + 12;
-    const idx = Math.round(carousel.scrollLeft / pageW);
-    document.querySelectorAll("#dots .dot").forEach((d, i) => {
-      d.classList.toggle("active", i === idx);
-    });
-  }, { passive: true });
+  const dots = document.getElementById("dots");
+  const hint = document.getElementById("swipeHint");
+  const tableWrap = document.getElementById("tableWrap");
+
+  if (v === "compare") {
+    carousel.style.display = "flex";
+    dots.style.display = "none";
+    hint.style.display = "none";
+    tableWrap.classList.add("hide");
+    renderCompareView();
+  } else {
+    carousel.style.display = "none";
+    dots.style.display = "none";
+    hint.style.display = "none";
+    tableWrap.classList.remove("hide");
+    renderAllMonthsView();
+  }
 }
 
+/* ============================================================
+   MAIN
+   ============================================================ */
 function render(records) {
   const statusEl = document.getElementById("status");
   if (!records.length) {
@@ -672,21 +800,15 @@ function render(records) {
     byMonth.get(k).push(r);
   });
 
-  allRecords = records;
   statusEl.style.display = "none";
-  document.getElementById("carousel").style.display = "flex";
 
-  renderView();
-
-  /* Wire radio buttons */
+  /* Wire radios */
   document.querySelectorAll('input[name="view"]').forEach(rb => {
-    rb.addEventListener("change", e => {
-      currentView = e.target.value;
-      renderView();
-    });
+    rb.addEventListener("change", e => showView(e.target.value));
   });
 
-  attachScrollListener();
+  /* Initial view = compare */
+  showView("compare");
 }
 
 loadAll().then(render).catch(e => {
