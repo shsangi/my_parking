@@ -455,6 +455,46 @@
   .mr-metric.avg, .pr-metric.avg                 { background: #e8f0fe; }
   .mr-metric.avg .val, .pr-metric.avg .val       { color: #0d47a1; }
 
+  /* Monthly sheet total card strip inside month rows */
+  .mr-sheet-strip {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: linear-gradient(135deg, #f3e5f5 0%, #ede7f6 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-left: 3px solid #8e24aa;
+  }
+  .mr-sheet-strip .sheet-lbl {
+    font-size: 10px;
+    color: #6a1b9a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 800;
+  }
+  .mr-sheet-strip .sheet-sub {
+    font-size: 9px;
+    color: #8e24aa;
+    font-weight: 600;
+    margin-top: 1px;
+  }
+  .mr-sheet-strip .sheet-val {
+    font-size: 15px;
+    font-weight: 800;
+    color: #6a1b9a;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .mr-sheet-strip .sheet-cnt {
+    font-size: 10px;
+    color: #8e24aa;
+    font-weight: 600;
+    text-align: right;
+    margin-top: 1px;
+  }
+
   .daily-section-title {
     font-size: 13px; font-weight: 700; color: #263238;
     padding: 12px 4px 10px;
@@ -1054,8 +1094,8 @@ function buildOverallSummaryCard(totals) {
 
 /* ============================================================
    SMART MONTHLY SPLIT
-   - Gross & Net  → proportional by days (per month)
-   - Expenses     → FULL amount to the month where period STARTS
+   - Gross & Net  → proportional by days
+   - Expenses     → FULL to the month where period STARTS
    ============================================================ */
 function computeMonthlySplit(rows) {
   const buckets = new Map();
@@ -1093,16 +1133,14 @@ function computeMonthlySplit(rows) {
       const segDays = daysBetween(segStart, segEnd);
       const frac = periodDays ? segDays / periodDays : 0;
 
-      /* Gross & Net split proportionally */
       bucket.gross += r.gross * frac;
       bucket.net   += r.net   * frac;
 
-      /* Expenses → FULL to the month where period STARTS */
+      /* Expenses → full to start month */
       if (y === sp.y && m === sp.m) {
         bucket.exp += r.expenses;
       }
 
-      /* Track bounds */
       if (sp.y === y && sp.m === m) {
         if (!bucket.minStart || dateCmp(sp, bucket.minStart) < 0) {
           bucket.minStart = { y: sp.y, m: sp.m, d: sp.d };
@@ -1157,17 +1195,49 @@ function computeMonthlySplit(rows) {
     });
   });
 
-  /* Descending (newest first) */
   result.sort((a, b) => (b.y * 100 + b.m) - (a.y * 100 + a.m));
   return result;
 }
 
 /* ============================================================
+   MONTHLY SHEET TOTALS (from monthly sheet)
+   ============================================================ */
+function computeMonthlySheetTotals(records) {
+  const totals = new Map(); /* key: YYYY*100 + MM → { amount, count } */
+  records.forEach(r => {
+    const k = monthKey(r);
+    if (!k) return;
+    if (!totals.has(k)) totals.set(k, { amount: 0, count: 0 });
+    const t = totals.get(k);
+    t.amount += r.amount;
+    t.count++;
+  });
+  return totals;
+}
+
+/* ============================================================
    REPORT — Monthly row
    ============================================================ */
-function buildMonthRow(info, srNo) {
+function buildMonthRow(info, srNo, sheetTotal) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
+
+  /* Sheet total strip (from Monthly sheet) */
+  let sheetStrip = "";
+  if (sheetTotal) {
+    sheetStrip = `
+      <div class="mr-sheet-strip">
+        <div>
+          <div class="sheet-lbl">Monthly Sheet Total</div>
+          <div class="sheet-sub">${sheetTotal.count} entr${sheetTotal.count === 1 ? "y" : "ies"}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="sheet-val">${fmtInt(sheetTotal.amount)} PKR</div>
+          <div class="sheet-cnt">from Monthly sheet</div>
+        </div>
+      </div>
+    `;
+  }
 
   const row = document.createElement("div");
   row.className = "month-row" + (isCurrentMonth ? " current" : "");
@@ -1204,6 +1274,7 @@ function buildMonthRow(info, srNo) {
           <div class="val">${fmtInt(avgNet)}</div>
         </div>
       </div>
+      ${sheetStrip}
     </div>
   `;
   return row;
@@ -1255,7 +1326,7 @@ function buildPeriodRow(period, srNo) {
 /* ============================================================
    REPORT — main render
    ============================================================ */
-function renderReport(rows) {
+function renderReport(rows, monthlyRecords) {
   const statusEl = document.getElementById("dailyStatus");
   const contentEl = document.getElementById("reportContent");
 
@@ -1286,11 +1357,18 @@ function renderReport(rows) {
     minStart, maxEnd
   }));
 
+  /* Monthly sheet totals */
+  const sheetTotals = computeMonthlySheetTotals(monthlyRecords);
+
   /* Monthly — descending */
   const monthInfos = computeMonthlySplit(rows);
   const monthEl = document.getElementById("monthList");
   monthEl.innerHTML = "";
-  monthInfos.forEach((info, i) => monthEl.appendChild(buildMonthRow(info, i + 1)));
+  monthInfos.forEach((info, i) => {
+    const k = info.y * 100 + info.m;
+    const sheetTotal = sheetTotals.get(k) || null;
+    monthEl.appendChild(buildMonthRow(info, i + 1, sheetTotal));
+  });
 
   /* Period — descending */
   const periodEl = document.getElementById("periodList");
@@ -1389,6 +1467,7 @@ async function loadDaily() {
 let allKeys = [];
 let byMonth = new Map();
 let monthlyLoaded = false;
+let monthlyRecordsCache = [];
 
 function renderLast2() {
   const statusEl = document.getElementById("statusLast2");
@@ -1444,6 +1523,7 @@ async function loadMonthlyOnce() {
   monthlyLoaded = true;
 
   const records = await loadMonthly();
+  monthlyRecordsCache = records;
 
   if (!records.length) {
     document.getElementById("statusLast2").textContent = "No monthly data available.";
@@ -1484,9 +1564,17 @@ document.getElementById("tabLast2").addEventListener("click", () => switchTab("l
 document.getElementById("tabAll").addEventListener("click", () => switchTab("all"));
 
 /* ============================================================
-   BOOT
+   BOOT — load both Daily and Monthly sheet data
    ============================================================ */
-loadDaily().then(renderReport);
+Promise.all([loadDaily(), loadMonthly()])
+  .then(([dailyRows, monthlyRecords]) => {
+    monthlyRecordsCache = monthlyRecords;
+    renderReport(dailyRows, monthlyRecords);
+  })
+  .catch(e => {
+    document.getElementById("dailyStatus").textContent = "Error: " + e.message;
+    console.error(e);
+  });
 </script>
 </body>
 </html>
