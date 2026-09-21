@@ -21,40 +21,17 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .tab-bar button {
-    flex: 1; padding: 10px 8px; border: none;
+    flex: 1; padding: 10px 6px; border: none;
     background: transparent; color: #666;
-    font-size: 13px; font-weight: 600;
+    font-size: 12.5px; font-weight: 600;
     border-radius: 8px; cursor: pointer;
     font-family: inherit;
     transition: all 0.18s;
+    white-space: nowrap;
   }
   .tab-bar button.active {
     background: #1e88e5; color: #fff;
     box-shadow: 0 2px 6px rgba(30,136,229,0.4);
-  }
-
-  /* ============ SUB TOGGLE (within Monthly tab) ============ */
-  .toggle-bar {
-    max-width: 480px; margin: 0 auto 12px;
-    background: #fff; border-radius: 12px;
-    padding: 10px; display: flex; justify-content: center; gap: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .toggle-bar label {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    padding: 9px 10px; border-radius: 8px;
-    font-size: 13px; font-weight: 600; cursor: pointer;
-    color: #555; background: #f4f6f9; transition: all 0.18s;
-    user-select: none;
-  }
-  .toggle-bar input { display: none; }
-  .toggle-bar input:checked + span {
-    background: #1e88e5; color: #fff;
-    padding: 9px 10px; border-radius: 8px; margin: -9px -10px;
-  }
-  .toggle-bar span {
-    display: block; width: 100%; text-align: center;
-    transition: all 0.18s;
   }
 
   /* ============ TAB CONTENT ============ */
@@ -193,9 +170,7 @@
   .total-row .val { font-size: 15px; margin-top: 3px; }
   .total-row .val.v1 { color: #1565c0; }
   .total-row .val.v2 { color: #2e7d32; }
-  .total-row .cnt {
-    font-size: 10px; color: #777; font-weight: 500; margin-top: 2px;
-  }
+  .total-row .cnt { font-size: 10px; color: #777; font-weight: 500; margin-top: 2px; }
   .total-row .sr-blank { background: #f4f6f9; }
 
   .grand {
@@ -218,13 +193,11 @@
 
   /* ============ ALL MONTHS TABLE ============ */
   .table-wrap {
-    display: none;
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding: 0 12px 12px;
   }
-  .table-wrap.active { display: block; }
   .table-wrap::-webkit-scrollbar { height: 6px; }
   .table-wrap::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
 
@@ -315,11 +288,6 @@
   .mcol-grand .mcol-total { background: #1a232a; border-top: 2px solid #ffb300; }
   .mcol-grand .mcol-total .val { color: #ffd54f; }
 
-  .table-hint {
-    text-align: center; font-size: 11px; color: #888;
-    padding: 6px 0 10px;
-  }
-
   /* ============ DAILY REPORT TABLE ============ */
   .daily-wrap {
     max-width: 100%;
@@ -361,16 +329,12 @@
     font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
-  .daily-table tbody td.date {
-    color: #555;
-    font-size: 12px;
-  }
+  .daily-table tbody td.date { color: #555; font-size: 12px; }
   .daily-table tbody tr:nth-child(even) { background: #fafbfd; }
-  .daily-table tbody tr:hover { background: #f0f7ff; }
 
-  .daily-table td.gross   { color: #1565c0; }
-  .daily-table td.exp     { color: #c62828; }
-  .daily-table td.net     { color: #2e7d32; }
+  .daily-table td.gross { color: #1565c0; }
+  .daily-table td.exp   { color: #c62828; }
+  .daily-table td.net   { color: #2e7d32; }
 
   .daily-table tfoot td {
     padding: 12px 10px;
@@ -387,9 +351,9 @@
   .daily-table tfoot td.net   { color: #a5d6a7; }
 
   .status { text-align: center; padding: 40px 20px; color: #777; font-size: 14px; }
-  .swipe-hint {
+  .hint {
     text-align: center; font-size: 11px; color: #888;
-    padding: 4px 0 10px;
+    padding: 6px 0 10px;
   }
 </style>
 </head>
@@ -397,40 +361,13 @@
 
 <!-- Main tabs -->
 <div class="tab-bar">
-  <button id="tabMonthly" class="active" type="button">Monthly</button>
-  <button id="tabReport" type="button">Report</button>
+  <button id="tabReport" class="active" type="button">Report</button>
+  <button id="tabLast2" type="button">Last 2 Months</button>
+  <button id="tabAll" type="button">All Months</button>
 </div>
 
-<!-- ============= MONTHLY TAB ============= -->
-<div class="tab-content active" id="contentMonthly">
-
-  <div class="toggle-bar">
-    <label>
-      <input type="radio" name="view" value="compare" checked>
-      <span>Last 2 Months</span>
-    </label>
-    <label>
-      <input type="radio" name="view" value="all">
-      <span>Show All Months</span>
-    </label>
-  </div>
-
-  <div id="status" class="status">Loading data…</div>
-
-  <!-- Last 2 months mode -->
-  <div class="carousel" id="carousel" style="display:none;"></div>
-  <div class="dots" id="dots" style="display:none;"></div>
-  <div class="swipe-hint" id="swipeHint" style="display:none;">← Swipe to see other months →</div>
-
-  <!-- All months table mode -->
-  <div class="table-wrap" id="tableWrap">
-    <div class="mtable" id="mtable"></div>
-  </div>
-  <div class="table-hint" id="tableHint" style="display:none;">← Swipe horizontally to see all months →</div>
-</div>
-
-<!-- ============= REPORT TAB (DAILY) ============= -->
-<div class="tab-content" id="contentReport">
+<!-- ============= REPORT TAB (DEFAULT) ============= -->
+<div class="tab-content active" id="contentReport">
   <div id="dailyStatus" class="status">Loading daily data…</div>
   <div class="daily-wrap" id="dailyWrap" style="display:none;">
     <table class="daily-table" id="dailyTable">
@@ -447,7 +384,22 @@
       <tfoot id="dailyFoot"></tfoot>
     </table>
   </div>
-  <div class="table-hint" id="dailyHint" style="display:none;">← Swipe horizontally to see all columns →</div>
+  <div class="hint" id="dailyHint" style="display:none;">← Swipe horizontally to see all columns →</div>
+</div>
+
+<!-- ============= LAST 2 MONTHS TAB ============= -->
+<div class="tab-content" id="contentLast2">
+  <div id="statusLast2" class="status">Loading data…</div>
+  <div class="carousel" id="carousel" style="display:none;"></div>
+</div>
+
+<!-- ============= ALL MONTHS TAB ============= -->
+<div class="tab-content" id="contentAll">
+  <div id="statusAll" class="status">Loading data…</div>
+  <div class="table-wrap" id="tableWrap" style="display:none;">
+    <div class="mtable" id="mtable"></div>
+  </div>
+  <div class="hint" id="tableHint" style="display:none;">← Swipe horizontally to see all months →</div>
 </div>
 
 <script>
@@ -456,8 +408,6 @@
    ============================================================ */
 const SHEET1_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pub?output=csv";
 const SHEET2_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1452200885";
-
-/* Daily sheet — same workbook, gid 1810247989 */
 const SHEET_DAILY_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/export?format=csv&gid=1810247989";
 
 const COL = {
@@ -545,7 +495,6 @@ function normalizeDaily(rows) {
   const out = [];
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
-    // skip blank rows
     if (!r.some(c => (c || "").trim() !== "")) continue;
 
     const startDate = idx.startDate >= 0 ? (r[idx.startDate] || "").trim() : "";
@@ -554,7 +503,6 @@ function normalizeDaily(rows) {
     const expenses  = idx.expenses  >= 0 ? parseNum(r[idx.expenses])  : 0;
     const net       = idx.net       >= 0 ? parseNum(r[idx.net])       : 0;
 
-    // skip rows that have no dates and no amounts (e.g. "New" placeholder)
     if (!startDate && !endDate && !gross && !expenses && !net) continue;
 
     out.push({ startDate, endDate, gross, expenses, net });
@@ -588,7 +536,6 @@ function monthLabel(rec) {
 function nameKey(name) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
-
 function groupByName(recs) {
   const m = new Map();
   recs.forEach(r => {
@@ -598,7 +545,6 @@ function groupByName(recs) {
   });
   return m;
 }
-
 function fmt(n) {
   const sign = n < 0 ? "-" : "";
   return sign + Math.abs(n).toLocaleString(undefined, {
@@ -612,9 +558,9 @@ function esc(s) {
 }
 
 /* ============================================================
-   LAST-2-MONTHS PAGE
+   LAST-2-MONTHS CARD
    ============================================================ */
-function buildComparePage(prevRecs, currRecs, prevLabel, currLabel) {
+function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
   const mapPrev = groupByName(prevRecs);
   const mapCurr = groupByName(currRecs);
   const cntPrev = mapPrev.size;
@@ -758,13 +704,11 @@ function buildComparePage(prevRecs, currRecs, prevLabel, currLabel) {
 /* ============================================================
    ALL MONTHS TABLE
    ============================================================ */
-function buildTable(monthList) {
+function buildAllMonthsTable(monthList) {
   const table = document.getElementById("mtable");
   table.innerHTML = "";
 
-  let grandTotal = 0;
-  let grandPersons = 0;
-  let totalMonthsWithData = 0;
+  let grandTotal = 0, grandPersons = 0, totalMonthsWithData = 0;
 
   monthList.forEach(m => {
     const map = groupByName(m.recs);
@@ -859,10 +803,8 @@ function renderDaily(rows) {
     return;
   }
 
-  /* Sort by start date ascending (fallback: string sort) */
   rows.sort((a, b) => {
-    const da = parseDate(a.startDate);
-    const db = parseDate(b.startDate);
+    const da = parseDate(a.startDate), db = parseDate(b.startDate);
     if (da && db) return da - db;
     return (a.startDate || "").localeCompare(b.startDate || "");
   });
@@ -871,10 +813,7 @@ function renderDaily(rows) {
   let tGross = 0, tExp = 0, tNet = 0;
 
   rows.forEach(r => {
-    tGross += r.gross;
-    tExp   += r.expenses;
-    tNet   += r.net;
-
+    tGross += r.gross; tExp += r.expenses; tNet += r.net;
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td class="date">${esc(r.startDate) || "—"}</td>
@@ -902,7 +841,6 @@ function renderDaily(rows) {
 
 function parseDate(s) {
   if (!s) return null;
-  /* Try DD/MM/YYYY, DD-MM-YYYY, YYYY-MM-DD, or JS-native */
   const t = Date.parse(s);
   if (!isNaN(t)) return t;
   const m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
@@ -943,64 +881,74 @@ async function loadDaily() {
 }
 
 /* ============================================================
-   MONTHLY VIEW STATE
+   MONTHLY DATA STATE
    ============================================================ */
 let allKeys = [];
 let byMonth = new Map();
-let currentView = "compare";
+let monthlyLoaded = false;
 
-function renderMonthlyView() {
-  const carousel   = document.getElementById("carousel");
-  const dotsEl     = document.getElementById("dots");
-  const swipeHint  = document.getElementById("swipeHint");
-  const tableWrap  = document.getElementById("tableWrap");
-  const tableHint  = document.getElementById("tableHint");
-
-  carousel.style.display   = "none";
-  dotsEl.style.display     = "none";
-  swipeHint.style.display  = "none";
-  tableWrap.style.display  = "none";
-  tableHint.style.display  = "none";
-
+function renderLast2() {
+  const statusEl = document.getElementById("statusLast2");
+  const carousel = document.getElementById("carousel");
   carousel.innerHTML = "";
-  dotsEl.innerHTML = "";
-  document.getElementById("mtable").innerHTML = "";
 
-  if (currentView === "compare") {
-    if (allKeys.length < 2) return;
-    const kPrev = allKeys[allKeys.length - 2];
-    const kCurr = allKeys[allKeys.length - 1];
-    const prevRecs = byMonth.get(kPrev) || [];
-    const currRecs = byMonth.get(kCurr) || [];
-    const prevLabel = monthLabel(prevRecs[0]);
-    const currLabel = monthLabel(currRecs[0]);
-
-    carousel.appendChild(buildComparePage(prevRecs, currRecs, prevLabel, currLabel));
-    carousel.style.display = "flex";
-  } else {
-    const monthList = allKeys.map(k => {
-      const recs = byMonth.get(k) || [];
-      return { recs, label: monthLabel(recs[0]) };
-    }).filter(m => m.recs.length);
-
-    buildTable(monthList);
-    tableWrap.style.display = "block";
-    tableHint.style.display = monthList.length > 1 ? "block" : "none";
+  if (allKeys.length < 2) {
+    statusEl.textContent = "Need at least two months of data.";
+    statusEl.style.display = "block";
+    carousel.style.display = "none";
+    return;
   }
+
+  const kPrev = allKeys[allKeys.length - 2];
+  const kCurr = allKeys[allKeys.length - 1];
+  const prevRecs = byMonth.get(kPrev) || [];
+  const currRecs = byMonth.get(kCurr) || [];
+
+  carousel.appendChild(
+    buildCompareCard(prevRecs, currRecs, monthLabel(prevRecs[0]), monthLabel(currRecs[0]))
+  );
+
+  statusEl.style.display = "none";
+  carousel.style.display = "flex";
 }
 
-function renderMonthly(records) {
-  const statusEl = document.getElementById("status");
+function renderAllMonths() {
+  const statusEl = document.getElementById("statusAll");
+  const tableWrap = document.getElementById("tableWrap");
+  const hint = document.getElementById("tableHint");
+
+  if (allKeys.length < 2) {
+    statusEl.textContent = "Need at least two months of data.";
+    statusEl.style.display = "block";
+    tableWrap.style.display = "none";
+    hint.style.display = "none";
+    return;
+  }
+
+  const monthList = allKeys.map(k => {
+    const recs = byMonth.get(k) || [];
+    return { recs, label: monthLabel(recs[0]) };
+  }).filter(m => m.recs.length);
+
+  buildAllMonthsTable(monthList);
+  statusEl.style.display = "none";
+  tableWrap.style.display = "block";
+  hint.style.display = monthList.length > 1 ? "block" : "none";
+}
+
+async function loadMonthlyOnce() {
+  if (monthlyLoaded) return;
+  monthlyLoaded = true;
+
+  const records = await loadMonthly();
+
   if (!records.length) {
-    statusEl.textContent = "No data available. Please make sure the sheets are published as CSV.";
+    document.getElementById("statusLast2").textContent = "No monthly data available.";
+    document.getElementById("statusAll").textContent = "No monthly data available.";
     return;
   }
 
   allKeys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
-  if (allKeys.length < 2) {
-    statusEl.textContent = "Need at least two months of data.";
-    return;
-  }
 
   byMonth = new Map();
   records.forEach(r => {
@@ -1009,42 +957,36 @@ function renderMonthly(records) {
     byMonth.get(k).push(r);
   });
 
-  statusEl.style.display = "none";
-  renderMonthlyView();
-
-  document.querySelectorAll('input[name="view"]').forEach(rb => {
-    rb.addEventListener("change", e => {
-      currentView = e.target.value;
-      renderMonthlyView();
-    });
-  });
+  renderLast2();
+  renderAllMonths();
 }
 
 /* ============================================================
    TAB SWITCHING
    ============================================================ */
-let reportLoaded = false;
 function switchTab(tab) {
-  document.getElementById("tabMonthly").classList.toggle("active", tab === "monthly");
   document.getElementById("tabReport").classList.toggle("active", tab === "report");
-  document.getElementById("contentMonthly").classList.toggle("active", tab === "monthly");
-  document.getElementById("contentReport").classList.toggle("active", tab === "report");
+  document.getElementById("tabLast2").classList.toggle("active", tab === "last2");
+  document.getElementById("tabAll").classList.toggle("active", tab === "all");
 
-  if (tab === "report" && !reportLoaded) {
-    reportLoaded = true;
-    loadDaily().then(renderDaily);
+  document.getElementById("contentReport").classList.toggle("active", tab === "report");
+  document.getElementById("contentLast2").classList.toggle("active", tab === "last2");
+  document.getElementById("contentAll").classList.toggle("active", tab === "all");
+
+  /* Lazy-load monthly data when a monthly tab is opened */
+  if (tab === "last2" || tab === "all") {
+    loadMonthlyOnce();
   }
 }
-document.getElementById("tabMonthly").addEventListener("click", () => switchTab("monthly"));
+
 document.getElementById("tabReport").addEventListener("click", () => switchTab("report"));
+document.getElementById("tabLast2").addEventListener("click", () => switchTab("last2"));
+document.getElementById("tabAll").addEventListener("click", () => switchTab("all"));
 
 /* ============================================================
-   BOOT
+   BOOT — load the default tab (Report) immediately
    ============================================================ */
-loadMonthly().then(renderMonthly).catch(e => {
-  document.getElementById("status").textContent = "Error: " + e.message;
-  console.error(e);
-});
+loadDaily().then(renderDaily);
 </script>
 </body>
 </html>
