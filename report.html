@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monthly Comparison Receipt</title>
+<title>Monthly Report</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -37,7 +37,7 @@
     transition: all 0.18s;
   }
 
-  /* ============ CAROUSEL (compare mode) ============ */
+  /* ============ CAROUSEL (last 2 months) ============ */
   .carousel {
     display: flex;
     overflow-x: auto;
@@ -72,7 +72,7 @@
     background: #1e88e5; width: 22px; border-radius: 4px;
   }
 
-  /* ============ COMPARE CARD ============ */
+  /* ============ CARD ============ */
   .rc-head {
     background: linear-gradient(135deg, #1e88e5, #1565c0);
     color: #fff; padding: 14px; text-align: center;
@@ -282,7 +282,6 @@
     border-top: 2px solid #e0e4ea;
     padding: 10px 8px;
     text-align: center;
-    position: sticky; bottom: 0;
   }
   .mcol-total .lbl {
     font-size: 10px; color: #666; text-transform: uppercase;
@@ -296,6 +295,53 @@
   .mcol-total .cnt {
     font-size: 10px; color: #777; font-weight: 500; margin-top: 2px;
   }
+
+  /* Grand total column at the end of table */
+  .mcol-grand {
+    display: flex; flex-direction: column;
+    min-width: 150px; max-width: 150px;
+    background: #263238;
+    color: #fff;
+    border-left: 3px solid #ffb300;
+    position: sticky; right: 0;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.15);
+  }
+  .mcol-grand .mcol-head {
+    background: linear-gradient(135deg, #ffa726, #ef6c00);
+  }
+  .mcol-grand .mcol-body {
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 14px 10px;
+    text-align: center;
+    flex: 1;
+  }
+  .mcol-grand .big-lbl {
+    font-size: 10px; opacity: 0.85; text-transform: uppercase;
+    letter-spacing: 0.6px; font-weight: 700;
+  }
+  .mcol-grand .big-val {
+    font-size: 20px; font-weight: 800; margin-top: 6px;
+    color: #ffd54f;
+  }
+  .mcol-grand .sub {
+    font-size: 10px; opacity: 0.85; margin-top: 8px;
+  }
+  .mcol-grand .divider {
+    height: 1px; background: rgba(255,255,255,0.2); margin: 10px 0;
+  }
+  .mcol-grand .avg-lbl {
+    font-size: 9px; opacity: 0.7; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .mcol-grand .avg-val {
+    font-size: 13px; font-weight: 700; margin-top: 3px; color: #fff;
+  }
+  .mcol-grand .mcol-total {
+    background: #1a232a;
+    border-top: 2px solid #ffb300;
+  }
+  .mcol-grand .mcol-total .val { color: #ffd54f; }
 
   .table-hint {
     text-align: center; font-size: 11px; color: #888;
@@ -315,7 +361,7 @@
 <div class="toggle-bar">
   <label>
     <input type="radio" name="view" value="compare" checked>
-    <span>Compare Last 2 Months</span>
+    <span>Last 2 Months</span>
   </label>
   <label>
     <input type="radio" name="view" value="all">
@@ -325,7 +371,7 @@
 
 <div id="status" class="status">Loading data…</div>
 
-<!-- Compare mode -->
+<!-- Last 2 months mode -->
 <div class="carousel" id="carousel" style="display:none;"></div>
 <div class="dots" id="dots" style="display:none;"></div>
 <div class="swipe-hint" id="swipeHint" style="display:none;">← Swipe to see other months →</div>
@@ -457,7 +503,7 @@ function groupByName(recs) {
 }
 
 /* ============================================================
-   COMPARE PAGE (last 2 months)
+   LAST-2-MONTHS PAGE
    ============================================================ */
 function buildComparePage(prevRecs, currRecs, prevLabel, currLabel) {
   const mapPrev = groupByName(prevRecs);
@@ -601,23 +647,23 @@ function buildComparePage(prevRecs, currRecs, prevLabel, currLabel) {
 }
 
 /* ============================================================
-   ALL-MONTHS TABLE
-   Each month = one column. Inside each column, each row shows
-   Sr.No, Name, Amount in a stacked single cell.
+   ALL MONTHS TABLE + GRAND TOTAL COLUMN
    ============================================================ */
 function buildTable(monthList) {
   const table = document.getElementById("mtable");
   table.innerHTML = "";
 
-  monthList.forEach((m, mIdx) => {
-    const recs = m.recs;
-    const map = groupByName(recs);
+  let grandTotal = 0;
+  let grandPersons = 0;
+  let totalMonthsWithData = 0;
+
+  monthList.forEach(m => {
+    const map = groupByName(m.recs);
     const label = m.label;
 
     const col = document.createElement("div");
     col.className = "mcol";
 
-    /* Head */
     const head = document.createElement("div");
     head.className = "mcol-head";
     head.innerHTML = `
@@ -626,7 +672,6 @@ function buildTable(monthList) {
     `;
     col.appendChild(head);
 
-    /* Body */
     const bodyEl = document.createElement("div");
     bodyEl.className = "mcol-body";
 
@@ -646,10 +691,8 @@ function buildTable(monthList) {
       `;
       bodyEl.appendChild(row);
     });
-
     col.appendChild(bodyEl);
 
-    /* Column total */
     const tot = document.createElement("div");
     tot.className = "mcol-total";
     tot.innerHTML = `
@@ -660,7 +703,41 @@ function buildTable(monthList) {
     col.appendChild(tot);
 
     table.appendChild(col);
+
+    grandTotal += total;
+    grandPersons += map.size;
+    if (map.size) totalMonthsWithData++;
   });
+
+  /* ---- Grand Total column ---- */
+  const avgPerMonth = totalMonthsWithData ? grandTotal / totalMonthsWithData : 0;
+
+  const grandCol = document.createElement("div");
+  grandCol.className = "mcol-grand";
+
+  grandCol.innerHTML = `
+    <div class="mcol-head">
+      <div class="mname">GRAND TOTAL</div>
+      <div class="mcount">${monthList.length} month${monthList.length === 1 ? "" : "s"}</div>
+    </div>
+    <div class="mcol-body">
+      <div class="big-lbl">All Months Combined</div>
+      <div class="big-val">${fmt(grandTotal)}</div>
+      <div class="sub">${grandPersons} person-entr${grandPersons === 1 ? "y" : "ies"}</div>
+      <div class="divider"></div>
+      <div class="avg-lbl">Avg / Month</div>
+      <div class="avg-val">${fmt(avgPerMonth)}</div>
+    </div>
+    <div class="mcol-total">
+      <div class="lbl" style="color:#ffd54f">GRAND TOTAL</div>
+      <div class="val">${fmt(grandTotal)}</div>
+      <div class="cnt" style="color:#ffd54f; opacity:0.8;">
+        ${monthList.length} month${monthList.length === 1 ? "" : "s"}
+      </div>
+    </div>
+  `;
+
+  table.appendChild(grandCol);
 }
 
 /* ============================================================
@@ -677,7 +754,6 @@ function renderView() {
   const tableWrap  = document.getElementById("tableWrap");
   const tableHint  = document.getElementById("tableHint");
 
-  /* Hide all first */
   carousel.style.display   = "none";
   dotsEl.style.display     = "none";
   swipeHint.style.display  = "none";
@@ -697,58 +773,4 @@ function renderView() {
     const prevLabel = monthLabel(prevRecs[0]);
     const currLabel = monthLabel(currRecs[0]);
 
-    carousel.appendChild(buildComparePage(prevRecs, currRecs, prevLabel, currLabel));
-    carousel.style.display = "flex";
-    dotsEl.style.display = "none";
-    swipeHint.style.display = "none";
-  } else {
-    /* All months as a table */
-    const monthList = allKeys.map(k => {
-      const recs = byMonth.get(k) || [];
-      return { recs, label: monthLabel(recs[0]) };
-    }).filter(m => m.recs.length);
-
-    buildTable(monthList);
-    tableWrap.style.display = "block";
-    tableHint.style.display = monthList.length > 1 ? "block" : "none";
-  }
-}
-
-function render(records) {
-  const statusEl = document.getElementById("status");
-  if (!records.length) {
-    statusEl.textContent = "No data available. Please make sure the sheets are published as CSV.";
-    return;
-  }
-
-  allKeys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
-  if (allKeys.length < 2) {
-    statusEl.textContent = "Need at least two months of data.";
-    return;
-  }
-
-  byMonth = new Map();
-  records.forEach(r => {
-    const k = monthKey(r);
-    if (!byMonth.has(k)) byMonth.set(k, []);
-    byMonth.get(k).push(r);
-  });
-
-  statusEl.style.display = "none";
-  renderView();
-
-  document.querySelectorAll('input[name="view"]').forEach(rb => {
-    rb.addEventListener("change", e => {
-      currentView = e.target.value;
-      renderView();
-    });
-  });
-}
-
-loadAll().then(render).catch(e => {
-  document.getElementById("status").textContent = "Error: " + e.message;
-  console.error(e);
-});
-</script>
-</body>
-</html>
+    carousel.appendChild(buildComparePage(prevRec
