@@ -42,20 +42,21 @@
   .counts .c1 { color: #1565c0; }
   .counts .c2 { color: #2e7d32; }
 
-  /* Month headers (sticky top) */
+  /* Month headers (sticky) */
   .months {
-    display: grid; grid-template-columns: 1fr 1fr;
+    display: grid; grid-template-columns: 30px 1fr 30px 1fr;
     background: #f7f9fc; border-bottom: 2px solid #e0e4ea;
     position: sticky; top: 0; z-index: 5;
+    font-size: 12px; font-weight: 700;
   }
-  .months div {
-    padding: 10px 8px; text-align: center;
-    font-weight: 700; font-size: 13px;
+  .months .hd {
+    padding: 10px 4px; text-align: center;
     border-right: 1px solid #e0e4ea;
   }
-  .months div:last-child { border-right: none; }
+  .months .hd:last-child { border-right: none; }
   .months .m1 { color: #1565c0; }
   .months .m2 { color: #2e7d32; }
+  .months .sr-h { color: #999; font-size: 10px; }
 
   /* Section divider */
   .sec {
@@ -68,59 +69,68 @@
   .sec.ok  { background: #e8f5e9; color: #2e7d32; }
   .sec.warn{ background: #fff3e0; color: #e65100; }
 
-  /* Item row */
+  /* Item row — 4 columns: SR1 | M1 | SR2 | M2 */
   .item {
-    display: grid; grid-template-columns: 1fr 1fr;
+    display: grid;
+    grid-template-columns: 30px 1fr 30px 1fr;
     border-bottom: 1px dashed #e5e8ee;
   }
   .item > div {
-    padding: 9px 10px; min-height: 50px;
+    padding: 8px 6px; min-height: 48px;
     display: flex; flex-direction: column; justify-content: center;
     border-right: 1px solid #f0f2f6;
     overflow: hidden;
   }
   .item > div:last-child { border-right: none; }
 
+  .sr-cell {
+    font-size: 11px; font-weight: 700; color: #9aa3af;
+    text-align: center; background: #fafbfd;
+  }
+
   .name-line {
-    display: flex; align-items: baseline; gap: 5px;
+    display: flex; align-items: baseline; gap: 4px;
     font-weight: 600; font-size: 13px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; overflow: hidden;
   }
   .name-line .nm { overflow: hidden; text-overflow: ellipsis; }
-  .amt { font-size: 15px; font-weight: 700; margin-top: 3px; }
-  .m1 .amt { color: #1565c0; }
-  .m2 .amt { color: #2e7d32; }
+  .amt { font-size: 14px; font-weight: 700; margin-top: 2px; }
+  .m1-cell .amt { color: #1565c0; }
+  .m2-cell .amt { color: #2e7d32; }
 
   .missing {
-    color: #b0b8c4; font-style: italic; font-size: 12px;
+    color: #b0b8c4; font-style: italic; font-size: 11px;
     display: flex; align-items: center; justify-content: center;
+    text-align: center;
   }
 
-  /* Diff badge on matched row */
+  /* Diff badge */
   .diff-badge {
-    font-size: 10px; font-weight: 700;
-    padding: 1px 5px; border-radius: 4px; margin-left: auto;
+    font-size: 9px; font-weight: 700;
+    padding: 1px 4px; border-radius: 4px; margin-left: auto;
     flex-shrink: 0;
   }
   .diff-badge.up { background: #e8f5e9; color: #2e7d32; }
   .diff-badge.down { background: #ffebee; color: #c62828; }
   .diff-badge.same { background: #f0f2f6; color: #666; }
 
-  /* Totals */
+  /* Totals row */
   .total-row {
-    display: grid; grid-template-columns: 1fr 1fr;
+    display: grid;
+    grid-template-columns: 30px 1fr 30px 1fr;
     background: #f7f9fc; border-top: 2px solid #e0e4ea;
     font-weight: 700;
   }
   .total-row > div {
-    padding: 12px 10px; text-align: center;
+    padding: 12px 6px; text-align: center;
     border-right: 1px solid #e0e4ea;
   }
   .total-row > div:last-child { border-right: none; }
   .total-row .lbl { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-  .total-row .val { font-size: 16px; margin-top: 3px; }
+  .total-row .val { font-size: 15px; margin-top: 3px; }
   .total-row .v1 { color: #1565c0; }
   .total-row .v2 { color: #2e7d32; }
+  .total-row .sr-blank { background: #fafbfd; }
 
   /* Grand total */
   .grand {
@@ -165,8 +175,10 @@
   </div>
 
   <div class="months">
-    <div class="m1" id="h1">—</div>
-    <div class="m2" id="h2">—</div>
+    <div class="hd sr-h">#</div>
+    <div class="hd m1" id="h1">—</div>
+    <div class="hd sr-h">#</div>
+    <div class="hd m2" id="h2">—</div>
   </div>
 
   <div id="body"></div>
@@ -334,27 +346,22 @@ function render(records) {
     mapCurr.get(k).amount += r.amount;
   });
 
-  /* Person counts */
   const cntPrev = mapPrev.size;
   const cntCurr = mapCurr.size;
 
-  /* Order: matched first, then unmatched */
-  const matchedKeys = [];
-  const onlyPrev    = [];
-  const onlyCurr    = [];
+  /* Ordered union: prev order first, then curr-only */
+  const orderedKeys = [];
   const seen = new Set();
-
   mapPrev.forEach((v, k) => {
-    if (seen.has(k)) return;
-    seen.add(k);
-    if (mapCurr.has(k)) matchedKeys.push(k);
-    else onlyPrev.push(k);
+    if (!seen.has(k)) { seen.add(k); orderedKeys.push(k); }
   });
   mapCurr.forEach((v, k) => {
-    if (seen.has(k)) return;
-    seen.add(k);
-    onlyCurr.push(k);
+    if (!seen.has(k)) { seen.add(k); orderedKeys.push(k); }
   });
+
+  /* Split into matched and unmatched (for section separation) */
+  const matchedKeys = orderedKeys.filter(k => mapPrev.has(k) && mapCurr.has(k));
+  const unmatchedKeys = orderedKeys.filter(k => !(mapPrev.has(k) && mapCurr.has(k)));
 
   /* Build HTML */
   const body = document.getElementById("body");
@@ -362,13 +369,14 @@ function render(records) {
 
   let subPrev = 0, subCurr = 0;
 
-  const buildRow = (p, c, showDiff) => {
+  /* Row builder — srLeft and srRight are the dynamic numbers */
+  const buildRow = (p, c, srLeft, srRight, showDiff) => {
     const left = p
-      ? `<div class="m1">
+      ? `<div class="m1-cell">
            <div class="name-line"><span class="nm">${esc(p.name)}</span></div>
            <div class="amt">${fmt(p.amount)}</div>
          </div>`
-      : `<div class="m1"><div class="missing">— not present —</div></div>`;
+      : `<div class="m1-cell"><div class="missing">— not present —</div></div>`;
 
     let rightName = "";
     if (c) {
@@ -376,72 +384,88 @@ function render(records) {
       if (showDiff && p) {
         const d = c.amount - p.amount;
         if (Math.abs(d) < 0.005) badge = `<span class="diff-badge same">same</span>`;
-        else if (d > 0)           badge = `<span class="diff-badge up">▲ ${fmt(d)}</span>`;
-        else                      badge = `<span class="diff-badge down">▼ ${fmt(Math.abs(d))}</span>`;
+        else if (d > 0)           badge = `<span class="diff-badge up">▲${fmt(d)}</span>`;
+        else                      badge = `<span class="diff-badge down">▼${fmt(Math.abs(d))}</span>`;
       }
       rightName = `<div class="name-line"><span class="nm">${esc(c.name)}</span>${badge}</div>`;
     }
 
     const right = c
-      ? `<div class="m2">${rightName}<div class="amt">${fmt(c.amount)}</div></div>`
-      : `<div class="m2"><div class="missing">— not present —</div></div>`;
+      ? `<div class="m2-cell">${rightName}<div class="amt">${fmt(c.amount)}</div></div>`
+      : `<div class="m2-cell"><div class="missing">— not present —</div></div>`;
 
     const row = document.createElement("div");
     row.className = "item";
-    row.innerHTML = left + right;
+    row.innerHTML = `
+      <div class="sr-cell">${srLeft ?? ""}</div>
+      ${left}
+      <div class="sr-cell">${srRight ?? ""}</div>
+      ${right}
+    `;
     return row;
   };
 
-  /* Matched */
+  /* ===== MATCHED SECTION ===== */
   if (matchedKeys.length) {
     const sec = document.createElement("div");
     sec.className = "sec ok";
     sec.textContent = `✓ Matched Persons (${matchedKeys.length})`;
     body.appendChild(sec);
-    matchedKeys.forEach(k => {
+
+    matchedKeys.forEach((k, i) => {
       const p = mapPrev.get(k), c = mapCurr.get(k);
       subPrev += p.amount;
       subCurr += c.amount;
-      body.appendChild(buildRow(p, c, true));
+      /* Dynamic SR numbers: left column 1..N, right column 1..N */
+      body.appendChild(buildRow(p, c, i + 1, i + 1, true));
     });
   }
 
-  /* Unmatched */
-  if (onlyPrev.length || onlyCurr.length) {
+  /* ===== UNMATCHED SECTION ===== */
+  if (unmatchedKeys.length) {
     const sec = document.createElement("div");
     sec.className = "sec warn";
-    sec.textContent = `⚠ Unmatched Persons (${onlyPrev.length + onlyCurr.length})`;
+    sec.textContent = `⚠ Unmatched Persons (${unmatchedKeys.length})`;
     body.appendChild(sec);
-    const allUnmatched = [...onlyPrev, ...onlyCurr];
-    allUnmatched.forEach(k => {
+
+    /* Dynamic SR continues: left and right number independently */
+    let srLeft = matchedKeys.length;
+    let srRight = matchedKeys.length;
+
+    unmatchedKeys.forEach(k => {
       const p = mapPrev.get(k) || null;
       const c = mapCurr.get(k) || null;
       if (p) subPrev += p.amount;
       if (c) subCurr += c.amount;
-      body.appendChild(buildRow(p, c, false));
+
+      const sL = p ? ++srLeft : "";
+      const sR = c ? ++srRight : "";
+      body.appendChild(buildRow(p, c, sL, sR, false));
     });
   }
 
-  /* Subtotal row */
+  /* ===== SUBTOTAL ROW ===== */
   const totals = document.createElement("div");
   totals.className = "total-row";
   totals.innerHTML = `
+    <div class="sr-blank"></div>
     <div><div class="lbl">Subtotal</div><div class="val v1">${fmt(subPrev)}</div></div>
+    <div class="sr-blank"></div>
     <div><div class="lbl">Subtotal</div><div class="val v2">${fmt(subCurr)}</div></div>
   `;
   body.appendChild(totals);
 
-  /* Grand total */
+  /* ===== GRAND TOTAL ===== */
   const grand = document.createElement("div");
   grand.className = "grand";
   grand.innerHTML = `
     <div class="lbl">Grand Total (Both Months)</div>
     <div class="val">${fmt(subPrev + subCurr)}</div>
-    <div class="cnt">Matched: ${matchedKeys.length} &nbsp;•&nbsp; Only Month 1: ${onlyPrev.length} &nbsp;•&nbsp; Only Month 2: ${onlyCurr.length}</div>
+    <div class="cnt">Matched: ${matchedKeys.length} &nbsp;•&nbsp; Only Month 1: ${unmatchedKeys.filter(k => mapPrev.has(k)).length} &nbsp;•&nbsp; Only Month 2: ${unmatchedKeys.filter(k => mapCurr.has(k)).length}</div>
   `;
   body.appendChild(grand);
 
-  /* Difference bar */
+  /* ===== DIFFERENCE BAR ===== */
   const diff = subCurr - subPrev;
   const diffEl = document.getElementById("diffbar");
   diffEl.className = "diffbar " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
