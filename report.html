@@ -288,27 +288,40 @@
   .mcol-grand .mcol-total { background: #1a232a; border-top: 2px solid #ffb300; }
   .mcol-grand .mcol-total .val { color: #ffd54f; }
 
-  /* ============ DAILY REPORT TABLE ============ */
-  .daily-wrap {
+  /* ============ REPORT TAB ============ */
+  .report-section {
+    max-width: 100%;
+    padding: 0 12px 20px;
+  }
+  .section-title {
+    font-size: 13px; font-weight: 700; color: #263238;
+    padding: 8px 4px 10px;
+    letter-spacing: 0.3px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::before {
+    content: ''; width: 4px; height: 16px;
+    background: #1e88e5; border-radius: 2px;
+  }
+
+  .table-scroll {
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 0 12px 12px;
-  }
-  .daily-wrap::-webkit-scrollbar { height: 6px; }
-  .daily-wrap::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
-
-  .daily-table {
-    width: 100%;
-    min-width: 640px;
-    background: #fff;
     border-radius: 12px;
-    overflow: hidden;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    background: #fff;
+  }
+  .table-scroll::-webkit-scrollbar { height: 6px; }
+  .table-scroll::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
+
+  .data-table {
+    width: 100%;
+    min-width: 700px;
     border-collapse: collapse;
     font-size: 13px;
   }
-  .daily-table thead th {
+  .data-table thead th {
     background: linear-gradient(135deg, #1e88e5, #1565c0);
     color: #fff;
     padding: 12px 10px;
@@ -318,25 +331,32 @@
     letter-spacing: 0.3px;
     white-space: nowrap;
   }
-  .daily-table thead th.num { text-align: right; }
-  .daily-table tbody td {
+  .data-table thead th.num { text-align: right; }
+  .data-table tbody td {
     padding: 10px;
     border-bottom: 1px solid #eef1f5;
     white-space: nowrap;
   }
-  .daily-table tbody td.num {
+  .data-table tbody td.num {
     text-align: right;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
-  .daily-table tbody td.date { color: #555; font-size: 12px; }
-  .daily-table tbody tr:nth-child(even) { background: #fafbfd; }
+  .data-table tbody td.date { color: #555; font-size: 12px; }
+  .data-table tbody td.month-name {
+    font-weight: 700; color: #263238; font-size: 13px;
+  }
+  .data-table tbody td.days {
+    color: #666; font-size: 12px;
+  }
+  .data-table tbody tr:nth-child(even) { background: #fafbfd; }
 
-  .daily-table td.gross { color: #1565c0; }
-  .daily-table td.exp   { color: #c62828; }
-  .daily-table td.net   { color: #2e7d32; }
+  .data-table td.gross { color: #1565c0; }
+  .data-table td.exp   { color: #c62828; }
+  .data-table td.net   { color: #2e7d32; }
+  .data-table td.avg   { color: #6a1b9a; font-style: italic; }
 
-  .daily-table tfoot td {
+  .data-table tfoot td {
     padding: 12px 10px;
     background: #263238;
     color: #fff;
@@ -345,10 +365,14 @@
     border-top: 2px solid #ffb300;
     white-space: nowrap;
   }
-  .daily-table tfoot td.num { text-align: right; font-variant-numeric: tabular-nums; }
-  .daily-table tfoot td.gross { color: #90caf9; }
-  .daily-table tfoot td.exp   { color: #ef9a9a; }
-  .daily-table tfoot td.net   { color: #a5d6a7; }
+  .data-table tfoot td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .data-table tfoot td.gross { color: #90caf9; }
+  .data-table tfoot td.exp   { color: #ef9a9a; }
+  .data-table tfoot td.net   { color: #a5d6a7; }
+  .data-table tfoot td.avg   { color: #ce93d8; }
+
+  /* Two tables stacked with a bit of spacing */
+  .table-scroll + .section-title { margin-top: 12px; }
 
   .status { text-align: center; padding: 40px 20px; color: #777; font-size: 14px; }
   .hint {
@@ -368,23 +392,55 @@
 
 <!-- ============= REPORT TAB (DEFAULT) ============= -->
 <div class="tab-content active" id="contentReport">
-  <div id="dailyStatus" class="status">Loading daily data…</div>
-  <div class="daily-wrap" id="dailyWrap" style="display:none;">
-    <table class="daily-table" id="dailyTable">
-      <thead>
-        <tr>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th class="num">Gross (PKR)</th>
-          <th class="num">Expenses (PKR)</th>
-          <th class="num">Net Credited (PKR)</th>
-        </tr>
-      </thead>
-      <tbody id="dailyBody"></tbody>
-      <tfoot id="dailyFoot"></tfoot>
-    </table>
+  <div id="dailyStatus" class="status">Loading report…</div>
+
+  <div id="reportContent" style="display:none;">
+
+    <!-- Table 1: Monthly report with per-day averages -->
+    <div class="report-section">
+      <div class="section-title">Monthly Report (with Per‑Day Averages)</div>
+      <div class="table-scroll">
+        <table class="data-table" id="monthlyReportTable">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th class="num">Days</th>
+              <th class="num">Gross (PKR)</th>
+              <th class="num">Expenses (PKR)</th>
+              <th class="num">Net Credited (PKR)</th>
+              <th class="num">Avg Gross/Day</th>
+              <th class="num">Avg Expenses/Day</th>
+              <th class="num">Avg Net/Day</th>
+            </tr>
+          </thead>
+          <tbody id="monthlyReportBody"></tbody>
+          <tfoot id="monthlyReportFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Table 2: Original daily data -->
+    <div class="report-section">
+      <div class="section-title">Daily Data</div>
+      <div class="table-scroll">
+        <table class="data-table" id="dailyTable">
+          <thead>
+            <tr>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th class="num">Gross (PKR)</th>
+              <th class="num">Expenses (PKR)</th>
+              <th class="num">Net Credited (PKR)</th>
+            </tr>
+          </thead>
+          <tbody id="dailyBody"></tbody>
+          <tfoot id="dailyFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="hint">← Swipe horizontally on a table to see all columns →</div>
   </div>
-  <div class="hint" id="dailyHint" style="display:none;">← Swipe horizontally to see all columns →</div>
 </div>
 
 <!-- ============= LAST 2 MONTHS TAB ============= -->
@@ -524,6 +580,8 @@ const MONTH_NUM = {
   may:5, jun:6, june:6, jul:7, july:7, aug:8, august:8, sep:9, sept:9,
   september:9, oct:10, october:10, nov:11, november:11, dec:12, december:12
 };
+const MONTH_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
 function monthKey(rec) {
   const m = MONTH_NUM[rec.month.toLowerCase()] || 0;
   const y = parseInt(rec.year) || 0;
@@ -555,6 +613,46 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[c]));
+}
+
+/* Date parsing — returns {y, m (1-12), d} or null */
+function parseDateParts(s) {
+  if (!s) return null;
+
+  /* YYYY-MM-DD */
+  let m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
+  if (m) return { y: +m[1], m: +m[2], d: +m[3] };
+
+  /* DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY */
+  m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  if (m) {
+    let d = +m[1], mo = +m[2], y = +m[3];
+    if (y < 100) y += 2000;
+    return { y, m: mo, d };
+  }
+
+  /* Fallback to native */
+  const t = Date.parse(s);
+  if (!isNaN(t)) {
+    const dt = new Date(t);
+    return { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() };
+  }
+  return null;
+}
+
+/* Days in month */
+function daysInMonth(y, m) {
+  return new Date(y, m, 0).getDate();
+}
+
+/* Count unique calendar days in a group of records */
+function uniqueDays(rows) {
+  const set = new Set();
+  rows.forEach(r => {
+    const p = parseDateParts(r.startDate);
+    if (p) set.add(`${p.y}-${p.m}-${p.d}`);
+  });
+  return set.size;
 }
 
 /* ============================================================
@@ -789,29 +887,114 @@ function buildAllMonthsTable(monthList) {
 }
 
 /* ============================================================
-   DAILY REPORT TABLE
+   REPORT TAB — 2 tables
    ============================================================ */
-function renderDaily(rows) {
-  const statusEl = document.getElementById("dailyStatus");
-  const wrap     = document.getElementById("dailyWrap");
-  const hint     = document.getElementById("dailyHint");
-  const body     = document.getElementById("dailyBody");
-  const foot     = document.getElementById("dailyFoot");
+
+/* ---- Table 1: Monthly report with per-day averages ---- */
+function renderMonthlyReport(rows) {
+  const body = document.getElementById("monthlyReportBody");
+  const foot = document.getElementById("monthlyReportFoot");
+  body.innerHTML = "";
+  foot.innerHTML = "";
 
   if (!rows.length) {
-    statusEl.textContent = "No daily data found. Make sure the Daily sheet is published as CSV.";
+    body.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#999;padding:20px;">No data</td></tr>`;
     return;
   }
 
+  /* Group rows by year+month */
+  const groups = new Map();  // key: yyyymm -> { y, m, rows: [] }
+  rows.forEach(r => {
+    const p = parseDateParts(r.startDate) || parseDateParts(r.endDate);
+    if (!p) return;
+    const key = p.y * 100 + p.m;
+    if (!groups.has(key)) groups.set(key, { y: p.y, m: p.m, rows: [] });
+    groups.get(key).rows.push(r);
+  });
+
+  /* Sort chronologically */
+  const keys = [...groups.keys()].sort((a, b) => a - b);
+
+  let tDays = 0, tGross = 0, tExp = 0, tNet = 0;
+
+  keys.forEach(k => {
+    const g = groups.get(k);
+    const label = `${MONTH_SHORT[g.m - 1]} ${g.y}`;
+
+    /* Days = unique calendar days found in the raw data */
+    const uniqueDayCount = uniqueDays(g.rows);
+    /* Fallback: total days in that calendar month if no valid dates */
+    const daysCount = uniqueDayCount || daysInMonth(g.y, g.m);
+
+    let gross = 0, exp = 0, net = 0;
+    g.rows.forEach(r => {
+      gross += r.gross;
+      exp   += r.expenses;
+      net   += r.net;
+    });
+
+    const avgGross = daysCount ? gross / daysCount : 0;
+    const avgExp   = daysCount ? exp   / daysCount : 0;
+    const avgNet   = daysCount ? net   / daysCount : 0;
+
+    tDays += daysCount;
+    tGross += gross; tExp += exp; tNet += net;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="month-name">${esc(label)}</td>
+      <td class="num days">${daysCount}</td>
+      <td class="num gross">${fmt(gross)}</td>
+      <td class="num exp">${fmt(exp)}</td>
+      <td class="num net">${fmt(net)}</td>
+      <td class="num avg">${fmt(avgGross)}</td>
+      <td class="num avg">${fmt(avgExp)}</td>
+      <td class="num avg">${fmt(avgNet)}</td>
+    `;
+    body.appendChild(tr);
+  });
+
+  /* Grand total across all months */
+  const totAvgGross = tDays ? tGross / tDays : 0;
+  const totAvgExp   = tDays ? tExp   / tDays : 0;
+  const totAvgNet   = tDays ? tNet   / tDays : 0;
+
+  foot.innerHTML = `
+    <tr>
+      <td>TOTAL (${keys.length} month${keys.length === 1 ? "" : "s"})</td>
+      <td class="num days" style="color:#fff;">${tDays}</td>
+      <td class="num gross">${fmt(tGross)}</td>
+      <td class="num exp">${fmt(tExp)}</td>
+      <td class="num net">${fmt(tNet)}</td>
+      <td class="num avg">${fmt(totAvgGross)}</td>
+      <td class="num avg">${fmt(totAvgExp)}</td>
+      <td class="num avg">${fmt(totAvgNet)}</td>
+    </tr>
+  `;
+}
+
+/* ---- Table 2: Original daily data ---- */
+function renderDailyTable(rows) {
+  const body = document.getElementById("dailyBody");
+  const foot = document.getElementById("dailyFoot");
+  body.innerHTML = "";
+  foot.innerHTML = "";
+
+  if (!rows.length) {
+    body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">No data</td></tr>`;
+    return;
+  }
+
+  /* Sort by start date ascending */
   rows.sort((a, b) => {
-    const da = parseDate(a.startDate), db = parseDate(b.startDate);
-    if (da && db) return da - db;
+    const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
+    if (da && db) {
+      return (da.y * 10000 + da.m * 100 + da.d) - (db.y * 10000 + db.m * 100 + db.d);
+    }
     return (a.startDate || "").localeCompare(b.startDate || "");
   });
 
-  body.innerHTML = "";
   let tGross = 0, tExp = 0, tNet = 0;
-
   rows.forEach(r => {
     tGross += r.gross; tExp += r.expenses; tNet += r.net;
     const tr = document.createElement("tr");
@@ -833,23 +1016,22 @@ function renderDaily(rows) {
       <td class="num net">${fmt(tNet)}</td>
     </tr>
   `;
-
-  statusEl.style.display = "none";
-  wrap.style.display = "block";
-  hint.style.display = "block";
 }
 
-function parseDate(s) {
-  if (!s) return null;
-  const t = Date.parse(s);
-  if (!isNaN(t)) return t;
-  const m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
-  if (m) {
-    let dd = +m[1], mm = +m[2], yy = +m[3];
-    if (yy < 100) yy += 2000;
-    return new Date(yy, mm - 1, dd).getTime();
+function renderReport(rows) {
+  const statusEl = document.getElementById("dailyStatus");
+  const contentEl = document.getElementById("reportContent");
+
+  if (!rows.length) {
+    statusEl.textContent = "No daily data found. Make sure the Daily sheet is published as CSV.";
+    return;
   }
-  return null;
+
+  renderMonthlyReport(rows);
+  renderDailyTable(rows);
+
+  statusEl.style.display = "none";
+  contentEl.style.display = "block";
 }
 
 /* ============================================================
@@ -881,7 +1063,7 @@ async function loadDaily() {
 }
 
 /* ============================================================
-   MONTHLY DATA STATE
+   MONTHLY DATA STATE (Last 2 / All Months tabs)
    ============================================================ */
 let allKeys = [];
 let byMonth = new Map();
@@ -973,7 +1155,6 @@ function switchTab(tab) {
   document.getElementById("contentLast2").classList.toggle("active", tab === "last2");
   document.getElementById("contentAll").classList.toggle("active", tab === "all");
 
-  /* Lazy-load monthly data when a monthly tab is opened */
   if (tab === "last2" || tab === "all") {
     loadMonthlyOnce();
   }
@@ -984,9 +1165,9 @@ document.getElementById("tabLast2").addEventListener("click", () => switchTab("l
 document.getElementById("tabAll").addEventListener("click", () => switchTab("all"));
 
 /* ============================================================
-   BOOT — load the default tab (Report) immediately
+   BOOT
    ============================================================ */
-loadDaily().then(renderDaily);
+loadDaily().then(renderReport);
 </script>
 </body>
 </html>
