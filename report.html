@@ -495,49 +495,37 @@
     margin-top: 1px;
   }
 
-  /* ===== Total breakdown strip ===== */
-  .mr-total-strip {
-    margin-top: 8px;
+  /* Combined (sheet/2 + credit) strip */
+  .mr-combined-strip {
+    margin-top: 6px;
     padding: 10px 12px;
-    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
     border-radius: 8px;
-    border-left: 3px solid #ef6c00;
-  }
-  .mr-total-strip .ts-title {
-    font-size: 10px;
-    color: #bf360c;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    font-weight: 800;
-    margin-bottom: 4px;
-  }
-  .mr-total-strip .ts-formula {
-    font-size: 12px;
-    color: #5d4037;
-    font-weight: 600;
-    line-height: 1.35;
-    font-variant-numeric: tabular-nums;
-  }
-  .mr-total-strip .ts-formula .num {
-    color: #bf360c;
-    font-weight: 800;
-  }
-  .mr-total-strip .ts-result {
-    margin-top: 5px;
-    font-size: 16px;
-    font-weight: 800;
-    color: #e65100;
-    font-variant-numeric: tabular-nums;
     display: flex;
-    align-items: baseline;
-    gap: 6px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-left: 3px solid #2e7d32;
   }
-  .mr-total-strip .ts-result .lbl {
+  .mr-combined-strip .c-lbl {
     font-size: 10px;
-    color: #bf360c;
+    color: #1b5e20;
     text-transform: uppercase;
     letter-spacing: 0.4px;
     font-weight: 800;
+  }
+  .mr-combined-strip .c-sub {
+    font-size: 9px;
+    color: #2e7d32;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .mr-combined-strip .c-val {
+    font-size: 17px;
+    font-weight: 800;
+    color: #1b5e20;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
   .daily-section-title {
@@ -1139,8 +1127,8 @@ function buildOverallSummaryCard(totals) {
 
 /* ============================================================
    SMART MONTHLY SPLIT
-   - Gross & Net → proportional by days
-   - Expenses    → FULL to start month
+   - Gross & Net  → proportional by days
+   - Expenses     → FULL to the month where period STARTS
    ============================================================ */
 function computeMonthlySplit(rows) {
   const buckets = new Map();
@@ -1181,9 +1169,7 @@ function computeMonthlySplit(rows) {
       bucket.gross += r.gross * frac;
       bucket.net   += r.net   * frac;
 
-      if (y === sp.y && m === sp.m) {
-        bucket.exp += r.expenses;
-      }
+      if (y === sp.y && m === sp.m) bucket.exp += r.expenses;
 
       if (sp.y === y && sp.m === m) {
         if (!bucket.minStart || dateCmp(sp, bucket.minStart) < 0) {
@@ -1266,10 +1252,14 @@ function buildMonthRow(info, srNo, sheetTotal) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
 
-  /* Sheet total strip */
+  /* Monthly sheet total strip */
   let sheetStrip = "";
-  const sheetAmount = sheetTotal ? sheetTotal.amount : 0;
+  let combinedStrip = "";
   if (sheetTotal) {
+    const sheetAmt = sheetTotal.amount;
+    const halfSheet = sheetAmt / 2;
+    const combined = halfSheet + net;
+
     sheetStrip = `
       <div class="mr-sheet-strip">
         <div>
@@ -1277,32 +1267,22 @@ function buildMonthRow(info, srNo, sheetTotal) {
           <div class="sheet-sub">${sheetTotal.count} entr${sheetTotal.count === 1 ? "y" : "ies"}</div>
         </div>
         <div style="text-align:right;">
-          <div class="sheet-val">${fmtInt(sheetAmount)} PKR</div>
+          <div class="sheet-val">${fmtInt(sheetAmt)} PKR</div>
           <div class="sheet-cnt">from Monthly sheet</div>
         </div>
       </div>
     `;
+
+    combinedStrip = `
+      <div class="mr-combined-strip">
+        <div>
+          <div class="c-lbl">Combined Total</div>
+          <div class="c-sub">(Monthly Sheet ÷ 2) + Credit</div>
+        </div>
+        <div class="c-val">${fmtInt(combined)} PKR</div>
+      </div>
+    `;
   }
-
-  /* Total = Credit + (Sheet Total / 2) */
-  const halfSheet = sheetAmount / 2;
-  const combinedTotal = net + halfSheet;
-
-  const totalStrip = `
-    <div class="mr-total-strip">
-      <div class="ts-title">Total Calculation</div>
-      <div class="ts-formula">
-        ${esc(MONTH_LONG[m - 1])} ${y} — Total :
-        <span class="num">${fmtInt(net)}</span>
-        +
-        <span class="num">${fmtInt(sheetAmount)}</span>/2
-      </div>
-      <div class="ts-result">
-        <span class="lbl">Total</span>
-        <span>${fmtInt(combinedTotal)} PKR</span>
-      </div>
-    </div>
-  `;
 
   const row = document.createElement("div");
   row.className = "month-row" + (isCurrentMonth ? " current" : "");
@@ -1340,7 +1320,7 @@ function buildMonthRow(info, srNo, sheetTotal) {
         </div>
       </div>
       ${sheetStrip}
-      ${totalStrip}
+      ${combinedStrip}
     </div>
   `;
   return row;
