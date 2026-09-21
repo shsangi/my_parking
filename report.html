@@ -278,7 +278,7 @@
     padding: 0 12px 20px;
   }
 
-  /* Overall summary card */
+  /* ---------- Overall card ---------- */
   .overall-card {
     background: linear-gradient(180deg, #eef1f6 0%, #e3e8ef 100%);
     border-radius: 16px;
@@ -317,7 +317,7 @@
   .oc-table td.metric {
     font-weight: 700;
     color: #1e3a5f;
-    width: 48%;
+    width: 45%;
     font-size: 15px;
     line-height: 1.25;
   }
@@ -333,12 +333,17 @@
     font-size: 16px;
   }
 
-  /* Monthly cards */
-  .monthly-cards {
-    margin-bottom: 18px;
+  /* ---------- Period rows (list of each daily period) ---------- */
+  .section-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 6px 4px 10px;
   }
 
-  .month-card {
+  .period-card {
     background: #fff;
     border-radius: 14px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.07);
@@ -346,7 +351,7 @@
     margin-bottom: 12px;
     border: 1px solid #eef1f5;
   }
-  .mc-head {
+  .pc-head {
     background: linear-gradient(135deg, #1e88e5, #1565c0);
     color: #fff;
     padding: 12px 16px;
@@ -355,17 +360,12 @@
     justify-content: space-between;
     gap: 10px;
   }
-  .mc-head .mname {
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 0.3px;
+  .pc-head .pc-range {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
   }
-  .mc-head .mrange {
-    font-size: 11px;
-    opacity: 0.9;
-    margin-top: 3px;
-  }
-  .mc-head .mdays {
+  .pc-head .pc-days {
     background: rgba(255,255,255,0.22);
     padding: 5px 10px;
     border-radius: 12px;
@@ -373,41 +373,35 @@
     font-weight: 700;
     white-space: nowrap;
   }
-  .mc-body {
+  .pc-body {
     padding: 12px 14px;
   }
-  .mc-row {
+  .pc-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     padding: 8px 0;
     border-bottom: 1px solid #eef1f5;
     font-size: 14px;
-    gap: 10px;
   }
-  .mc-row:last-child { border-bottom: none; }
-  .mc-row .mlbl {
-    color: #475569;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-  .mc-row .mval {
+  .pc-row:last-child { border-bottom: none; }
+  .pc-row .mlbl { color: #475569; font-weight: 600; }
+  .pc-row .mval {
     font-weight: 800;
     color: #1f2937;
     font-variant-numeric: tabular-nums;
-    text-align: right;
   }
-  .mc-row.highlight .mval { color: #0d47a1; font-size: 16px; }
-  .mc-row.expenses .mval { color: #c62828; }
-  .mc-row.net .mval { color: #2e7d32; font-size: 16px; }
-  .mc-row.avg {
+  .pc-row.credit .mval { color: #2e7d32; font-size: 16px; }
+  .pc-row.expenses .mval { color: #c62828; }
+  .pc-row.earning .mval { color: #0d47a1; font-size: 16px; }
+  .pc-row.avg {
     background: #f0f7ff;
     margin: 6px -14px 0;
     padding: 10px 14px;
     border-bottom: none;
   }
-  .mc-row.avg .mlbl { color: #0d47a1; font-weight: 700; }
-  .mc-row.avg .mval { color: #0d47a1; font-size: 15px; }
+  .pc-row.avg .mlbl { color: #0d47a1; font-weight: 700; }
+  .pc-row.avg .mval { color: #0d47a1; font-size: 15px; }
 
   /* Daily data section */
   .daily-section-title {
@@ -494,8 +488,9 @@
       <!-- Overall summary card -->
       <div id="overallCard"></div>
 
-      <!-- Monthly cards -->
-      <div class="monthly-cards" id="monthlyCards"></div>
+      <!-- Per-period breakdown -->
+      <div class="section-label">Period Breakdown</div>
+      <div id="periodCards"></div>
 
       <!-- Daily data table -->
       <div class="daily-section-title">Daily Data</div>
@@ -647,7 +642,7 @@ function parseNum(v) {
 }
 
 /* ============================================================
-   MONTHLY HELPERS
+   HELPERS
    ============================================================ */
 const MONTH_NUM = {
   jan:1, january:1, feb:2, february:2, mar:3, march:3, apr:4, april:4,
@@ -684,7 +679,9 @@ function fmt(n) {
 }
 function fmtInt(n) { return Math.round(n).toLocaleString(); }
 function fmtDec2(n) {
-  return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return n.toLocaleString(undefined, {
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+  });
 }
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({
@@ -729,15 +726,25 @@ function parseDateParts(s) {
   return null;
 }
 
-function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
+function daysBetween(p1, p2) {
+  if (!p1 || !p2) return 0;
+  const d1 = new Date(p1.y, p1.m - 1, p1.d);
+  const d2 = new Date(p2.y, p2.m - 1, p2.d);
+  const diff = Math.round((d2 - d1) / 86400000) + 1; /* inclusive of both ends */
+  return diff > 0 ? diff : 0;
+}
 
 function fmtDateLong(p) {
   if (!p) return "—";
   return `${MONTH_LONG[p.m - 1]} ${p.d}, ${p.y}`;
 }
+function fmtDateShort(p) {
+  if (!p) return "—";
+  return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]} ${p.y}`;
+}
 
 /* ============================================================
-   LAST-2-MONTHS CARD (unchanged)
+   LAST-2-MONTHS CARD
    ============================================================ */
 function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
   const mapPrev = groupByName(prevRecs);
@@ -879,7 +886,7 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
 }
 
 /* ============================================================
-   ALL MONTHS TABLE (unchanged)
+   ALL MONTHS TABLE
    ============================================================ */
 function buildAllMonthsTable(monthList) {
   const table = document.getElementById("mtable");
@@ -967,8 +974,6 @@ function buildAllMonthsTable(monthList) {
 
 /* ============================================================
    REPORT — Overall summary card
-   Start Date, End Date, Total Days, Daily Earning (avg),
-   Total Amount Credited, Total Expenses, Total Earning
    ============================================================ */
 function buildOverallSummaryCard(totals) {
   const { gross, exp, net, days, minStart, maxEnd } = totals;
@@ -993,20 +998,20 @@ function buildOverallSummaryCard(totals) {
           <td class="detail">${days} Day${days === 1 ? "" : "s"}</td>
         </tr>
         <tr>
-          <td class="metric">Daily Earning (Avg)</td>
-          <td class="detail highlight">${fmtDec2(avgNet)} PKR / day</td>
-        </tr>
-        <tr>
-          <td class="metric">Total Amount Credited</td>
-          <td class="detail">${fmtInt(net)} PKR</td>
+          <td class="metric">Total Gross Amount</td>
+          <td class="detail">${fmtInt(gross)} PKR</td>
         </tr>
         <tr>
           <td class="metric">Total Expenses</td>
           <td class="detail">${fmtInt(exp)} PKR</td>
         </tr>
         <tr>
-          <td class="metric">Total Earning</td>
-          <td class="detail">${fmtInt(gross)} PKR</td>
+          <td class="metric">Total Net Amount<br>Credited</td>
+          <td class="detail">${fmtInt(net)} PKR</td>
+        </tr>
+        <tr>
+          <td class="metric">Average Daily<br>Earning (Net)</td>
+          <td class="detail highlight">${fmtDec2(avgNet)} PKR / day</td>
         </tr>
       </table>
     </div>
@@ -1015,71 +1020,50 @@ function buildOverallSummaryCard(totals) {
 }
 
 /* ============================================================
-   REPORT — Monthly card
-   Start Period, End of Month Date, Total Days, Daily Earning (Avg),
-   Total Amount Credited, Total Expenses, Total Earning
+   REPORT — Period cards (each row from daily sheet)
    ============================================================ */
-function buildMonthCard(y, m, monthRows, today) {
-  const label = `${MONTH_SHORT[m - 1]} ${y}`;
-
-  const isCurrentMonth = (today && today.y === y && today.m === m);
-  const fullDays  = daysInMonth(y, m);
-  const daysCount = isCurrentMonth ? today.d : fullDays;
-
-  let gross = 0, exp = 0, net = 0;
-  monthRows.forEach(r => { gross += r.gross; exp += r.expenses; net += r.net; });
-
-  /* Start period = earliest start date in the month */
-  const starts = monthRows.map(r => parseDateParts(r.startDate)).filter(Boolean);
-  let minStart = null;
-  starts.forEach(p => {
-    const key = p.y * 10000 + p.m * 100 + p.d;
-    if (!minStart || key < minStart.key) minStart = { key, p };
-  });
-
-  /* End of month date = last calendar day of the month */
-  const endOfMonth = { y, m, d: fullDays };
-
-  const avgNet = daysCount ? net / daysCount : 0;
+function buildPeriodCard(period) {
+  const { startStr, endStr, startP, endP, gross, exp, net } = period;
+  const days = daysBetween(startP, endP) || 1;
+  const avgNet = net / days;
+  const avgGross = gross / days;
+  const avgExp = exp / days;
 
   const card = document.createElement("div");
-  card.className = "month-card";
+  card.className = "period-card";
+
+  const startLabel = startP ? fmtDateLong(startP) : (startStr || "—");
+  const endLabel   = endP   ? fmtDateLong(endP)   : (endStr   || "—");
+
   card.innerHTML = `
-    <div class="mc-head">
-      <div>
-        <div class="mname">${esc(label)}</div>
-        <div class="mrange">${esc(fmtDateLong(minStart ? minStart.p : null))}  →  ${esc(fmtDateLong(endOfMonth))}</div>
-      </div>
-      <div class="mdays">${daysCount} day${daysCount === 1 ? "" : "s"}</div>
+    <div class="pc-head">
+      <div class="pc-range">${esc(startLabel)}  →  ${esc(endLabel)}</div>
+      <div class="pc-days">${days} day${days === 1 ? "" : "s"}</div>
     </div>
-    <div class="mc-body">
-      <div class="mc-row">
-        <span class="mlbl">Start Period</span>
-        <span class="mval">${esc(fmtDateLong(minStart ? minStart.p : null))}</span>
-      </div>
-      <div class="mc-row">
-        <span class="mlbl">End of Month</span>
-        <span class="mval">${esc(fmtDateLong(endOfMonth))}</span>
-      </div>
-      <div class="mc-row">
-        <span class="mlbl">Total Days</span>
-        <span class="mval">${daysCount} Day${daysCount === 1 ? "" : "s"}</span>
-      </div>
-      <div class="mc-row avg">
-        <span class="mlbl">Daily Earning (Avg)</span>
-        <span class="mval">${fmtDec2(avgNet)} PKR / day</span>
-      </div>
-      <div class="mc-row net">
-        <span class="mlbl">Total Amount Credited</span>
+    <div class="pc-body">
+      <div class="pc-row credit">
+        <span class="mlbl">Total Credit (Net)</span>
         <span class="mval">${fmtInt(net)} PKR</span>
       </div>
-      <div class="mc-row expenses">
+      <div class="pc-row expenses">
         <span class="mlbl">Total Expenses</span>
         <span class="mval">${fmtInt(exp)} PKR</span>
       </div>
-      <div class="mc-row highlight">
-        <span class="mlbl">Total Earning</span>
+      <div class="pc-row earning">
+        <span class="mlbl">Total Earning (Gross)</span>
         <span class="mval">${fmtInt(gross)} PKR</span>
+      </div>
+      <div class="pc-row avg">
+        <span class="mlbl">Daily Earning (Avg Net)</span>
+        <span class="mval">${fmtDec2(avgNet)} PKR / day</span>
+      </div>
+      <div class="pc-row avg">
+        <span class="mlbl">Avg Gross / Day</span>
+        <span class="mval">${fmtDec2(avgGross)} PKR</span>
+      </div>
+      <div class="pc-row avg">
+        <span class="mlbl">Avg Expenses / Day</span>
+        <span class="mval">${fmtDec2(avgExp)} PKR</span>
       </div>
     </div>
   `;
@@ -1098,19 +1082,8 @@ function renderReport(rows) {
     return;
   }
 
-  /* Group by month (start date) */
-  const groups = new Map();
-  rows.forEach(r => {
-    const p = parseDateParts(r.startDate) || parseDateParts(r.endDate);
-    if (!p) return;
-    const key = p.y * 100 + p.m;
-    if (!groups.has(key)) groups.set(key, { y: p.y, m: p.m, rows: [] });
-    groups.get(key).rows.push(r);
-  });
-
-  /* Global aggregates */
+  /* Compute overall stats */
   let minStart = null, maxEnd = null;
-  const uniqueDaysSet = new Set();
   let totalGross = 0, totalExp = 0, totalNet = 0;
 
   rows.forEach(r => {
@@ -1120,10 +1093,10 @@ function renderReport(rows) {
 
     const sp = parseDateParts(r.startDate);
     const ep = parseDateParts(r.endDate) || sp;
+
     if (sp) {
       const key = sp.y * 10000 + sp.m * 100 + sp.d;
       if (!minStart || key < minStart.key) minStart = { key, p: sp };
-      uniqueDaysSet.add(`${sp.y}-${sp.m}-${sp.d}`);
     }
     if (ep) {
       const key = ep.y * 10000 + ep.m * 100 + ep.d;
@@ -1131,7 +1104,8 @@ function renderReport(rows) {
     }
   });
 
-  const totalDays = uniqueDaysSet.size;
+  /* Total days = inclusive days between earliest start and latest end */
+  const totalDays = (minStart && maxEnd) ? daysBetween(minStart.p, maxEnd.p) : 0;
 
   /* Overall card */
   const overallEl = document.getElementById("overallCard");
@@ -1145,20 +1119,34 @@ function renderReport(rows) {
     maxEnd:   maxEnd   ? maxEnd.p   : null
   }));
 
-  /* Monthly cards */
-  const now = new Date();
-  const today = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
+  /* Period cards — one per daily row */
+  const periodEl = document.getElementById("periodCards");
+  periodEl.innerHTML = "";
 
-  const cardsEl = document.getElementById("monthlyCards");
-  cardsEl.innerHTML = "";
-  const keys = [...groups.keys()].sort((a, b) => a - b);
-  keys.forEach(k => {
-    const g = groups.get(k);
-    cardsEl.appendChild(buildMonthCard(g.y, g.m, g.rows, today));
+  /* Sort by start date ascending */
+  const sortedRows = [...rows].sort((a, b) => {
+    const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
+    if (da && db) {
+      return (da.y * 10000 + da.m * 100 + da.d) - (db.y * 10000 + db.m * 100 + db.d);
+    }
+    return (a.startDate || "").localeCompare(b.startDate || "");
+  });
+
+  sortedRows.forEach(r => {
+    const startP = parseDateParts(r.startDate);
+    const endP   = parseDateParts(r.endDate) || startP;
+    periodEl.appendChild(buildPeriodCard({
+      startStr: r.startDate,
+      endStr:   r.endDate,
+      startP, endP,
+      gross: r.gross,
+      exp:   r.expenses,
+      net:   r.net
+    }));
   });
 
   /* Daily table */
-  renderDailyTable(rows);
+  renderDailyTable(sortedRows);
 
   statusEl.style.display = "none";
   contentEl.style.display = "block";
@@ -1175,14 +1163,6 @@ function renderDailyTable(rows) {
     body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">No data</td></tr>`;
     return;
   }
-
-  rows.sort((a, b) => {
-    const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
-    if (da && db) {
-      return (da.y * 10000 + da.m * 100 + da.d) - (db.y * 10000 + db.m * 100 + db.d);
-    }
-    return (a.startDate || "").localeCompare(b.startDate || "");
-  });
 
   let tGross = 0, tExp = 0, tNet = 0;
   rows.forEach(r => {
