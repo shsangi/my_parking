@@ -24,11 +24,14 @@
     --shadow-md: 0 2px 8px rgba(15, 23, 42, 0.06);
     --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.08);
   }
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
     margin: 0; padding: 0 0 24px; background: var(--bg); color: var(--text);
     font-size: 14px; line-height: 1.45;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -39,15 +42,18 @@
     padding: 5px; display: flex; gap: 3px;
     box-shadow: var(--shadow-md);
     border: 1px solid var(--line);
+    width: calc(100% - 24px);
   }
   .tab-bar button {
-    flex: 1; padding: 11px 6px; border: none;
+    flex: 1; padding: 11px 4px; border: none;
     background: transparent; color: var(--muted);
-    font-size: 12.5px; font-weight: 600;
+    font-size: 12px; font-weight: 600;
     border-radius: 10px; cursor: pointer;
     font-family: inherit; transition: all 0.2s ease;
     white-space: nowrap;
     letter-spacing: 0.1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .tab-bar button.active {
     background: linear-gradient(135deg, var(--brand-2), var(--brand));
@@ -64,16 +70,19 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding: 0 12px; gap: 12px;
+    width: 100%;
   }
   .carousel::-webkit-scrollbar { display: none; }
 
   .page {
     flex: 0 0 calc(100% - 24px);
-    max-width: 520px; scroll-snap-align: center;
+    max-width: 520px;
+    scroll-snap-align: center;
     background: var(--card); border-radius: 16px;
     box-shadow: var(--shadow-lg);
     overflow: hidden;
     border: 1px solid var(--line);
+    min-width: 0;
   }
 
   /* ============ REPORT ============ */
@@ -83,7 +92,6 @@
     padding: 0 12px;
   }
 
-  /* ---------- Overall card ---------- */
   .overall-card {
     background: var(--card);
     border-radius: 16px;
@@ -155,7 +163,6 @@
     margin: 6px -18px 0;
     padding: 14px 18px;
     border-bottom: none;
-    border-radius: 0;
   }
   .oc-row.highlight .k {
     color: #0d47a1;
@@ -175,7 +182,6 @@
     margin-left: 3px;
   }
 
-  /* ---------- Section labels ---------- */
   .section-head {
     display: flex;
     align-items: center;
@@ -198,7 +204,6 @@
     border-radius: 10px;
   }
 
-  /* ---------- Monthly list ---------- */
   .month-list, .period-list {
     background: var(--card);
     border-radius: 16px;
@@ -209,13 +214,12 @@
   }
 
   .month-row, .period-row {
-    padding: 14px 14px 14px 12px;
+    padding: 14px 12px 14px 10px;
     border-bottom: 1px solid var(--line);
     display: grid;
-    grid-template-columns: 28px 1fr;
-    gap: 12px;
+    grid-template-columns: 26px 1fr;
+    gap: 10px;
     align-items: start;
-    transition: background 0.15s ease;
   }
   .month-row:last-child, .period-row:last-child { border-bottom: none; }
 
@@ -244,12 +248,11 @@
     min-height: 26px;
   }
 
-  /* ---------- Month / Period header ---------- */
   .mr-head, .pr-head {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 10px;
   }
 
@@ -280,11 +283,10 @@
     color: var(--muted);
     font-weight: 600;
     margin-top: 3px;
-    letter-spacing: 0.1px;
   }
 
   .pr-range {
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 700;
     color: #0f172a;
     line-height: 1.3;
@@ -293,7 +295,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    letter-spacing: -0.1px;
   }
 
   .mr-days, .pr-days {
@@ -309,25 +310,25 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* ---------- Metrics grid ---------- */
   .mr-metrics, .pr-metrics {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
   }
   .mr-metric, .pr-metric {
     text-align: center;
-    padding: 8px 3px 7px;
+    padding: 8px 2px 7px;
     border-radius: 10px;
     background: #f8fafc;
     min-width: 0;
     border: 1px solid #eef2f7;
+    overflow: hidden;
   }
   .mr-metric .lbl, .pr-metric .lbl {
     font-size: 9px;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
@@ -335,11 +336,14 @@
     margin-bottom: 2px;
   }
   .mr-metric .val, .pr-metric .val {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 800;
     line-height: 1.15;
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.2px;
+    letter-spacing: -0.3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .mr-metric.credit, .pr-metric.credit {
     background: #f0fdf4;
@@ -362,7 +366,6 @@
   }
   .mr-metric.avg .val, .pr-metric.avg .val { color: var(--purple-dark); }
 
-  /* ---------- Monthly sheet total strip ---------- */
   .mr-sheet-strip {
     margin-top: 10px;
     padding: 10px 12px;
@@ -409,7 +412,6 @@
     margin-left: 2px;
   }
 
-  /* ---------- Combined strip ---------- */
   .mr-combined-strip {
     margin-top: 8px;
     padding: 12px 14px;
@@ -435,7 +437,6 @@
     font-weight: 600;
     margin-top: 3px;
     opacity: 0.82;
-    letter-spacing: 0.05px;
   }
   .mr-combined-strip .c-val {
     font-size: 17px;
@@ -453,7 +454,6 @@
     margin-left: 3px;
   }
 
-  /* ---------- Daily data section ---------- */
   .daily-section-title {
     font-size: 11px;
     font-weight: 800;
@@ -523,39 +523,54 @@
     font-weight: 500;
   }
 
-  /* ---------- Compare card (Last 2 Months) ---------- */
+  /* ============================================================
+     COMPARE CARD — MOBILE FITTED
+     ============================================================ */
   .rc-head {
     background: linear-gradient(135deg, #0d47a1, #1565c0);
-    color: #fff; padding: 18px 16px; text-align: center;
+    color: #fff; padding: 16px 12px; text-align: center;
   }
-  .rc-head h1 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
-  .rc-head p { margin: 4px 0 0; font-size: 12px; opacity: 0.85; font-weight: 500; }
+  .rc-head h1 { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -0.2px; }
+  .rc-head p { margin: 4px 0 0; font-size: 11.5px; opacity: 0.9; font-weight: 500; }
 
   .counts {
     display: grid; grid-template-columns: 1fr 1fr;
     background: #f8fafc; border-bottom: 1px solid var(--line);
   }
   .counts > div {
-    padding: 14px 10px; text-align: center;
+    padding: 12px 6px; text-align: center;
     border-right: 1px solid var(--line);
+    min-width: 0;
   }
   .counts > div:last-child { border-right: none; }
-  .counts .num { font-size: 22px; font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; }
-  .counts .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; font-weight: 700; }
+  .counts .num { font-size: 20px; font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; }
+  .counts .lbl {
+    font-size: 10px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.3px;
+    margin-top: 3px; font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    padding: 0 2px;
+  }
   .counts .c1 { color: var(--brand); }
   .counts .c2 { color: var(--green-dark); }
 
+  /* Months header — flexible with narrow columns */
   .months {
     display: grid;
-    grid-template-columns: 34px 1fr 1fr;
+    grid-template-columns: 26px 1fr 1fr;
     background: #f8fafc; border-bottom: 2px solid var(--line);
-    font-size: 11.5px; font-weight: 700;
+    font-size: 10.5px; font-weight: 800;
+    position: sticky; top: 0; z-index: 3;
   }
   .months .hd {
-    padding: 10px 6px; text-align: center;
+    padding: 9px 3px; text-align: center;
     border-right: 1px solid var(--line);
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
   .months .hd:last-child { border-right: none; }
   .months .m1 { color: var(--brand); }
@@ -563,54 +578,73 @@
   .months .sr-h { color: #94a3b8; font-size: 10px; }
 
   .sec {
-    padding: 8px 14px;
-    font-size: 10.5px; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 0.7px;
+    padding: 7px 10px;
+    font-size: 10px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.6px;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
   .sec.ok   { background: #ecfdf5; color: var(--green-dark); }
   .sec.warn { background: #fff7ed; color: #c2410c; }
 
+  /* Item row — compact with room for badges */
   .item {
     display: grid;
-    grid-template-columns: 34px 1fr 1fr;
+    grid-template-columns: 26px 1fr 1fr;
     border-bottom: 1px solid var(--line);
     background: var(--card);
   }
   .item > div {
-    padding: 10px 8px; min-height: 52px;
+    padding: 9px 6px; min-height: 50px;
     display: flex; flex-direction: column; justify-content: center;
     border-right: 1px solid #f1f5f9;
     overflow: hidden;
+    min-width: 0;
   }
   .item > div:last-child { border-right: none; }
 
   .sr-cell {
-    font-size: 11px; font-weight: 800; color: #94a3b8;
+    font-size: 10.5px; font-weight: 800; color: #94a3b8;
     text-align: center; background: #f8fafc;
+    padding: 9px 2px;
   }
 
   .name-line {
-    display: flex; align-items: baseline; gap: 4px;
-    font-weight: 700; font-size: 12.5px;
+    display: flex; align-items: center; gap: 4px;
+    font-weight: 700; font-size: 12px;
     white-space: nowrap; overflow: hidden;
     color: #0f172a;
+    min-width: 0;
   }
-  .name-line .nm { overflow: hidden; text-overflow: ellipsis; }
-  .amt { font-size: 13.5px; font-weight: 800; margin-top: 3px; letter-spacing: -0.2px; }
+  .name-line .nm {
+    overflow: hidden; text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+  }
+  .amt {
+    font-size: 13px; font-weight: 800;
+    margin-top: 3px;
+    letter-spacing: -0.3px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .m1-cell .amt { color: var(--brand); }
   .m2-cell .amt { color: var(--green-dark); }
 
   .missing {
-    color: #cbd5e1; font-style: italic; font-size: 11px;
+    color: #cbd5e1; font-style: italic; font-size: 10.5px;
     display: flex; align-items: center; justify-content: center;
   }
 
+  /* Compact diff badge — sits inline next to name, wraps amount */
   .diff-badge {
-    font-size: 9px; font-weight: 800;
-    padding: 2px 5px; border-radius: 5px; margin-left: auto;
+    font-size: 8.5px; font-weight: 800;
+    padding: 1.5px 4px; border-radius: 4px;
     flex-shrink: 0;
+    line-height: 1.3;
+    white-space: nowrap;
   }
   .diff-badge.up { background: #ecfdf5; color: var(--green-dark); }
   .diff-badge.down { background: #fef2f2; color: var(--red); }
@@ -618,47 +652,66 @@
 
   .total-row {
     display: grid;
-    grid-template-columns: 34px 1fr 1fr;
+    grid-template-columns: 26px 1fr 1fr;
     background: #f8fafc; border-top: 2px solid var(--line);
     font-weight: 700;
   }
   .total-row > div {
     padding: 12px 6px; text-align: center;
     border-right: 1px solid var(--line);
+    min-width: 0;
+    overflow: hidden;
   }
   .total-row > div:last-child { border-right: none; }
   .total-row .mname {
-    font-size: 10px; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 0.5px;
+    font-size: 9.5px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .total-row .mname.v1 { color: var(--brand); }
   .total-row .mname.v2 { color: var(--green-dark); }
-  .total-row .val { font-size: 15px; margin-top: 4px; font-weight: 800; letter-spacing: -0.2px; }
+  .total-row .val {
+    font-size: 14px; margin-top: 4px; font-weight: 800;
+    letter-spacing: -0.3px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .total-row .val.v1 { color: var(--brand); }
   .total-row .val.v2 { color: var(--green-dark); }
-  .total-row .cnt { font-size: 10px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  .total-row .cnt {
+    font-size: 9.5px; color: var(--muted);
+    font-weight: 600; margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .total-row .sr-blank { background: #f8fafc; }
 
   .grand {
     background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: #fff; padding: 16px; text-align: center;
+    color: #fff; padding: 14px 12px; text-align: center;
   }
-  .grand .lbl { font-size: 10.5px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-  .grand .val { font-size: 24px; font-weight: 800; margin-top: 5px; letter-spacing: -0.5px; }
-  .grand .cnt { font-size: 11px; opacity: 0.75; margin-top: 6px; }
+  .grand .lbl { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  .grand .val { font-size: 22px; font-weight: 800; margin-top: 5px; letter-spacing: -0.5px; }
+  .grand .cnt { font-size: 10.5px; opacity: 0.75; margin-top: 6px; line-height: 1.4; }
 
   .diffbar {
-    margin: 12px 14px 16px; padding: 12px 16px;
+    margin: 12px 14px 16px; padding: 12px 14px;
     border-radius: 10px; display: flex;
     justify-content: space-between; align-items: center;
-    font-weight: 800; font-size: 14px;
+    font-weight: 800; font-size: 13px;
     letter-spacing: -0.1px;
+    gap: 8px;
   }
   .diffbar.pos { background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: var(--green-dark); }
   .diffbar.neg { background: linear-gradient(135deg, #fef2f2, #fecaca); color: var(--red); }
   .diffbar.zero { background: #f1f5f9; color: var(--muted); }
 
-  /* ---------- All Months table ---------- */
+  /* All Months */
   .table-wrap {
     max-width: 100%; overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -686,7 +739,6 @@
     background: linear-gradient(135deg, #1e88e5, #1565c0);
     color: #fff; padding: 12px 10px; text-align: center;
     font-weight: 800; font-size: 13px;
-    letter-spacing: -0.1px;
   }
   .mcol:nth-child(even) .mcol-head {
     background: linear-gradient(135deg, #43a047, #2e7d32);
@@ -752,6 +804,23 @@
   .mcol-grand .mcol-total .val { color: #ffd54f; }
   .mcol-grand .mcol-total .lbl { color: #ffd54f; opacity: 0.9; }
   .mcol-grand .mcol-total .cnt { color: #ffd54f; opacity: 0.8; }
+
+  /* Mobile very narrow adjustments */
+  @media (max-width: 380px) {
+    .counts .num { font-size: 18px; }
+    .counts .lbl { font-size: 9px; }
+    .months { font-size: 10px; }
+    .item > div { padding: 8px 5px; min-height: 46px; }
+    .name-line { font-size: 11.5px; }
+    .amt { font-size: 12px; }
+    .total-row .val { font-size: 13px; }
+    .grand .val { font-size: 20px; }
+    .mr-title { font-size: 14px; }
+    .mr-metric .val, .pr-metric .val { font-size: 11.5px; }
+    .mr-metric .lbl, .pr-metric .lbl { font-size: 8.5px; }
+    .mr-combined-strip .c-val { font-size: 15px; }
+    .mr-sheet-strip .sheet-val { font-size: 13.5px; }
+  }
 </style>
 </head>
 <body>
@@ -839,9 +908,6 @@ const DAILY_COL = {
   net:       ["total net amount credited (pkr)", "total net amount credited", "net amount credited", "net amount", "net"]
 };
 
-/* ============================================================
-   CSV UTIL
-   ============================================================ */
 function parseCSV(text) {
   const rows = [];
   let cur = [], field = "", inQ = false;
@@ -910,15 +976,12 @@ function normalizeDaily(rows) {
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
     if (!r.some(c => (c || "").trim() !== "")) continue;
-
     const startDate = idx.startDate >= 0 ? (r[idx.startDate] || "").trim() : "";
     const endDate   = idx.endDate   >= 0 ? (r[idx.endDate]   || "").trim() : "";
     const gross     = idx.gross     >= 0 ? parseNum(r[idx.gross])     : 0;
     const expenses  = idx.expenses  >= 0 ? parseNum(r[idx.expenses])  : 0;
     const net       = idx.net       >= 0 ? parseNum(r[idx.net])       : 0;
-
     if (!startDate && !endDate && !gross && !expenses && !net) continue;
-
     out.push({ startDate, endDate, gross, expenses, net });
   }
   return out;
@@ -930,9 +993,6 @@ function parseNum(v) {
   return parseFloat(s) || 0;
 }
 
-/* ============================================================
-   HELPERS
-   ============================================================ */
 const MONTH_NUM = {
   jan:1, january:1, feb:2, february:2, mar:3, march:3, apr:4, april:4,
   may:5, jun:6, june:6, jul:7, july:7, aug:8, august:8, sep:9, sept:9,
@@ -948,7 +1008,7 @@ function monthKey(rec) {
 }
 function monthLabel(rec) {
   if (!rec) return "—";
-  return `${rec.month} ${rec.year}`.trim();
+  return `${rec.month.slice(0,3)} ${rec.year}`.trim();
 }
 function nameKey(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ""); }
 function groupByName(recs) {
@@ -959,12 +1019,6 @@ function groupByName(recs) {
     m.get(k).amount += r.amount;
   });
   return m;
-}
-function fmt(n) {
-  const sign = n < 0 ? "-" : "";
-  return sign + Math.abs(n).toLocaleString(undefined, {
-    minimumFractionDigits: 2, maximumFractionDigits: 2
-  });
 }
 function fmtInt(n) { return Math.round(n).toLocaleString(); }
 function fmtDec2(n) {
@@ -978,9 +1032,6 @@ function esc(s) {
   }[c]));
 }
 
-/* ============================================================
-   DATE PARSING
-   ============================================================ */
 function parseDateParts(s) {
   if (!s) return null;
   const str = s.toString().trim();
@@ -1017,7 +1068,6 @@ function parseDateParts(s) {
 
 function dateKeyOf(p) { return p ? (p.y * 10000 + p.m * 100 + p.d) : 0; }
 function dateCmp(a, b) { return dateKeyOf(a) - dateKeyOf(b); }
-
 function daysBetween(p1, p2) {
   if (!p1 || !p2) return 0;
   const d1 = new Date(p1.y, p1.m - 1, p1.d);
@@ -1036,7 +1086,7 @@ function fmtDateShort(p) {
 }
 
 /* ============================================================
-   COMPARE CARD
+   COMPARE CARD — COMPACT MOBILE
    ============================================================ */
 function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
   const mapPrev = groupByName(prevRecs);
@@ -1089,7 +1139,7 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
       let badge = "";
       if (showDiff && p) {
         const d = c.amount - p.amount;
-        if (Math.abs(d) < 0.5) badge = `<span class="diff-badge same">same</span>`;
+        if (Math.abs(d) < 0.5) badge = `<span class="diff-badge same">=</span>`;
         else if (d > 0)        badge = `<span class="diff-badge up">▲${fmtInt(d)}</span>`;
         else                   badge = `<span class="diff-badge down">▼${fmtInt(Math.abs(d))}</span>`;
       }
@@ -1139,12 +1189,12 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
     <div>
       <div class="mname v1">${esc(prevLabel)}</div>
       <div class="val v1">${fmtInt(subPrev)}</div>
-      <div class="cnt">${cntPrev} person${cntPrev === 1 ? "" : "s"}</div>
+      <div class="cnt">${cntPrev} ppl</div>
     </div>
     <div>
       <div class="mname v2">${esc(currLabel)}</div>
       <div class="val v2">${fmtInt(subCurr)}</div>
-      <div class="cnt">${cntCurr} person${cntCurr === 1 ? "" : "s"}</div>
+      <div class="cnt">${cntCurr} ppl</div>
     </div>
   `;
   body.appendChild(totals);
@@ -1155,7 +1205,7 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
     <div class="lbl">Grand Total</div>
     <div class="val">${fmtInt(subPrev + subCurr)}</div>
     <div class="cnt">
-      Matched: ${matchedKeys.length} • Only ${esc(prevLabel)}: ${onlyPrevKeys.length} • Only ${esc(currLabel)}: ${onlyCurrKeys.length}
+      Matched ${matchedKeys.length} • Only ${onlyPrevKeys.length} • Only ${onlyCurrKeys.length}
     </div>
   `;
   body.appendChild(grand);
@@ -1261,7 +1311,7 @@ function buildAllMonthsTable(monthList) {
 }
 
 /* ============================================================
-   OVERALL SUMMARY CARD
+   OVERALL SUMMARY
    ============================================================ */
 function buildOverallSummaryCard(totals) {
   const { gross, exp, net, days, minStart, maxEnd } = totals;
@@ -1313,15 +1363,10 @@ function buildOverallSummaryCard(totals) {
    ============================================================ */
 function computeMonthlySplit(rows) {
   const buckets = new Map();
-
   const ensure = (y, m) => {
     const key = y * 100 + m;
     if (!buckets.has(key)) {
-      buckets.set(key, {
-        y, m,
-        minStart: null, maxEnd: null,
-        gross: 0, exp: 0, net: 0
-      });
+      buckets.set(key, { y, m, minStart: null, maxEnd: null, gross: 0, exp: 0, net: 0 });
     }
     return buckets.get(key);
   };
@@ -1330,25 +1375,20 @@ function computeMonthlySplit(rows) {
     const sp = parseDateParts(r.startDate);
     const ep = parseDateParts(r.endDate) || sp;
     if (!sp) return;
-
     const periodDays = daysBetween(sp, ep) || 1;
 
     let y = sp.y, m = sp.m;
     while (true) {
       const bucket = ensure(y, m);
-
       const monthFirst = { y, m, d: 1 };
       const monthLast  = { y, m, d: daysInMonth(y, m) };
-
       const segStart = dateCmp(sp, monthFirst) > 0 ? sp : monthFirst;
       const segEnd   = (ep && dateCmp(ep, monthLast) < 0) ? ep : monthLast;
-
       const segDays = daysBetween(segStart, segEnd);
       const frac = periodDays ? segDays / periodDays : 0;
 
       bucket.gross += r.gross * frac;
       bucket.net   += r.net   * frac;
-
       if (y === sp.y && m === sp.m) bucket.exp += r.expenses;
 
       if (sp.y === y && sp.m === m) {
@@ -1369,7 +1409,6 @@ function computeMonthlySplit(rows) {
 
       if (ep && y === ep.y && m === ep.m) break;
       if (!ep && y === sp.y && m === sp.m) break;
-
       m++;
       if (m > 12) { m = 1; y++; }
       if (ep && (y > ep.y || (y === ep.y && m > ep.m))) break;
@@ -1383,20 +1422,15 @@ function computeMonthlySplit(rows) {
   buckets.forEach(b => {
     let startP = b.minStart || { y: b.y, m: b.m, d: 1 };
     let endP   = b.maxEnd   || { y: b.y, m: b.m, d: daysInMonth(b.y, b.m) };
-
     const isCurrentMonth = (today.y === b.y && today.m === b.m);
     if (isCurrentMonth && dateCmp(endP, today) > 0) {
       endP = { y: today.y, m: today.m, d: today.d };
     }
     if (dateCmp(startP, endP) > 0) startP = endP;
-
     const daysCount = daysBetween(startP, endP);
-
     result.push({
-      y: b.y, m: b.m,
-      startP, endP, daysCount,
-      isCurrentMonth,
-      gross: b.gross, exp: b.exp, net: b.net
+      y: b.y, m: b.m, startP, endP, daysCount,
+      isCurrentMonth, gross: b.gross, exp: b.exp, net: b.net
     });
   });
 
@@ -1417,9 +1451,6 @@ function computeMonthlySheetTotals(records) {
   return totals;
 }
 
-/* ============================================================
-   MONTH ROW
-   ============================================================ */
 function buildMonthRow(info, srNo, sheetTotal) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
@@ -1428,8 +1459,7 @@ function buildMonthRow(info, srNo, sheetTotal) {
   let combinedStrip = "";
   if (sheetTotal) {
     const sheetAmt = sheetTotal.amount;
-    const halfSheet = sheetAmt / 2;
-    const combined = halfSheet + net;
+    const combined = (sheetAmt / 2) + net;
 
     sheetStrip = `
       <div class="mr-sheet-strip">
@@ -1442,7 +1472,6 @@ function buildMonthRow(info, srNo, sheetTotal) {
         </div>
       </div>
     `;
-
     combinedStrip = `
       <div class="mr-combined-strip">
         <div class="lbl-block">
@@ -1465,29 +1494,15 @@ function buildMonthRow(info, srNo, sheetTotal) {
             ${esc(MONTH_LONG[m - 1])} ${y}
             ${isCurrentMonth ? '<span class="mr-badge">Current</span>' : ''}
           </div>
-          <div class="mr-range">
-            ${esc(fmtDateShort(startP))} → ${esc(fmtDateShort(endP))}
-          </div>
+          <div class="mr-range">${esc(fmtDateShort(startP))} → ${esc(fmtDateShort(endP))}</div>
         </div>
         <div class="mr-days">${daysCount}d</div>
       </div>
       <div class="mr-metrics">
-        <div class="mr-metric credit">
-          <div class="lbl">Credit</div>
-          <div class="val">${fmtInt(net)}</div>
-        </div>
-        <div class="mr-metric exp">
-          <div class="lbl">Expenses</div>
-          <div class="val">${fmtInt(exp)}</div>
-        </div>
-        <div class="mr-metric gross">
-          <div class="lbl">Gross</div>
-          <div class="val">${fmtInt(gross)}</div>
-        </div>
-        <div class="mr-metric avg">
-          <div class="lbl">Avg/Day</div>
-          <div class="val">${fmtInt(avgNet)}</div>
-        </div>
+        <div class="mr-metric credit"><div class="lbl">Credit</div><div class="val">${fmtInt(net)}</div></div>
+        <div class="mr-metric exp"><div class="lbl">Expenses</div><div class="val">${fmtInt(exp)}</div></div>
+        <div class="mr-metric gross"><div class="lbl">Gross</div><div class="val">${fmtInt(gross)}</div></div>
+        <div class="mr-metric avg"><div class="lbl">Avg/Day</div><div class="val">${fmtInt(avgNet)}</div></div>
       </div>
       ${sheetStrip}
       ${combinedStrip}
@@ -1496,14 +1511,10 @@ function buildMonthRow(info, srNo, sheetTotal) {
   return row;
 }
 
-/* ============================================================
-   PERIOD ROW
-   ============================================================ */
 function buildPeriodRow(period, srNo) {
   const { startP, endP, startStr, endStr, gross, exp, net } = period;
   const days = daysBetween(startP, endP) || 1;
   const avgNet = net / days;
-
   const startLabel = startP ? fmtDateShort(startP) : (startStr || "—");
   const endLabel   = endP   ? fmtDateShort(endP)   : (endStr   || "—");
 
@@ -1517,31 +1528,16 @@ function buildPeriodRow(period, srNo) {
         <div class="pr-days">${days}d</div>
       </div>
       <div class="pr-metrics">
-        <div class="pr-metric credit">
-          <div class="lbl">Credit</div>
-          <div class="val">${fmtInt(net)}</div>
-        </div>
-        <div class="pr-metric exp">
-          <div class="lbl">Expenses</div>
-          <div class="val">${fmtInt(exp)}</div>
-        </div>
-        <div class="pr-metric gross">
-          <div class="lbl">Gross</div>
-          <div class="val">${fmtInt(gross)}</div>
-        </div>
-        <div class="pr-metric avg">
-          <div class="lbl">Avg/Day</div>
-          <div class="val">${fmtInt(avgNet)}</div>
-        </div>
+        <div class="pr-metric credit"><div class="lbl">Credit</div><div class="val">${fmtInt(net)}</div></div>
+        <div class="pr-metric exp"><div class="lbl">Expenses</div><div class="val">${fmtInt(exp)}</div></div>
+        <div class="pr-metric gross"><div class="lbl">Gross</div><div class="val">${fmtInt(gross)}</div></div>
+        <div class="pr-metric avg"><div class="lbl">Avg/Day</div><div class="val">${fmtInt(avgNet)}</div></div>
       </div>
     </div>
   `;
   return row;
 }
 
-/* ============================================================
-   MAIN RENDER
-   ============================================================ */
 function renderReport(rows, monthlyRecords) {
   const statusEl = document.getElementById("dailyStatus");
   const contentEl = document.getElementById("reportContent");
@@ -1574,7 +1570,6 @@ function renderReport(rows, monthlyRecords) {
   }));
 
   const sheetTotals = computeMonthlySheetTotals(monthlyRecords);
-
   const monthInfos = computeMonthlySplit(rows);
   const monthEl = document.getElementById("monthList");
   monthEl.innerHTML = "";
@@ -1583,37 +1578,28 @@ function renderReport(rows, monthlyRecords) {
     const sheetTotal = sheetTotals.get(k) || null;
     monthEl.appendChild(buildMonthRow(info, i + 1, sheetTotal));
   });
-
-  /* Month count */
   document.getElementById("monthCount").textContent =
     `${monthInfos.length} month${monthInfos.length === 1 ? "" : "s"}`;
 
   const periodEl = document.getElementById("periodList");
   periodEl.innerHTML = "";
-
   const sortedRows = [...rows].sort((a, b) => {
     const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
     if (da && db) return dateCmp(db, da);
     return (b.startDate || "").localeCompare(a.startDate || "");
   });
-
   sortedRows.forEach((r, i) => {
     const startP = parseDateParts(r.startDate);
     const endP   = parseDateParts(r.endDate) || startP;
     periodEl.appendChild(buildPeriodRow({
-      startStr: r.startDate,
-      endStr:   r.endDate,
-      startP, endP,
-      gross: r.gross, exp: r.expenses, net: r.net
+      startStr: r.startDate, endStr: r.endDate,
+      startP, endP, gross: r.gross, exp: r.expenses, net: r.net
     }, i + 1));
   });
-
-  /* Period count */
   document.getElementById("periodCount").textContent =
     `${sortedRows.length} period${sortedRows.length === 1 ? "" : "s"}`;
 
   renderDailyTable(sortedRows);
-
   statusEl.style.display = "none";
   contentEl.style.display = "block";
 }
@@ -1623,12 +1609,10 @@ function renderDailyTable(rows) {
   const foot = document.getElementById("dailyFoot");
   body.innerHTML = "";
   foot.innerHTML = "";
-
   if (!rows.length) {
     body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">No data</td></tr>`;
     return;
   }
-
   let tGross = 0, tExp = 0, tNet = 0;
   rows.forEach(r => {
     tGross += r.gross; tExp += r.expenses; tNet += r.net;
@@ -1642,7 +1626,6 @@ function renderDailyTable(rows) {
     `;
     body.appendChild(tr);
   });
-
   foot.innerHTML = `
     <tr>
       <td colspan="2">TOTAL (${rows.length})</td>
@@ -1653,9 +1636,6 @@ function renderDailyTable(rows) {
   `;
 }
 
-/* ============================================================
-   DATA LOADING
-   ============================================================ */
 async function loadMonthly() {
   let all = [];
   for (const u of [SHEET1_CSV, SHEET2_CSV]) {
@@ -1681,9 +1661,6 @@ async function loadDaily() {
   }
 }
 
-/* ============================================================
-   MONTHLY STATE
-   ============================================================ */
 let allKeys = [];
 let byMonth = new Map();
 let monthlyLoaded = false;
@@ -1764,18 +1741,13 @@ async function loadMonthlyOnce() {
   renderAllMonths();
 }
 
-/* ============================================================
-   TAB SWITCHING
-   ============================================================ */
 function switchTab(tab) {
   document.getElementById("tabReport").classList.toggle("active", tab === "report");
   document.getElementById("tabLast2").classList.toggle("active", tab === "last2");
   document.getElementById("tabAll").classList.toggle("active", tab === "all");
-
   document.getElementById("contentReport").classList.toggle("active", tab === "report");
   document.getElementById("contentLast2").classList.toggle("active", tab === "last2");
   document.getElementById("contentAll").classList.toggle("active", tab === "all");
-
   if (tab === "last2" || tab === "all") loadMonthlyOnce();
 }
 
@@ -1783,9 +1755,6 @@ document.getElementById("tabReport").addEventListener("click", () => switchTab("
 document.getElementById("tabLast2").addEventListener("click", () => switchTab("last2"));
 document.getElementById("tabAll").addEventListener("click", () => switchTab("all"));
 
-/* ============================================================
-   BOOT
-   ============================================================ */
 Promise.all([loadDaily(), loadMonthly()])
   .then(([dailyRows, monthlyRecords]) => {
     monthlyRecordsCache = monthlyRecords;
