@@ -1576,4 +1576,68 @@ function renderAllMonths() {
   }).filter(m => m.recs.length);
 
   buildAllMonthsTable(monthList);
-  statusEl.style.display
+  statusEl.style.display = "none";
+  tableWrap.style.display = "block";
+  hint.style.display = monthList.length > 1 ? "block" : "none";
+}
+
+async function loadMonthlyOnce() {
+  if (monthlyLoaded) return;
+  monthlyLoaded = true;
+
+  const records = await loadMonthly();
+  monthlyRecordsCache = records;
+
+  if (!records.length) {
+    document.getElementById("statusLast2").textContent = "No monthly data available.";
+    document.getElementById("statusAll").textContent = "No monthly data available.";
+    return;
+  }
+
+  allKeys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a,b) => a-b);
+
+  byMonth = new Map();
+  records.forEach(r => {
+    const k = monthKey(r);
+    if (!byMonth.has(k)) byMonth.set(k, []);
+    byMonth.get(k).push(r);
+  });
+
+  renderLast2();
+  renderAllMonths();
+}
+
+/* ============================================================
+   TAB SWITCHING
+   ============================================================ */
+function switchTab(tab) {
+  document.getElementById("tabReport").classList.toggle("active", tab === "report");
+  document.getElementById("tabLast2").classList.toggle("active", tab === "last2");
+  document.getElementById("tabAll").classList.toggle("active", tab === "all");
+
+  document.getElementById("contentReport").classList.toggle("active", tab === "report");
+  document.getElementById("contentLast2").classList.toggle("active", tab === "last2");
+  document.getElementById("contentAll").classList.toggle("active", tab === "all");
+
+  if (tab === "last2" || tab === "all") loadMonthlyOnce();
+}
+
+document.getElementById("tabReport").addEventListener("click", () => switchTab("report"));
+document.getElementById("tabLast2").addEventListener("click", () => switchTab("last2"));
+document.getElementById("tabAll").addEventListener("click", () => switchTab("all"));
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+Promise.all([loadDaily(), loadMonthly()])
+  .then(([dailyRows, monthlyRecords]) => {
+    monthlyRecordsCache = monthlyRecords;
+    renderReport(dailyRows, monthlyRecords);
+  })
+  .catch(e => {
+    document.getElementById("dailyStatus").textContent = "Error: " + e.message;
+    console.error(e);
+  });
+</script>
+</body>
+</html>
