@@ -15,830 +15,347 @@
 <link rel="apple-touch-icon" sizes="152x152" href="parkinglogo.jpg">
 <link rel="apple-touch-icon" sizes="180x180" href="parkinglogo.jpg">
 <link rel="apple-touch-icon" sizes="167x167" href="parkinglogo.jpg">
+
 <link rel="icon" type="image/jpeg" href="parkinglogo.jpg">
 <link rel="shortcut icon" type="image/jpeg" href="parkinglogo.jpg">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Sangi Parking">
 
 <style>
-  /* ==========================================================
-     DESIGN TOKENS
-     ========================================================== */
-  * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-    margin: 0; padding: 0;
-  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
 
   :root {
-    --bg: #f5f7fb;
-    --card: #ffffff;
-    --line: #e8ecf3;
-    --line-2: #f0f3f8;
-    --text: #0a1a2f;
-    --text-2: #4a5b70;
-    --muted: #7a8ba0;
-    --brand: #0a66c2;
-    --brand-2: #1e88e5;
-    --brand-dark: #084a8f;
-    --green: #16a34a;
-    --green-dark: #166534;
-    --green-bg: #f0fdf4;
-    --red: #dc2626;
-    --red-bg: #fef2f2;
-    --amber: #d97706;
-    --amber-bg: #fffbeb;
-    --purple: #7c3aed;
-    --purple-bg: #f5f3ff;
-    --slate: #0f172a;
-
-    --shadow-xs: 0 1px 2px rgba(10, 26, 47, 0.04);
-    --shadow-sm: 0 2px 6px rgba(10, 26, 47, 0.04), 0 1px 2px rgba(10, 26, 47, 0.03);
-    --shadow-md: 0 6px 16px rgba(10, 26, 47, 0.06), 0 1px 3px rgba(10, 26, 47, 0.04);
-    --shadow-lg: 0 16px 40px rgba(10, 26, 47, 0.08), 0 4px 12px rgba(10, 26, 47, 0.04);
-    --shadow-xl: 0 24px 60px rgba(10, 26, 47, 0.12);
-
-    --r-sm: 10px;
-    --r-md: 14px;
-    --r-lg: 18px;
-    --r-xl: 22px;
-
-    --bottom-nav-h: 70px;
+    --bg: #f2f6fc; --card: #ffffff; --line: #e6ecf3;
+    --text: #0b1e33; --muted: #5a6f88;
+    --brand: #0a66c2; --brand-2: #1e88e5;
+    --green: #1e7e34; --green-dark: #0f4b1e;
+    --red: #c0392b; --amber: #f5a623;
+    --purple: #7c3aed; --purple-dark: #4c1d95;
+    --shadow-sm: 0 2px 6px rgba(0,20,40,0.04);
+    --shadow-md: 0 6px 18px rgba(0,20,40,0.06);
+    --shadow-lg: 0 12px 32px rgba(0,20,40,0.10);
+    --radius: 20px; --radius-sm: 14px;
+    --bottom-nav-h: 68px;
   }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 15px;
-    line-height: 1.5;
-    padding: 8px 0 40px;
-    overflow-x: hidden;
-    min-height: 100vh;
+    background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.45;
+    padding: 8px 0 32px; overflow-x: hidden; min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    letter-spacing: -0.01em;
   }
 
-  /* ==========================================================
-     TOP TAB BAR — Professional pill
-     ========================================================== */
   .tab-bar {
-    max-width: 560px;
-    margin: 12px auto 18px;
-    background: var(--card);
-    border-radius: 100px;
-    padding: 6px;
-    display: flex;
-    gap: 4px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--line);
+    max-width: 520px; margin: 8px auto 16px; background: var(--card);
+    border-radius: 100px; padding: 5px; display: flex; gap: 4px;
+    box-shadow: var(--shadow-md), 0 0 0 1px rgba(0,0,0,0.02);
   }
   .tab-bar button {
-    flex: 1;
-    padding: 11px 8px;
-    border: none;
-    background: transparent;
-    color: var(--text-2);
-    font-size: 13px;
-    font-weight: 600;
-    border-radius: 40px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.18s ease;
-    letter-spacing: -0.1px;
-    white-space: nowrap;
-    touch-action: manipulation;
+    flex: 1; padding: 12px 6px; border: none; background: transparent;
+    color: var(--muted); font-size: 13px; font-weight: 600;
+    border-radius: 40px; cursor: pointer; font-family: inherit;
+    transition: all 0.2s ease; letter-spacing: -0.1px;
+    white-space: nowrap; touch-action: manipulation;
   }
   .tab-bar button.active {
     background: linear-gradient(135deg, var(--brand-2), var(--brand));
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(10, 102, 194, 0.3);
+    color: #fff; box-shadow: 0 4px 14px rgba(10,102,194,0.35);
   }
 
-  /* ==========================================================
-     BOTTOM NAV (Mobile)
-     ========================================================== */
   .bottom-nav {
     display: none;
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: #ffffff;
-    border-top: 1px solid var(--line);
-    box-shadow: 0 -8px 24px rgba(10, 26, 47, 0.06);
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #ffffff; border-top: 1px solid var(--line);
+    box-shadow: 0 -4px 20px rgba(0,20,40,0.08);
     z-index: 9998;
     padding-bottom: env(safe-area-inset-bottom, 0);
     padding-left: env(safe-area-inset-left, 0);
     padding-right: env(safe-area-inset-right, 0);
   }
   .bottom-nav-inner {
-    display: flex;
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 8px 4px;
-    gap: 2px;
+    display: flex; max-width: 560px; margin: 0 auto;
+    padding: 6px 4px; gap: 2px;
   }
   .bottom-nav button {
-    flex: 1;
-    background: transparent;
-    border: none;
-    padding: 8px 2px 6px;
-    cursor: pointer;
-    font-family: inherit;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 700;
-    border-radius: 14px;
-    transition: all 0.2s ease;
-    position: relative;
-    min-width: 0;
-    touch-action: manipulation;
+    flex: 1; background: transparent; border: none;
+    padding: 8px 2px 6px; cursor: pointer; font-family: inherit;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; color: var(--muted); font-size: 10px; font-weight: 700;
+    border-radius: 14px; transition: all 0.2s ease;
+    position: relative; min-width: 0; touch-action: manipulation;
   }
   .bottom-nav button .icon {
     width: 24px; height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     transition: transform 0.2s ease;
   }
   .bottom-nav button .icon svg {
-    width: 22px; height: 22px;
-    stroke-width: 2;
-    stroke: currentColor;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    width: 22px; height: 22px; stroke-width: 2;
+    stroke: currentColor; fill: none;
+    stroke-linecap: round; stroke-linejoin: round;
   }
   .bottom-nav button .label {
-    font-size: 10px;
-    font-weight: 700;
-    line-height: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 10px; font-weight: 700; line-height: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     max-width: 100%;
   }
   .bottom-nav button.active { color: var(--brand); }
   .bottom-nav button.active .icon { transform: translateY(-1px) scale(1.05); }
   .bottom-nav button.active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 28px;
-    height: 3px;
+    content: ''; position: absolute; top: 2px; left: 50%;
+    transform: translateX(-50%); width: 24px; height: 3px;
     background: linear-gradient(135deg, var(--brand-2), var(--brand));
-    border-radius: 0 0 3px 3px;
+    border-radius: 3px;
   }
-  .bottom-nav button:active { background: #f5f9ff; }
+  .bottom-nav button:active { background: #f0f5fc; }
 
-  /* ==========================================================
-     TAB CONTENT
-     ========================================================== */
   .tab-content { display: none; opacity: 0; transition: opacity 0.2s ease; }
   .tab-content.active { display: block; opacity: 1; }
 
-  .wrap {
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 0 14px;
-  }
-
-  /* ==========================================================
-     STATUS / LOADING
-     ========================================================== */
   .status {
-    text-align: center;
-    padding: 56px 24px;
-    color: var(--muted);
-    font-size: 15px;
-    font-weight: 500;
-    background: var(--card);
-    border-radius: var(--r-lg);
-    margin: 0 14px 24px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--line);
+    text-align: center; padding: 48px 24px; color: var(--muted);
+    font-size: 15px; font-weight: 500; background: var(--card);
+    border-radius: var(--radius); margin: 0 12px 20px;
+    box-shadow: var(--shadow-sm); border: 1px solid var(--line);
     line-height: 1.6;
   }
-  .status.error { color: var(--red); background: var(--red-bg); border-color: #fecaca; }
+  .status.error { color: var(--red); background: #fff5f5; border-color: #fecaca; }
   .status.error small { color: var(--muted); display: block; margin-top: 12px; font-size: 13px; }
   .status .spinner {
-    display: inline-block;
-    width: 30px; height: 30px;
-    border: 3px solid #e2e8f0;
-    border-top-color: var(--brand);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-bottom: 12px;
+    display: inline-block; width: 28px; height: 28px;
+    border: 3px solid #e0e7ef; border-top-color: var(--brand);
+    border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ==========================================================
-     FILTER BAR (top of Report tab)
-     ========================================================== */
-  .filter-bar {
-    background: var(--card);
-    border-radius: var(--r-md);
-    padding: 12px 14px;
-    margin-bottom: 16px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--line);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .filter-bar .fb-icon {
-    width: 34px; height: 34px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #e3f2fd, #dbeafe);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: var(--brand);
-  }
-  .filter-bar .fb-icon svg {
-    width: 16px; height: 16px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2.2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .filter-bar .fb-label {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    flex-shrink: 0;
-  }
-  .filter-bar select {
-    flex: 1;
-    padding: 10px 34px 10px 14px;
-    border-radius: 10px;
-    border: 1px solid var(--line);
-    background: var(--card)
-      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a8ba0' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>")
-      no-repeat right 10px center / 16px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    outline: none;
-    transition: border-color 0.15s;
-    min-width: 0;
-  }
-  .filter-bar select:focus {
-    border-color: var(--brand);
-    box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.1);
-  }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 0 12px; }
 
-  /* ==========================================================
-     HERO CARD (Sangi Parking header)
-     ========================================================== */
   .overall-card {
-    background: var(--card);
-    border-radius: var(--r-xl);
-    box-shadow: var(--shadow-lg);
-    margin-bottom: 22px;
-    overflow: hidden;
-    border: 1px solid var(--line);
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow-lg); margin-bottom: 22px;
+    overflow: hidden; border: 1px solid var(--line);
   }
-
   .oc-head {
-    background: linear-gradient(135deg, #062952 0%, #0a4a8f 40%, #0a66c2 100%);
-    color: #fff;
-    padding: 28px 22px 24px;
-    text-align: center;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    overflow: hidden;
-  }
-  .oc-head::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
+    background: linear-gradient(135deg, #0b3d6b 0%, #0a66c2 50%, #1e88e5 100%);
+    color: #fff; padding: 24px 20px 20px; text-align: center;
+    position: relative; display: flex; flex-direction: column;
+    align-items: center; gap: 10px;
   }
   .oc-head::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 4px; background: linear-gradient(90deg, #f5a623, #ffd966, #f5a623);
   }
   .oc-logo {
-    width: 68px; height: 68px;
-    border-radius: 18px;
-    object-fit: cover;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    border: 2px solid rgba(255,255,255,0.85);
-    background: #fff;
-    position: relative;
-    z-index: 1;
+    width: 64px; height: 64px; border-radius: 16px; object-fit: cover;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    border: 2px solid rgba(255,255,255,0.9); background: #fff;
   }
-  .oc-title {
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-    position: relative;
-    z-index: 1;
-  }
+  .oc-title { font-size: 23px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2; }
+
   .oc-refreshed {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    font-size: 11.5px;
+    gap: 6px;
+    font-size: 11px;
     font-weight: 600;
-    color: rgba(255,255,255,0.95);
-    background: rgba(255,255,255,0.12);
-    padding: 6px 13px;
+    color: rgba(255,255,255,0.92);
+    background: rgba(255,255,255,0.14);
+    padding: 5px 11px;
     border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.18);
     letter-spacing: 0.1px;
     line-height: 1;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    position: relative;
-    z-index: 1;
+    margin-top: 2px;
     transition: all 0.3s ease;
   }
   .oc-refreshed .dot-refresh {
-    width: 6px; height: 6px;
-    border-radius: 50%;
+    width: 6px; height: 6px; border-radius: 50%;
     background: #4ade80;
-    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.25);
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.3);
     flex-shrink: 0;
   }
   .oc-refreshed.stale .dot-refresh {
     background: #fbbf24;
-    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.25);
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.3);
   }
   .oc-refreshed.offline .dot-refresh {
     background: #f87171;
-    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.25);
+    box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.3);
   }
   .oc-refreshed .text { white-space: nowrap; }
   .oc-refreshed .text strong { font-weight: 800; }
-  .oc-refreshed.refreshing .dot-refresh { animation: pulse 1.2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .oc-refreshed.refreshing .dot-refresh {
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
 
-  .oc-body { padding: 8px 22px 22px; }
+  .oc-body { padding: 6px 20px 18px; }
+  .oc-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 13px 0; border-bottom: 1px solid var(--line); gap: 12px;
+  }
+  .oc-row:last-child { border-bottom: none; }
+  .oc-row .k { color: var(--muted); font-size: 13px; font-weight: 600; flex-shrink: 0; }
+  .oc-row .v {
+    color: var(--text); font-weight: 700; font-size: 15px; text-align: right;
+    font-variant-numeric: tabular-nums; word-break: break-word; letter-spacing: -0.2px;
+  }
+  .oc-row.primary .v { font-size: 17px; color: #0a4a8c; font-weight: 800; }
+  .oc-row.highlight {
+    background: linear-gradient(90deg, #e8f0fe 0%, #f5f9ff 100%);
+    margin: 8px -20px 0; padding: 16px 20px; border-bottom: none; border-radius: 14px;
+  }
+  .oc-row.highlight .k { color: #0a4a8c; font-weight: 800; font-size: 13.5px; }
+  .oc-row.highlight .v { font-size: 19px; font-weight: 800; color: #0a4a8c; letter-spacing: -0.3px; }
+  .oc-row.highlight .v .unit { font-size: 11.5px; font-weight: 600; opacity: 0.7; margin-left: 4px; }
 
-  /* ==========================================================
-     KEY METRICS — 2x2 grid
-     ========================================================== */
-  .metrics-grid {
+  .oc-row.combined {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
+    margin: 10px -20px -18px; padding: 18px 20px; border-bottom: none;
+    color: #fff; border-radius: 0 0 var(--radius) var(--radius);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .oc-row.combined .k { color: #fff; font-weight: 800; font-size: 13.5px; opacity: 0.95; }
+  .oc-row.combined .v {
+    font-size: 21px; font-weight: 800; color: #fff;
+    letter-spacing: -0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.15); text-align: left;
+  }
+  .oc-row.combined .v .unit { font-size: 12px; font-weight: 600; opacity: 0.8; margin-left: 4px; }
+
+  .combined-values {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 4px 0 18px;
-  }
-  .metric-tile {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    padding: 14px 14px 13px;
-    position: relative;
-    overflow: hidden;
-  }
-  .metric-tile::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px; height: 100%;
-    background: var(--brand);
-  }
-  .metric-tile.gross::before { background: var(--brand); }
-  .metric-tile.exp::before { background: var(--red); }
-  .metric-tile.net::before { background: var(--green); }
-  .metric-tile.avg::before { background: var(--purple); }
-  .metric-tile .mt-lbl {
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    font-weight: 800;
-    margin-bottom: 6px;
-    line-height: 1.2;
-  }
-  .metric-tile .mt-val {
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: -0.3px;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.2;
-    color: var(--text);
-    word-break: break-word;
-  }
-  .metric-tile .mt-val .mt-unit {
-    font-size: 10px;
-    font-weight: 700;
-    opacity: 0.6;
-    margin-left: 2px;
-  }
-  .metric-tile.gross .mt-val { color: var(--brand-dark); }
-  .metric-tile.exp .mt-val { color: var(--red); }
-  .metric-tile.net .mt-val { color: var(--green-dark); }
-  .metric-tile.avg .mt-val { color: var(--purple); font-size: 15px; }
-
-  /* ==========================================================
-     ROWS (dates etc)
-     ========================================================== */
-  .row-list {
-    background: #fafbfd;
-    border: 1px solid var(--line-2);
-    border-radius: var(--r-md);
-    overflow: hidden;
-    margin-bottom: 18px;
-  }
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 11px 14px;
     gap: 12px;
-    border-bottom: 1px solid var(--line-2);
-    font-size: 13px;
+    padding-bottom: 4px;
   }
-  .info-row:last-child { border-bottom: none; }
-  .info-row .k {
-    color: var(--muted);
-    font-weight: 600;
-    font-size: 12.5px;
-    flex-shrink: 0;
+  .combined-values .cv-item {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 10px 12px;
   }
-  .info-row .v {
-    color: var(--text);
-    font-weight: 700;
-    font-size: 13px;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.1px;
-  }
-
-  /* ==========================================================
-     EARNINGS CARD — green
-     ========================================================== */
-  .earnings-card {
-    background: linear-gradient(135deg, #052e16 0%, #14532d 50%, #166534 100%);
-    border-radius: var(--r-lg);
-    padding: 20px 18px 18px;
-    color: #fff;
-    box-shadow: 0 10px 30px rgba(20, 83, 45, 0.25);
-    position: relative;
-    overflow: hidden;
-  }
-  .earnings-card::before {
-    content: '';
-    position: absolute;
-    top: -60%;
-    right: -30%;
-    width: 250px;
-    height: 250px;
-    background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-  .earnings-card .ec-title {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    font-weight: 800;
-    color: #86efac;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: relative;
-  }
-  .earnings-card .ec-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: rgba(134, 239, 172, 0.25);
-  }
-
-  .ba-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 14px;
-    position: relative;
-  }
-  .ba-box {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.14);
-    border-radius: var(--r-md);
-    padding: 12px 12px 11px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-  .ba-box.after {
-    background: rgba(74, 222, 128, 0.18);
-    border-color: rgba(74, 222, 128, 0.4);
-  }
-  .ba-box .ba-lbl {
-    font-size: 9.5px;
+  .combined-values .cv-lbl {
+    font-size: 10.5px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 800;
-    color: #a7f3d0;
-    margin-bottom: 6px;
+    opacity: 0.9;
+    margin-bottom: 5px;
     line-height: 1.2;
   }
-  .ba-box .ba-val {
-    font-size: 16px;
+  .combined-values .cv-val {
+    font-size: 18px;
     font-weight: 800;
-    letter-spacing: -0.3px;
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.4px;
     line-height: 1.15;
-    color: #ffffff;
   }
-  .ba-box .ba-val .ba-unit {
-    font-size: 10px;
-    font-weight: 700;
-    opacity: 0.7;
+  .combined-values .cv-val .cv-unit {
+    font-size: 10.5px;
+    font-weight: 600;
+    opacity: 0.75;
     margin-left: 3px;
   }
+  .combined-values .cv-item.total {
+    background: rgba(255, 217, 102, 0.22);
+    border-color: rgba(255, 217, 102, 0.5);
+  }
+  .combined-values .cv-item.total .cv-val { color: #ffe9a8; }
+  .combined-values .cv-item.last { background: rgba(255,255,255,0.08); }
 
-  /* Your half (highlighted) */
-  .your-earning {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    border-radius: var(--r-md);
-    padding: 16px 18px;
-    text-align: center;
-    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 14px;
+  .combined-details {
+    display: flex; flex-direction: column; gap: 7px;
+    padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 12.5px;
   }
-  .your-earning::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -20%;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
+  .combined-details .item { display: flex; align-items: center; gap: 8px; color: #fff; opacity: 0.95; }
+  .combined-details .item .dot { width: 7px; height: 7px; border-radius: 50%; background: #ffd966; flex-shrink: 0; }
+  .combined-details .item .label { font-weight: 600; opacity: 0.9; flex: 1; }
+  .combined-details .item .value {
+    font-weight: 800; color: #ffd966;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
   }
-  .your-earning .ye-lbl {
-    font-size: 10.5px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 800;
-    color: #78350f;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    position: relative;
-  }
-  .your-earning .ye-val {
-    font-size: 28px;
-    font-weight: 900;
-    color: #431407;
-    letter-spacing: -1px;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.05;
-    position: relative;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.2);
-  }
-  .your-earning .ye-val .ye-unit {
-    font-size: 13px;
-    font-weight: 800;
-    opacity: 0.75;
-    margin-left: 4px;
-  }
-  .your-earning .ye-sub {
-    font-size: 10.5px;
-    font-weight: 700;
-    opacity: 0.8;
-    margin-top: 6px;
-    color: #78350f;
-    position: relative;
-  }
+  .combined-details .item .value.neg { color: #ffb3b3; }
 
-  /* Expense breakdown list */
-  .expense-list {
-    background: rgba(255,255,255,0.06);
-    border-radius: var(--r-md);
-    padding: 4px 2px;
-    border: 1px solid rgba(255,255,255,0.1);
-    position: relative;
-  }
-  .expense-list .ee-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 12px;
-    font-size: 12.5px;
-    color: #fff;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  .expense-list .ee-row:last-child { border-bottom: none; }
-  .expense-list .ee-row .ee-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #fbbf24;
-    flex-shrink: 0;
-  }
-  .expense-list .ee-row .ee-label {
-    flex: 1;
-    font-weight: 600;
-    color: #d1fae5;
-    opacity: 0.95;
-    line-height: 1.3;
-  }
-  .expense-list .ee-row .ee-value {
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    color: #fbbf24;
-    white-space: nowrap;
-    letter-spacing: -0.2px;
-  }
-  .expense-list .ee-row .ee-value.deduct { color: #fca5a5; }
-
-  /* ==========================================================
-     SECTION HEADER
-     ========================================================== */
   .section-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 26px 4px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 24px 4px 12px;
   }
   .section-label {
-    font-size: 11.5px;
-    font-weight: 800;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
+    font-size: 11.5px; font-weight: 800; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.2px;
   }
   .section-count {
-    font-size: 11px;
-    color: var(--brand-dark);
-    font-weight: 700;
-    background: #e3f2fd;
-    padding: 4px 11px;
-    border-radius: 20px;
+    font-size: 11px; color: var(--muted); font-weight: 700;
+    background: #e8ecf2; padding: 4px 11px; border-radius: 20px;
   }
 
-  /* ==========================================================
-     MONTH & PERIOD LISTS
-     ========================================================== */
   .month-list, .period-list {
-    background: var(--card);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-    border: 1px solid var(--line);
-    margin-bottom: 8px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow-md); overflow: hidden;
+    border: 1px solid var(--line); margin-bottom: 6px;
   }
   .month-row, .period-row {
-    padding: 16px 16px 16px 14px;
-    border-bottom: 1px solid var(--line-2);
-    display: grid;
-    grid-template-columns: 30px 1fr;
-    gap: 12px;
-    align-items: start;
+    padding: 16px 16px 16px 14px; border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start;
   }
   .month-row:last-child, .period-row:last-child { border-bottom: none; }
-
   .month-row.current {
-    background: linear-gradient(180deg, #fffdf7 0%, #fffbf0 100%);
-    position: relative;
+    background: linear-gradient(180deg, #fffdf5 0%, #fffbf0 100%); position: relative;
   }
   .month-row.current::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-    background: linear-gradient(180deg, #fbbf24, #f59e0b);
-    border-radius: 0 3px 3px 0;
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px; background: linear-gradient(180deg, var(--amber), #fbbf24);
   }
-
   .row-sr {
-    font-size: 12.5px;
-    font-weight: 800;
-    color: var(--muted);
-    text-align: center;
-    background: #f1f5f9;
-    border-radius: 8px;
-    padding: 5px 0;
-    margin-top: 3px;
-    font-variant-numeric: tabular-nums;
-    min-height: 28px;
+    font-size: 12.5px; font-weight: 800; color: #8fa0b2;
+    text-align: center; background: #f1f6fb; border-radius: 8px;
+    padding: 5px 0; margin-top: 2px;
+    font-variant-numeric: tabular-nums; min-height: 28px;
   }
   .mr-head, .pr-head {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 14px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px; margin-bottom: 12px;
   }
   .mr-title {
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--text);
-    line-height: 1.2;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    letter-spacing: -0.3px;
+    font-size: 16px; font-weight: 800; color: var(--text);
+    line-height: 1.2; display: flex; align-items: center;
+    gap: 8px; flex-wrap: wrap; letter-spacing: -0.3px;
   }
   .mr-badge {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    color: #fff;
-    font-size: 9.5px;
-    font-weight: 800;
-    padding: 3px 9px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+    background: linear-gradient(135deg, #fbbf24, var(--amber));
+    color: #fff; font-size: 9.5px; font-weight: 800;
+    padding: 3px 9px; border-radius: 20px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    box-shadow: 0 2px 6px rgba(245,166,35,0.35);
   }
-  .mr-range {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 600;
-    margin-top: 4px;
-    letter-spacing: -0.1px;
-  }
+  .mr-range { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 4px; }
   .pr-range {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.3;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 14px; font-weight: 700; color: var(--text);
+    line-height: 1.3; flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .mr-days, .pr-days {
-    background: #e3f2fd;
-    color: var(--brand-dark);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 11.5px;
-    font-weight: 800;
-    white-space: nowrap;
-    flex-shrink: 0;
-    border: 1px solid rgba(10, 102, 194, 0.12);
-    font-variant-numeric: tabular-nums;
+    background: linear-gradient(135deg, #e3f2fd, #dbeafe);
+    color: #0a4a8c; padding: 5px 12px; border-radius: 20px;
+    font-size: 11.5px; font-weight: 800; white-space: nowrap; flex-shrink: 0;
+    border: 1px solid rgba(10,102,194,0.12); font-variant-numeric: tabular-nums;
   }
-
-  .mr-metrics, .pr-metrics {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
+  .mr-metrics, .pr-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
   .mr-metric, .pr-metric {
-    text-align: center;
-    padding: 10px 4px 9px;
-    border-radius: 11px;
-    background: #f8fafc;
-    min-width: 0;
-    border: 1px solid #edf2f7;
+    text-align: center; padding: 9px 4px 8px; border-radius: 12px;
+    background: #f8fafc; min-width: 0; border: 1px solid #edf2f8;
   }
   .mr-metric .lbl, .pr-metric .lbl {
-    font-size: 9.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    font-weight: 800;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 4px;
+    font-size: 9.5px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.4px; font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px;
   }
   .mr-metric .val, .pr-metric .val {
-    font-size: 14px;
-    font-weight: 800;
-    line-height: 1.15;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.3px;
+    font-size: 14px; font-weight: 800; line-height: 1.15;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.3px;
   }
   .mr-metric.credit, .pr-metric.credit { background: #f0fdf4; border-color: #dcfce7; }
   .mr-metric.credit .val, .pr-metric.credit .val { color: var(--green-dark); }
@@ -846,974 +363,678 @@
   .mr-metric.exp .val, .pr-metric.exp .val { color: var(--red); }
   .mr-metric.gross, .pr-metric.gross { background: #eff6ff; border-color: #dbeafe; }
   .mr-metric.gross .val, .pr-metric.gross .val { color: var(--brand); }
-  .mr-metric.avg, .pr-metric.avg { background: #f5f3ff; border-color: #e9d5ff; }
-  .mr-metric.avg .val, .pr-metric.avg .val { color: var(--purple); }
+  .mr-metric.avg, .pr-metric.avg {
+    background: linear-gradient(135deg, #f5f3ff, #ede9fe); border-color: #ddd6fe;
+  }
+  .mr-metric.avg .val, .pr-metric.avg .val { color: var(--purple-dark); }
 
-  /* Monthly earnings card (inside month row) */
-  .mr-earnings {
-    margin-top: 12px;
-    padding: 14px 14px 12px;
-    background: linear-gradient(135deg, #052e16 0%, #14532d 60%, #166534 100%);
-    border-radius: var(--r-md);
-    color: #fff;
-    display: flex;
-    flex-direction: column;
+  .mr-sheet-strip {
+    margin-top: 12px; padding: 11px 14px;
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border-radius: 14px; display: flex; align-items: center;
+    justify-content: space-between; gap: 12px;
+    border: 1px solid #e9d5ff; border-left: 4px solid var(--purple);
+  }
+  .mr-sheet-strip .lbl-block { min-width: 0; flex: 1; }
+  .mr-sheet-strip .sheet-lbl {
+    font-size: 10.5px; color: var(--purple-dark);
+    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 800;
+  }
+  .mr-sheet-strip .sheet-sub {
+    font-size: 10.5px; color: var(--purple);
+    font-weight: 600; margin-top: 2px; opacity: 0.85;
+  }
+  .mr-sheet-strip .val-block { text-align: right; flex-shrink: 0; }
+  .mr-sheet-strip .sheet-val {
+    font-size: 16px; font-weight: 800; color: var(--purple-dark);
+    font-variant-numeric: tabular-nums; letter-spacing: -0.3px; white-space: nowrap;
+  }
+  .mr-sheet-strip .sheet-val .unit {
+    font-size: 10.5px; font-weight: 600; opacity: 0.65; margin-left: 3px;
+  }
+
+  .mr-combined-strip {
+    margin-top: 10px; padding: 14px 16px;
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
+    border-radius: 14px; display: flex; flex-direction: column; gap: 10px;
+    color: #fff; box-shadow: 0 4px 12px rgba(15,75,30,0.2);
+  }
+  .mr-combined-strip .top-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .mr-combined-strip .lbl-block { min-width: 0; flex: 1; }
+  .mr-combined-strip .c-lbl {
+    font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.7px; font-weight: 800; opacity: 0.95;
+  }
+  .mr-combined-strip .c-sub {
+    font-size: 10.5px; font-weight: 600; margin-top: 3px;
+    opacity: 0.85; letter-spacing: 0.05px;
+  }
+  .mr-combined-strip .c-val {
+    font-size: 18px; font-weight: 800;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.3px;
+    white-space: nowrap; flex-shrink: 0;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  .mr-combined-strip .c-val .unit {
+    font-size: 11px; font-weight: 600; opacity: 0.8; margin-left: 4px;
+  }
+  .mr-combined-strip .combined-values {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
-    box-shadow: 0 6px 18px rgba(20, 83, 45, 0.2);
+    padding-bottom: 4px;
   }
-  .mr-earnings .ec-title {
-    font-size: 10px;
+  .mr-combined-strip .combined-values .cv-item {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 8px 10px;
+  }
+  .mr-combined-strip .combined-values .cv-lbl {
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.4px;
     font-weight: 800;
-    color: #86efac;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    opacity: 0.9;
+    margin-bottom: 4px;
+    line-height: 1.2;
   }
-  .mr-earnings .ec-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: rgba(134, 239, 172, 0.25);
+  .mr-combined-strip .combined-values .cv-val {
+    font-size: 15px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.3px;
+    line-height: 1.15;
   }
-  .mr-earnings .ba-grid { margin-bottom: 0; gap: 8px; }
-  .mr-earnings .ba-box { padding: 10px 10px 9px; }
-  .mr-earnings .ba-box .ba-lbl { font-size: 9px; margin-bottom: 4px; }
-  .mr-earnings .ba-box .ba-val { font-size: 14.5px; }
-  .mr-earnings .your-earning {
-    padding: 12px 14px;
-    margin-bottom: 0;
+  .mr-combined-strip .combined-values .cv-val .cv-unit {
+    font-size: 9.5px;
+    font-weight: 600;
+    opacity: 0.75;
+    margin-left: 2px;
   }
-  .mr-earnings .your-earning .ye-lbl { font-size: 9.5px; margin-bottom: 5px; }
-  .mr-earnings .your-earning .ye-val { font-size: 22px; }
-  .mr-earnings .expense-list { padding: 2px; }
-  .mr-earnings .expense-list .ee-row { padding: 7px 10px; font-size: 11.5px; }
-
-  /* ==========================================================
-     DAILY SUMMARY & TABLE
-     ========================================================== */
-  .daily-section-title {
+  .mr-combined-strip .combined-values .cv-item.total {
+    background: rgba(255, 217, 102, 0.22);
+    border-color: rgba(255, 217, 102, 0.5);
+  }
+  .mr-combined-strip .combined-values .cv-item.total .cv-val { color: #ffe9a8; }
+  .mr-combined-strip .combined-values .cv-item.last { background: rgba(255,255,255,0.08); }
+  .mr-combined-strip .breakdown {
+    display: flex; flex-direction: column; gap: 6px;
+    padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2);
     font-size: 11.5px;
-    font-weight: 800;
-    color: var(--muted);
+  }
+  .mr-combined-strip .breakdown .item {
+    display: flex; align-items: center; gap: 8px; opacity: 0.95;
+  }
+  .mr-combined-strip .breakdown .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #ffd966; flex-shrink: 0;
+  }
+  .mr-combined-strip .breakdown .label {
+    font-weight: 600; opacity: 0.9; flex: 1;
+  }
+  .mr-combined-strip .breakdown .value {
+    font-weight: 800; color: #ffd966;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .mr-combined-strip .breakdown .value.neg { color: #ffb3b3; }
+  .mr-combined-strip .breakdown .item.deduction {
+    background: rgba(255, 179, 179, 0.1);
+    padding: 5px 8px;
+    border-radius: 8px;
+    margin: 0 -8px;
+  }
+  .mr-combined-strip .breakdown .item.deduction .dot { background: #ffb3b3; }
+  .mr-combined-strip .breakdown .item.deduction .label { color: #ffd1d1; }
+  .mr-combined-strip .breakdown .item.deduction .value { color: #ffb3b3; }
+
+  /* Net total row inside green card */
+  .net-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: rgba(255, 233, 168, 0.18);
+    border: 1.5px solid rgba(255, 217, 102, 0.5);
+    border-radius: 12px;
+    margin-top: 4px;
+  }
+  .net-total-row .ntr-lbl {
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    padding: 26px 4px 12px;
+    letter-spacing: 0.6px;
+    font-weight: 800;
+    color: #ffe9a8;
+    line-height: 1.2;
+  }
+  .net-total-row .ntr-val {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.4px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    white-space: nowrap;
+  }
+  .net-total-row .ntr-val .ntr-unit {
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.85;
+    margin-left: 4px;
   }
 
+  .daily-section-title {
+    font-size: 11.5px; font-weight: 800; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.2px; padding: 24px 4px 12px;
+  }
   .table-scroll {
-    max-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: var(--r-md);
-    box-shadow: var(--shadow-sm);
-    background: var(--card);
-    border: 1px solid var(--line);
+    max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-sm); box-shadow: var(--shadow-md);
+    background: var(--card); border: 1px solid var(--line);
   }
   .table-scroll::-webkit-scrollbar { height: 5px; }
-  .table-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  .table-scroll::-webkit-scrollbar-thumb { background: #c8d4e0; border-radius: 3px; }
 
-  .data-table {
-    width: 100%;
-    min-width: 620px;
-    border-collapse: collapse;
-    font-size: 13.5px;
-  }
+  .data-table { width: 100%; min-width: 620px; border-collapse: collapse; font-size: 13.5px; }
   .data-table thead th {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    color: #fff;
-    padding: 13px 12px;
-    text-align: left;
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    white-space: nowrap;
+    background: linear-gradient(135deg, #1f2e3d, #0b1e33);
+    color: #fff; padding: 13px 12px; text-align: left;
+    font-weight: 700; font-size: 11px; letter-spacing: 0.5px;
+    text-transform: uppercase; white-space: nowrap;
   }
   .data-table thead th.num { text-align: right; }
   .data-table tbody td {
-    padding: 12px;
-    border-bottom: 1px solid var(--line-2);
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
+    padding: 12px 12px; border-bottom: 1px solid var(--line);
+    white-space: nowrap; font-variant-numeric: tabular-nums;
   }
   .data-table tbody td.num { text-align: right; font-weight: 700; }
-  .data-table tbody td.date { color: var(--text-2); font-size: 12.5px; font-weight: 500; }
+  .data-table tbody td.date { color: var(--muted); font-size: 12.5px; font-weight: 500; }
   .data-table tbody tr:nth-child(even) { background: #fafbfd; }
   .data-table td.gross { color: var(--brand); }
   .data-table td.exp { color: var(--red); }
   .data-table td.net { color: var(--green-dark); }
   .data-table tfoot td {
-    padding: 14px 12px;
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    color: #fff;
-    font-weight: 800;
-    font-size: 13.5px;
-    border-top: 3px solid #f59e0b;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
+    padding: 14px 12px; background: linear-gradient(135deg, #1f2e3d, #0b1e33);
+    color: #fff; font-weight: 800; font-size: 13.5px;
+    border-top: 3px solid var(--amber);
+    white-space: nowrap; font-variant-numeric: tabular-nums;
   }
   .data-table tfoot td.num { text-align: right; }
-  .data-table tfoot td.gross { color: #93c5fd; }
+  .data-table tfoot td.gross { color: #90caf9; }
   .data-table tfoot td.exp { color: #fca5a5; }
   .data-table tfoot td.net { color: #86efac; }
 
   .hint {
-    text-align: center;
-    font-size: 11.5px;
-    color: var(--muted);
-    padding: 12px 0 6px;
-    font-weight: 500;
+    text-align: center; font-size: 11.5px; color: var(--muted);
+    padding: 12px 0 6px; font-weight: 500;
   }
 
-  /* ==========================================================
-     COMPARE CARD (Last 2 Months)
-     ========================================================== */
   .cmp-card {
-    background: var(--card);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-md);
-    overflow: hidden;
-    border: 1px solid var(--line);
-    margin-bottom: 16px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow-lg); overflow: hidden;
+    border: 1px solid var(--line); margin-bottom: 14px;
   }
   .cmp-head {
-    background: linear-gradient(135deg, #062952, #0a66c2);
-    color: #fff;
-    padding: 20px 16px 18px;
-    text-align: center;
+    background: linear-gradient(135deg, #0b3d6b, #0a66c2);
+    color: #fff; padding: 18px 16px 16px; text-align: center;
   }
-  .cmp-head h1 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
+  .cmp-head h1 { margin: 0; font-size: 16px; font-weight: 800; }
   .cmp-head p { margin: 5px 0 0; font-size: 12px; opacity: 0.9; font-weight: 500; }
   .cmp-counts {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    background: #f8fafc;
-    border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: #f8fafc; border-bottom: 1px solid var(--line);
   }
-  .cmp-counts > div {
-    padding: 14px 8px;
-    text-align: center;
-    border-right: 1px solid var(--line);
-  }
+  .cmp-counts > div { padding: 14px 8px; text-align: center; border-right: 1px solid var(--line); }
   .cmp-counts > div:last-child { border-right: none; }
-  .cmp-counts .num {
-    font-size: 22px;
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.5px;
-  }
+  .cmp-counts .num { font-size: 22px; font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; }
   .cmp-counts .lbl {
-    font-size: 10.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 4px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0 4px;
+    font-size: 10.5px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-top: 4px; font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px;
   }
   .cmp-counts .c1 { color: var(--brand); }
   .cmp-counts .c2 { color: var(--green-dark); }
   .cmp-cols {
-    display: grid;
-    grid-template-columns: 34px 1fr 1fr;
-    background: #f8fafc;
-    border-bottom: 2px solid var(--line);
-    font-size: 11.5px;
-    font-weight: 800;
+    display: grid; grid-template-columns: 34px 1fr 1fr;
+    background: #f8fafc; border-bottom: 2px solid var(--line);
+    font-size: 11.5px; font-weight: 800;
   }
   .cmp-cols > div {
-    padding: 11px 6px;
-    text-align: center;
-    border-right: 1px solid var(--line);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    padding: 11px 6px; text-align: center; border-right: 1px solid var(--line);
+    text-transform: uppercase; letter-spacing: 0.4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .cmp-cols > div:last-child { border-right: none; }
   .cmp-cols .m1 { color: var(--brand); }
   .cmp-cols .m2 { color: var(--green-dark); }
-  .cmp-cols .sr-h { color: var(--muted); font-size: 10.5px; }
+  .cmp-cols .sr-h { color: #8fa0b2; font-size: 10.5px; }
   .cmp-sec {
-    padding: 9px 14px;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.7px;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
+    padding: 8px 14px; font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.7px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   }
   .cmp-sec.ok { background: #ecfdf5; color: var(--green-dark); }
   .cmp-sec.warn { background: #fff7ed; color: #c2410c; }
-  .cmp-sec.exp { background: #fef2f2; color: #991b1b; }
   .cmp-row {
-    display: grid;
-    grid-template-columns: 34px 1fr 1fr;
-    border-bottom: 1px solid var(--line);
-    background: var(--card);
+    display: grid; grid-template-columns: 34px 1fr 1fr;
+    border-bottom: 1px solid var(--line); background: var(--card);
   }
   .cmp-row:last-child { border-bottom: none; }
   .cmp-row > div {
-    padding: 10px 8px;
-    min-height: 52px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-right: 1px solid #f1f5f9;
-    overflow: hidden;
-    min-width: 0;
+    padding: 10px 8px; min-height: 52px;
+    display: flex; flex-direction: column; justify-content: center;
+    border-right: 1px solid #f1f5f9; overflow: hidden; min-width: 0;
   }
   .cmp-row > div:last-child { border-right: none; }
   .cmp-sr {
-    font-size: 11.5px;
-    font-weight: 800;
-    color: var(--muted);
-    text-align: center;
-    background: #f8fafc;
-    align-items: center;
+    font-size: 11.5px; font-weight: 800; color: #8fa0b2;
+    text-align: center; background: #f8fafc; align-items: center;
   }
   .cmp-name {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-weight: 700;
-    font-size: 12.5px;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
+    display: flex; align-items: center; gap: 5px;
+    font-weight: 700; font-size: 12.5px; color: var(--text);
+    white-space: nowrap; overflow: hidden;
   }
   .cmp-name .nm { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .cmp-amt {
-    font-size: 13px;
-    font-weight: 800;
-    margin-top: 4px;
-    letter-spacing: -0.3px;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 13px; font-weight: 800; margin-top: 4px;
+    letter-spacing: -0.3px; font-variant-numeric: tabular-nums;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .cmp-row .m1-cell .cmp-amt { color: var(--brand); }
   .cmp-row .m2-cell .cmp-amt { color: var(--green-dark); }
   .cmp-missing {
-    color: #cbd5e1;
-    font-style: italic;
-    font-size: 11.5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 500;
+    color: #cbd5e1; font-style: italic; font-size: 11.5px;
+    display: flex; align-items: center; justify-content: center; font-weight: 500;
   }
   .cmp-badge {
-    font-size: 9.5px;
-    font-weight: 800;
-    padding: 2.5px 6px;
-    border-radius: 6px;
-    flex-shrink: 0;
-    line-height: 1;
+    font-size: 9.5px; font-weight: 800; padding: 2.5px 6px;
+    border-radius: 6px; flex-shrink: 0; line-height: 1;
   }
   .cmp-badge.up { background: #ecfdf5; color: var(--green-dark); }
   .cmp-badge.down { background: #fef2f2; color: var(--red); }
   .cmp-badge.same { background: #f1f5f9; color: var(--muted); }
   .cmp-subtotal {
-    display: grid;
-    grid-template-columns: 34px 1fr 1fr;
-    background: #f8fafc;
-    border-top: 2px solid var(--line);
-    font-weight: 800;
+    display: grid; grid-template-columns: 34px 1fr 1fr;
+    background: #f8fafc; border-top: 2px solid var(--line); font-weight: 800;
   }
   .cmp-subtotal > div {
-    padding: 14px 6px;
-    text-align: center;
-    border-right: 1px solid var(--line);
-    min-width: 0;
+    padding: 14px 6px; text-align: center;
+    border-right: 1px solid var(--line); min-width: 0;
   }
   .cmp-subtotal > div:last-child { border-right: none; }
   .cmp-subtotal .sr-blank { background: #f8fafc; }
   .cmp-subtotal .mname {
-    font-size: 10.5px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0 3px;
+    font-size: 10.5px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.4px; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; padding: 0 3px;
   }
   .cmp-subtotal .mname.v1 { color: var(--brand); }
   .cmp-subtotal .mname.v2 { color: var(--green-dark); }
   .cmp-subtotal .val {
-    font-size: 15px;
-    margin-top: 5px;
-    font-weight: 800;
-    letter-spacing: -0.3px;
-    font-variant-numeric: tabular-nums;
+    font-size: 15px; margin-top: 5px; font-weight: 800;
+    letter-spacing: -0.3px; font-variant-numeric: tabular-nums;
   }
   .cmp-subtotal .val.v1 { color: var(--brand); }
   .cmp-subtotal .val.v2 { color: var(--green-dark); }
   .cmp-subtotal .cnt {
-    font-size: 10.5px;
-    color: var(--muted);
-    font-weight: 600;
-    margin-top: 3px;
+    font-size: 10.5px; color: var(--muted); font-weight: 600; margin-top: 3px;
   }
   .cmp-grand {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: #fff;
-    padding: 18px 16px;
-    text-align: center;
+    background: linear-gradient(135deg, #0b1e33, #1f2e3d);
+    color: #fff; padding: 18px 16px; text-align: center;
   }
   .cmp-grand .lbl {
-    font-size: 11px;
-    opacity: 0.75;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 700;
+    font-size: 11px; opacity: 0.7; text-transform: uppercase;
+    letter-spacing: 1px; font-weight: 700;
   }
-  .cmp-grand .val {
-    font-size: 24px;
-    font-weight: 800;
-    margin-top: 6px;
-    letter-spacing: -0.5px;
-  }
-  .cmp-grand .cnt {
-    font-size: 11.5px;
-    opacity: 0.75;
-    margin-top: 8px;
-    font-weight: 500;
-  }
+  .cmp-grand .val { font-size: 24px; font-weight: 800; margin-top: 6px; letter-spacing: -0.5px; }
+  .cmp-grand .cnt { font-size: 11.5px; opacity: 0.75; margin-top: 8px; font-weight: 500; }
   .cmp-diff {
-    margin: 14px 16px 18px;
-    padding: 14px 18px;
-    border-radius: var(--r-md);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: -0.2px;
+    margin: 14px 16px 18px; padding: 14px 18px; border-radius: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: 800; font-size: 15px; letter-spacing: -0.2px;
   }
   .cmp-diff.pos { background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: var(--green-dark); }
   .cmp-diff.neg { background: linear-gradient(135deg, #fef2f2, #fecaca); color: var(--red); }
   .cmp-diff.zero { background: #f1f5f9; color: var(--muted); }
 
-  /* ==========================================================
-     ALL MONTHS TABLE
-     ========================================================== */
   .table-wrap {
-    max-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 0 14px 14px;
+    max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    padding: 0 12px 12px;
   }
   .table-wrap::-webkit-scrollbar { height: 6px; }
-  .table-wrap::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-
+  .table-wrap::-webkit-scrollbar-thumb { background: #c8d4e0; border-radius: 3px; }
   .mtable {
-    display: inline-grid;
-    grid-auto-flow: column;
-    border-radius: var(--r-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-    background: var(--card);
-    min-width: 100%;
-    border: 1px solid var(--line);
+    display: inline-grid; grid-auto-flow: column;
+    border-radius: var(--radius-sm); overflow: hidden;
+    box-shadow: var(--shadow-lg); background: var(--card);
+    min-width: 100%; border: 1px solid var(--line);
   }
   .mcol {
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
     border-right: 1px solid var(--line);
-    min-width: 170px;
-    max-width: 170px;
+    min-width: 150px; max-width: 150px;
   }
   .mcol:last-child { border-right: none; }
   .mcol-head {
     background: linear-gradient(135deg, #1e88e5, #0a66c2);
-    color: #fff;
-    padding: 14px 10px;
-    text-align: center;
-    font-weight: 800;
-    font-size: 13.5px;
+    color: #fff; padding: 14px 10px; text-align: center;
+    font-weight: 800; font-size: 13.5px;
   }
   .mcol:nth-child(even) .mcol-head {
-    background: linear-gradient(135deg, #16a34a, #15803d);
+    background: linear-gradient(135deg, #43a047, #1e7e34);
   }
   .mcol-head .mname { font-size: 14px; font-weight: 800; letter-spacing: -0.2px; }
   .mcol-head .mcount {
-    font-size: 10.5px;
-    opacity: 0.9;
-    margin-top: 5px;
-    font-weight: 500;
+    font-size: 10.5px; opacity: 0.9; margin-top: 5px; font-weight: 500;
   }
   .mcol-body { flex: 1; }
   .mrow {
-    display: flex;
-    flex-direction: column;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--line-2);
-    min-height: 56px;
-    justify-content: center;
+    display: flex; flex-direction: column; padding: 10px 12px;
+    border-bottom: 1px solid var(--line); min-height: 56px; justify-content: center;
   }
-  .mrow.expense-row { background: #fef2f2; }
-  .mrow.expense-row .nm { color: #991b1b; font-weight: 800; }
-  .mrow.expense-row .amt { color: #991b1b !important; }
   .mrow .top {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 700;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
+    display: flex; align-items: center; gap: 6px;
+    font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden;
   }
   .mrow .top .srn {
-    font-size: 10.5px;
-    color: var(--muted);
-    font-weight: 800;
-    background: #f1f5f9;
-    padding: 2px 7px;
-    border-radius: 6px;
-    flex-shrink: 0;
+    font-size: 10.5px; color: #8fa0b2; font-weight: 800;
+    background: #f1f6fb; padding: 2px 7px; border-radius: 6px; flex-shrink: 0;
   }
   .mrow .top .nm { overflow: hidden; text-overflow: ellipsis; }
   .mrow .amt {
-    font-size: 13.5px;
-    font-weight: 800;
-    margin-top: 4px;
-    letter-spacing: -0.3px;
+    font-size: 13.5px; font-weight: 800; margin-top: 4px; letter-spacing: -0.3px;
   }
   .mcol:nth-child(odd) .mrow .amt { color: var(--brand); }
   .mcol:nth-child(even) .mrow .amt { color: var(--green-dark); }
-  .mcol-ba {
-    background: #f8fafc;
-    border-top: 1px solid var(--line);
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .mcol-ba .ba-box {
-    background: var(--card);
-    border-radius: 8px;
-    padding: 7px 8px;
-    text-align: center;
-    border: 1px solid var(--line);
-  }
-  .mcol-ba .ba-box.before { background: #f8fafc; }
-  .mcol-ba .ba-box.after {
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    border-color: #86efac;
-  }
-  .mcol-ba .ba-box.half {
-    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-    border-color: #fbbf24;
-    border-width: 2px;
-  }
-  .mcol-ba .ba-lbl {
-    font-size: 8.5px;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    font-weight: 800;
-    color: var(--muted);
-    margin-bottom: 3px;
-  }
-  .mcol-ba .ba-box.after .ba-lbl { color: var(--green-dark); }
-  .mcol-ba .ba-box.half .ba-lbl { color: #92400e; }
-  .mcol-ba .ba-val {
-    font-size: 12.5px;
-    font-weight: 800;
-    letter-spacing: -0.3px;
-    font-variant-numeric: tabular-nums;
-  }
-  .mcol-ba .ba-box.before .ba-val { color: #475569; }
-  .mcol-ba .ba-box.after .ba-val { color: var(--green-dark); }
-  .mcol-ba .ba-box.half .ba-val { color: #92400e; font-size: 14px; }
-
   .mcol-total {
-    background: #f8fafc;
-    border-top: 2px solid var(--line);
-    padding: 14px 10px;
-    text-align: center;
+    background: #f8fafc; border-top: 2px solid var(--line);
+    padding: 14px 10px; text-align: center;
   }
   .mcol-total .lbl {
-    font-size: 10.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 800;
+    font-size: 10.5px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 800;
   }
   .mcol-total .val {
-    font-size: 16px;
-    font-weight: 800;
-    margin-top: 5px;
-    letter-spacing: -0.3px;
+    font-size: 16px; font-weight: 800; margin-top: 5px; letter-spacing: -0.3px;
   }
   .mcol:nth-child(odd) .mcol-total .val { color: var(--brand); }
   .mcol:nth-child(even) .mcol-total .val { color: var(--green-dark); }
   .mcol-total .cnt {
-    font-size: 10.5px;
-    color: var(--muted);
-    font-weight: 600;
-    margin-top: 3px;
+    font-size: 10.5px; color: var(--muted); font-weight: 600; margin-top: 3px;
   }
   .mcol-grand {
-    display: flex;
-    flex-direction: column;
-    min-width: 190px;
-    max-width: 190px;
-    background: linear-gradient(180deg, #0f172a, #1e293b);
-    color: #fff;
-    border-left: 4px solid #f59e0b;
+    display: flex; flex-direction: column; min-width: 160px; max-width: 160px;
+    background: linear-gradient(180deg, #0b1e33, #1f2e3d);
+    color: #fff; border-left: 4px solid var(--amber);
   }
-  .mcol-grand .mcol-head { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .mcol-grand .mcol-head { background: linear-gradient(135deg, #f5a623, #d68910); }
   .mcol-grand .mcol-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 18px 12px;
-    text-align: center;
-    flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 18px 12px; text-align: center; flex: 1;
   }
   .mcol-grand .big-lbl {
-    font-size: 10.5px;
-    opacity: 0.75;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    font-weight: 800;
+    font-size: 10.5px; opacity: 0.75; text-transform: uppercase;
+    letter-spacing: 0.8px; font-weight: 800;
   }
   .mcol-grand .big-val {
-    font-size: 22px;
-    font-weight: 800;
-    margin-top: 6px;
-    color: #fbbf24;
-    letter-spacing: -0.5px;
+    font-size: 24px; font-weight: 800; margin-top: 8px;
+    color: #ffd966; letter-spacing: -0.5px;
   }
-  .mcol-grand .sub {
-    font-size: 10.5px;
-    opacity: 0.85;
-    margin-top: 10px;
-    line-height: 1.5;
-  }
-  .mcol-grand .divider {
-    height: 1px;
-    background: rgba(255,255,255,0.15);
-    margin: 12px 0;
-  }
+  .mcol-grand .sub { font-size: 10.5px; opacity: 0.8; margin-top: 10px; }
+  .mcol-grand .divider { height: 1px; background: rgba(255,255,255,0.18); margin: 14px 0; }
   .mcol-grand .avg-lbl {
-    font-size: 9.5px;
-    opacity: 0.7;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    font-weight: 700;
+    font-size: 9.5px; opacity: 0.7; text-transform: uppercase;
+    letter-spacing: 0.6px; font-weight: 700;
   }
-  .mcol-grand .avg-val {
-    font-size: 14px;
-    font-weight: 800;
-    margin-top: 5px;
-  }
-  .mcol-grand .mcol-total {
-    background: rgba(0,0,0,0.35);
-    border-top: 3px solid #f59e0b;
-  }
-  .mcol-grand .mcol-total .val { color: #fbbf24; }
-  .mcol-grand .mcol-total .lbl { color: #fbbf24; opacity: 0.9; }
-  .mcol-grand .mcol-total .cnt { color: #fbbf24; opacity: 0.8; }
+  .mcol-grand .avg-val { font-size: 14px; font-weight: 800; margin-top: 5px; }
+  .mcol-grand .mcol-total { background: rgba(0,0,0,0.3); border-top: 3px solid var(--amber); }
+  .mcol-grand .mcol-total .val { color: #ffd966; }
+  .mcol-grand .mcol-total .lbl { color: #ffd966; opacity: 0.9; }
+  .mcol-grand .mcol-total .cnt { color: #ffd966; opacity: 0.8; }
 
-  /* ==========================================================
-     DATA TAB
-     ========================================================== */
   .data-intro {
     background: linear-gradient(135deg, #e8f0fe 0%, #f0f7ff 100%);
-    border-radius: var(--r-md);
-    padding: 14px 16px;
-    border: 1px solid #d0e2fa;
-    border-left: 4px solid var(--brand);
-    margin-bottom: 16px;
-    font-size: 13px;
-    color: var(--brand-dark);
-    font-weight: 500;
-    line-height: 1.5;
+    border-radius: var(--radius-sm); padding: 14px 16px;
+    border: 1px solid #d0e2fa; border-left: 4px solid var(--brand);
+    margin-bottom: 16px; font-size: 13px; color: #0a3d7a;
+    font-weight: 500; line-height: 1.5;
   }
   .data-intro .emoji { font-size: 16px; margin-right: 6px; }
-
   .sheet-card {
-    background: var(--card);
-    border-radius: var(--r-md);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--line);
-    overflow: hidden;
-    margin-bottom: 14px;
+    background: var(--card); border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md); border: 1px solid var(--line);
+    overflow: hidden; margin-bottom: 14px;
   }
   .sheet-card-head {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    color: #fff;
-    padding: 12px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    background: linear-gradient(135deg, #1f2e3d, #0b1e33);
+    color: #fff; padding: 12px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
   }
   .sheet-card-head .title-block { min-width: 0; flex: 1; }
   .sheet-card-head .s-title {
-    font-size: 13px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 13px; font-weight: 800;
+    display: flex; align-items: center; gap: 8px;
   }
   .sheet-card-head .s-title .badge {
     background: rgba(255,255,255,0.15);
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 700;
+    padding: 2px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 700;
   }
   .sheet-card-head .s-url {
-    font-size: 10.5px;
-    opacity: 0.75;
-    margin-top: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 10.5px; opacity: 0.75; margin-top: 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   }
   .sheet-card-head .open-link {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 10px;
-    font-weight: 800;
-    font-size: 11px;
-    cursor: pointer;
-    font-family: inherit;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+    background: linear-gradient(135deg, #f5a623, #d68910);
+    color: #fff; border: none; padding: 8px 12px;
+    border-radius: 10px; font-weight: 800; font-size: 11px;
+    cursor: pointer; font-family: inherit; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 5px;
+    white-space: nowrap; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(245,166,35,0.35);
     transition: transform 0.15s ease;
   }
   .sheet-card-head .open-link:active { transform: scale(0.96); }
   .sheet-card-head .open-link svg {
     width: 13px; height: 13px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2.2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    stroke: currentColor; fill: none; stroke-width: 2.2;
+    stroke-linecap: round; stroke-linejoin: round;
   }
   .sheet-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--line);
-    border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--line); border-bottom: 1px solid var(--line);
   }
-  .sheet-stats > div {
-    background: var(--card);
-    padding: 10px 8px;
-    text-align: center;
-  }
+  .sheet-stats > div { background: var(--card); padding: 10px 8px; text-align: center; }
   .sheet-stats .lbl {
-    font-size: 9.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    font-weight: 700;
-    margin-bottom: 4px;
+    font-size: 9.5px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.4px; font-weight: 700; margin-bottom: 4px;
   }
   .sheet-stats .val {
-    font-size: 15px;
-    font-weight: 800;
-    color: var(--text);
+    font-size: 15px; font-weight: 800; color: var(--text);
     font-variant-numeric: tabular-nums;
   }
   .sheet-stats .val.good { color: var(--green-dark); }
   .sheet-stats .val.bad { color: var(--red); }
   .raw-table-wrap {
-    max-width: 100%;
-    overflow-x: auto;
+    max-width: 100%; overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    max-height: 380px;
-    overflow-y: auto;
+    max-height: 380px; overflow-y: auto;
   }
   .raw-table-wrap::-webkit-scrollbar { height: 5px; width: 5px; }
-  .raw-table-wrap::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  .raw-table-wrap::-webkit-scrollbar-thumb { background: #c8d4e0; border-radius: 3px; }
   .raw-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-    min-width: 500px;
+    width: 100%; border-collapse: collapse; font-size: 12px; min-width: 500px;
   }
   .raw-table thead th {
-    background: #f1f5f9;
-    color: #334155;
-    padding: 8px 10px;
-    text-align: left;
-    font-weight: 800;
-    font-size: 10px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    background: #f1f5f9; color: #334155; padding: 8px 10px;
+    text-align: left; font-weight: 800; font-size: 10px;
+    letter-spacing: 0.5px; text-transform: uppercase;
     border-bottom: 2px solid #cbd5e1;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    white-space: nowrap;
+    position: sticky; top: 0; z-index: 2; white-space: nowrap;
   }
   .raw-table tbody td {
-    padding: 7px 10px;
-    border-bottom: 1px solid var(--line-2);
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-    color: var(--text);
+    padding: 7px 10px; border-bottom: 1px solid #eef2f6;
+    white-space: nowrap; font-variant-numeric: tabular-nums;
+    color: #0b1e33;
   }
   .raw-table tbody tr:nth-child(even) { background: #fafbfd; }
   .raw-table tbody tr:hover { background: #e8f0fe; }
   .raw-table td.num { text-align: right; font-weight: 700; }
   .raw-table td.name { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+  .raw-table tr.deduction-row td {
+    background: #fff5f5 !important;
+    color: #b91c1c !important;
+    font-weight: 700;
+  }
+  .raw-table tr.deduction-row td.name::before {
+    content: '⬇ ';
+    font-weight: 800;
+  }
   .raw-empty {
-    padding: 24px 16px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-    font-style: italic;
+    padding: 24px 16px; text-align: center; color: var(--muted);
+    font-size: 13px; font-style: italic;
   }
 
-  /* ==========================================================
-     ACTIVITY LOG
-     ========================================================== */
   .activity-controls {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
+    display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
   }
   .activity-controls button {
-    flex: 1;
-    min-width: 120px;
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--text);
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 12.5px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: all 0.15s ease;
-    box-shadow: var(--shadow-xs);
+    flex: 1; min-width: 120px; padding: 10px 14px;
+    border-radius: 12px; border: 1px solid var(--line);
+    background: var(--card); color: var(--text);
+    font-family: inherit; font-weight: 700; font-size: 12.5px;
+    cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; gap: 6px;
+    transition: all 0.15s ease; box-shadow: var(--shadow-sm);
   }
   .activity-controls button:active { transform: scale(0.97); }
   .activity-controls button.danger {
     background: linear-gradient(135deg, #fee2e2, #fecaca);
-    color: #b91c1c;
-    border-color: #fca5a5;
+    color: #b91c1c; border-color: #fca5a5;
   }
   .activity-controls button.primary {
     background: linear-gradient(135deg, #0a66c2, #1e88e5);
-    color: #fff;
-    border-color: transparent;
-    box-shadow: 0 4px 12px rgba(10, 102, 194, 0.3);
+    color: #fff; border-color: transparent;
+    box-shadow: 0 4px 12px rgba(10,102,194,0.3);
   }
   .activity-controls button svg {
-    width: 14px; height: 14px;
-    stroke: currentColor;
-    fill: none;
+    width: 14px; height: 14px; stroke: currentColor; fill: none;
     stroke-width: 2.2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    stroke-linecap: round; stroke-linejoin: round;
   }
   .activity-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 12px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 12px;
   }
   .activity-stats > div {
     background: linear-gradient(135deg, #f0f7ff 0%, #e8f0fe 100%);
-    border: 1px solid #d0e2fa;
-    border-radius: 12px;
-    padding: 10px 8px;
-    text-align: center;
+    border: 1px solid #d0e2fa; border-radius: 12px;
+    padding: 10px 8px; text-align: center;
   }
   .activity-stats .lbl {
-    font-size: 9.5px;
-    color: var(--brand-dark);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    font-weight: 700;
-    margin-bottom: 4px;
+    font-size: 9.5px; color: #0a4a8c; text-transform: uppercase;
+    letter-spacing: 0.4px; font-weight: 700; margin-bottom: 4px;
   }
   .activity-stats .val {
-    font-size: 17px;
-    font-weight: 800;
-    color: var(--brand-dark);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.3px;
+    font-size: 17px; font-weight: 800; color: #0a4a8c;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.3px;
   }
   .activity-list {
-    background: var(--card);
-    border-radius: var(--r-md);
-    border: 1px solid var(--line);
-    box-shadow: var(--shadow-sm);
+    background: var(--card); border-radius: var(--radius-sm);
+    border: 1px solid var(--line); box-shadow: var(--shadow-md);
     overflow: hidden;
   }
   .activity-item {
-    display: grid;
-    grid-template-columns: 32px 1fr auto;
-    gap: 10px;
-    align-items: center;
-    padding: 11px 12px;
-    border-bottom: 1px solid var(--line-2);
-    font-size: 13px;
+    display: grid; grid-template-columns: 32px 1fr auto;
+    gap: 10px; align-items: center;
+    padding: 11px 12px; border-bottom: 1px solid var(--line); font-size: 13px;
   }
   .activity-item:last-child { border-bottom: none; }
   .activity-item .act-icon {
-    width: 32px; height: 32px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 14px;
+    width: 32px; height: 32px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
   }
-  .activity-item .act-icon.view { background: #e3f2fd; color: var(--brand); }
+  .activity-item .act-icon.view { background: #e3f2fd; color: #0a66c2; }
   .activity-item .act-icon.click { background: #fff3e0; color: #e65100; }
-  .activity-item .act-icon.scroll { background: #f3e8ff; color: var(--purple); }
-  .activity-item .act-icon.session { background: #e8f5e9; color: var(--green-dark); }
+  .activity-item .act-icon.scroll { background: #f3e8ff; color: #7c3aed; }
+  .activity-item .act-icon.session { background: #e8f5e9; color: #1e7e34; }
   .activity-item .act-body { min-width: 0; }
   .activity-item .act-title {
-    font-weight: 700;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-weight: 700; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     font-size: 13px;
   }
   .activity-item .act-detail {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 11px; color: var(--muted); margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .activity-item .act-time {
-    font-size: 10.5px;
-    color: var(--muted);
-    font-weight: 700;
-    text-align: right;
-    white-space: nowrap;
+    font-size: 10.5px; color: var(--muted); font-weight: 700;
+    text-align: right; white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
   .activity-item .act-time .pkt {
-    display: block;
-    font-size: 9px;
-    opacity: 0.7;
-    font-weight: 600;
-    margin-top: 1px;
-    letter-spacing: 0.3px;
+    display: block; font-size: 9px; opacity: 0.7;
+    font-weight: 600; margin-top: 1px; letter-spacing: 0.3px;
   }
 
-  /* ==========================================================
-     INSTALL BANNER
-     ========================================================== */
   .install-banner {
-    position: fixed;
-    bottom: calc(var(--bottom-nav-h) + 16px);
-    left: 50%;
+    position: fixed; bottom: calc(var(--bottom-nav-h) + 16px); left: 50%;
     transform: translateX(-50%) translateY(200%);
-    max-width: 480px;
-    width: calc(100% - 24px);
+    max-width: 480px; width: calc(100% - 24px);
     background: linear-gradient(135deg, #0a66c2, #1e88e5);
-    color: #fff;
-    border-radius: 18px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 12px 32px rgba(10, 102, 194, 0.4);
-    z-index: 9999;
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: #fff; border-radius: 16px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 12px 32px rgba(10,102,194,0.4);
+    z-index: 9999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
     font-size: 13px;
   }
   .install-banner.show { transform: translateX(-50%) translateY(0); }
   .install-banner img {
-    width: 42px; height: 42px;
-    border-radius: 12px;
-    object-fit: cover;
-    border: 2px solid #fff;
-    flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 10px;
+    object-fit: cover; border: 2px solid #fff; flex-shrink: 0;
   }
   .install-banner .text { flex: 1; min-width: 0; }
   .install-banner .title { font-weight: 800; font-size: 14px; margin-bottom: 2px; }
   .install-banner .sub { font-size: 11.5px; opacity: 0.9; }
   .install-banner button {
-    background: #fff;
-    color: #0a66c2;
-    border: none;
-    padding: 9px 16px;
-    border-radius: 20px;
-    font-weight: 800;
-    font-size: 12.5px;
-    cursor: pointer;
-    font-family: inherit;
-    white-space: nowrap;
-    flex-shrink: 0;
+    background: #fff; color: #0a66c2; border: none;
+    padding: 9px 16px; border-radius: 20px;
+    font-weight: 800; font-size: 12.5px; cursor: pointer;
+    font-family: inherit; white-space: nowrap; flex-shrink: 0;
   }
   .install-banner .close {
-    background: transparent;
-    color: #fff;
-    padding: 6px;
-    font-size: 18px;
-    line-height: 1;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: transparent; color: #fff; padding: 6px;
+    font-size: 18px; line-height: 1; border-radius: 50%;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
   }
 
-  /* ==========================================================
-     RESPONSIVE
-     ========================================================== */
   @media (max-width: 600px) {
     .tab-bar { display: none; }
     .bottom-nav { display: block; }
     body {
       padding-bottom: calc(var(--bottom-nav-h) + 32px + env(safe-area-inset-bottom, 0px));
     }
-    .wrap { padding: 0 12px; }
-    .install-banner {
-      bottom: calc(var(--bottom-nav-h) + 12px + env(safe-area-inset-bottom, 0px));
-    }
+    .wrap { padding: 0 10px; }
+    .install-banner { bottom: calc(var(--bottom-nav-h) + 12px + env(safe-area-inset-bottom, 0px)); }
   }
   @media (max-width: 400px) {
-    .oc-title { font-size: 22px; }
-    .oc-logo { width: 60px; height: 60px; }
-    .oc-refreshed { font-size: 10.5px; padding: 5px 10px; }
-    .your-earning .ye-val { font-size: 24px; }
-    .mr-earnings .your-earning .ye-val { font-size: 20px; }
-    .ba-box .ba-val { font-size: 15px; }
-    .mr-earnings .ba-box .ba-val { font-size: 13.5px; }
+    .oc-title { font-size: 21px; }
+    .oc-logo { width: 56px; height: 56px; }
+    .oc-refreshed { font-size: 10px; padding: 4px 9px; }
     .mr-metrics, .pr-metrics { gap: 5px; }
     .mr-metric .val, .pr-metric .val { font-size: 13px; }
     .mr-metric .lbl, .pr-metric .lbl { font-size: 9px; }
-    .metric-tile .mt-val { font-size: 15px; }
+    .combined-details { font-size: 11.5px; gap: 6px; }
+    .combined-values .cv-val { font-size: 15px; }
+    .mr-combined-strip .combined-values .cv-val { font-size: 13px; }
+    .net-total-row .ntr-val { font-size: 17px; }
     .cmp-row > div { padding: 9px 6px; }
     .cmp-name { font-size: 12px; }
     .cmp-amt { font-size: 12.5px; }
@@ -1824,13 +1045,11 @@
     .sheet-stats { grid-template-columns: 1fr 1fr; }
   }
   @media (min-width: 601px) {
-    body { padding: 16px 0 48px; }
-    .tab-bar { margin-top: 16px; }
+    body { padding: 16px 0 40px; }
+    .tab-bar { margin-top: 12px; }
   }
   button:focus-visible {
-    outline: 3px solid var(--brand);
-    outline-offset: 2px;
-    border-radius: 40px;
+    outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 40px;
   }
   .tab-bar button:active { transform: scale(0.98); }
 </style>
@@ -1903,37 +1122,21 @@
   </div>
 </nav>
 
-<!-- ============ REPORT TAB ============ -->
 <div class="tab-content active" id="contentReport">
   <div id="dailyStatus" class="status"><div class="spinner"></div><br>Loading report…</div>
   <div id="reportContent" style="display:none;">
     <div class="wrap">
-
-      <!-- Filter dropdown -->
-      <div class="filter-bar">
-        <span class="fb-icon">
-          <svg viewBox="0 0 24 24"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
-        </span>
-        <span class="fb-label">Filter</span>
-        <select id="monthFilter">
-          <option value="all">All Months</option>
-        </select>
-      </div>
-
       <div id="overallCard"></div>
-
       <div class="section-head">
         <div class="section-label">Monthly Breakdown</div>
         <div class="section-count" id="monthCount">—</div>
       </div>
       <div class="month-list" id="monthList"></div>
-
       <div class="section-head">
         <div class="section-label">Period Breakdown</div>
         <div class="section-count" id="periodCount">—</div>
       </div>
       <div class="period-list" id="periodList"></div>
-
       <div class="daily-section-title">Daily Data</div>
       <div class="table-scroll">
         <table class="data-table" id="dailyTable">
@@ -1952,13 +1155,11 @@
   </div>
 </div>
 
-<!-- ============ LAST 2 TAB ============ -->
 <div class="tab-content" id="contentLast2">
   <div id="statusLast2" class="status"><div class="spinner"></div><br>Loading data…</div>
   <div class="wrap" id="last2Wrap" style="display:none;"></div>
 </div>
 
-<!-- ============ ALL MONTHS TAB ============ -->
 <div class="tab-content" id="contentAll">
   <div id="statusAll" class="status"><div class="spinner"></div><br>Loading data…</div>
   <div class="table-wrap" id="tableWrap" style="display:none;">
@@ -1967,19 +1168,20 @@
   <div class="hint" id="tableHint" style="display:none;">← Swipe horizontally to see all months →</div>
 </div>
 
-<!-- ============ DATA TAB ============ -->
 <div class="tab-content" id="contentData">
   <div class="wrap">
     <div class="data-intro">
       <span class="emoji">📊</span>
-      Raw data from Google Sheets. Tap "Open" to view any sheet.
+      This shows the <b>exact raw data</b> your app reads from Google Sheets.
+      Tap the orange button to open any sheet directly.
+      Rows with <b style="color:#b91c1c">⬇ red background</b> are "Expenses+Salary" deductions (not persons).
     </div>
 
     <div class="sheet-card">
       <div class="sheet-card-head">
         <div class="title-block">
           <div class="s-title">Monthly Sheet 1 <span class="badge">MONTHLY</span></div>
-          <div class="s-url" title="Sheet 1 URL">.../pub?output=csv</div>
+          <div class="s-url" title="Sheet 1 URL">https://docs.google.com/spreadsheets/d/e/2PACX-1vREo.../pub?output=csv</div>
         </div>
         <a id="openSheet1" class="open-link" href="#" target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
@@ -2000,7 +1202,7 @@
       <div class="sheet-card-head">
         <div class="title-block">
           <div class="s-title">Monthly Sheet 2 <span class="badge">MONTHLY</span></div>
-          <div class="s-url" title="Sheet 2 URL">.../export?format=csv&gid=...</div>
+          <div class="s-url" title="Sheet 2 URL">https://docs.google.com/spreadsheets/d/1B4lO7.../export?format=csv&gid=1452200885</div>
         </div>
         <a id="openSheet2" class="open-link" href="#" target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
@@ -2021,7 +1223,7 @@
       <div class="sheet-card-head">
         <div class="title-block">
           <div class="s-title">Daily Data <span class="badge">DAILY</span></div>
-          <div class="s-url" title="Daily URL">.../export?format=csv&gid=...</div>
+          <div class="s-url" title="Daily URL">https://docs.google.com/spreadsheets/d/1B4lO7.../export?format=csv&gid=1810247989</div>
         </div>
         <a id="openDaily" class="open-link" href="#" target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
@@ -2039,7 +1241,7 @@
     </div>
 
     <div class="section-head">
-      <div class="section-label">📝 Activity Log</div>
+      <div class="section-label">📝 Activity Log (Your usage)</div>
       <div class="section-count" id="activityCount">0</div>
     </div>
 
@@ -2052,7 +1254,7 @@
     <div class="activity-controls">
       <button class="primary" id="copyActivityBtn">
         <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        Copy
+        Copy Log
       </button>
       <button id="refreshActivityBtn">
         <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/><path d="M20.49 15a9 9 0 01-14.85 3.36L1 14"/></svg>
@@ -2066,7 +1268,7 @@
 
     <div class="activity-list" id="activityList"></div>
 
-    <div class="hint">Stored locally on this device only.</div>
+    <div class="hint">Activity log is stored locally on this device only.</div>
   </div>
 </div>
 
@@ -2096,16 +1298,19 @@ function formatPKT(date) {
 }
 
 /* ============================================================
-   LOCAL DATA CACHE
+   LOCAL DATA CACHE  (offline-first)
    ============================================================ */
 const CACHE_KEY = "sangi_parking_data_cache_v1";
 const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 function saveDataCache(dailyRows, monthlyRecords) {
   try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), daily: dailyRows, monthly: monthlyRecords }));
-  } catch (e) {}
+    const payload = { ts: Date.now(), daily: dailyRows, monthly: monthlyRecords };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+    console.log("💾 Cached", dailyRows.length, "daily,", monthlyRecords.length, "monthly");
+  } catch (e) { console.warn("⚠️ Cache save failed:", e); }
 }
+
 function loadDataCache() {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
@@ -2122,6 +1327,7 @@ function loadDataCache() {
 }
 
 let lastRefreshTs = null;
+
 function updateRefreshIndicator(state) {
   const el = document.getElementById("refreshIndicator");
   if (!el) return;
@@ -2137,7 +1343,7 @@ function updateRefreshIndicator(state) {
       const t = formatPKT(new Date(lastRefreshTs));
       el.querySelector('.text').innerHTML = `Offline · <strong>${t.shortFull}</strong>`;
     } else {
-      el.querySelector('.text').innerHTML = `Offline · No cache`;
+      el.querySelector('.text').innerHTML = `Offline · No cache yet`;
     }
     return;
   }
@@ -2161,7 +1367,8 @@ function updateRefreshIndicator(state) {
    ACTIVITY TRACKER
    ============================================================ */
 const ACTIVITY_KEY = "sangi_parking_activity_v1";
-const SESSION_KEY = "sangi_parking_session_id";
+const SESSION_KEY  = "sangi_parking_session_id";
+
 function getSessionId() {
   let sid = sessionStorage.getItem(SESSION_KEY);
   if (!sid) {
@@ -2171,13 +1378,14 @@ function getSessionId() {
   return sid;
 }
 function loadActivity() {
-  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || "[]"); } catch (e) { return []; }
+  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || "[]"); }
+  catch (e) { return []; }
 }
 function saveActivity(list) {
   try {
     if (list.length > 500) list = list.slice(-500);
     localStorage.setItem(ACTIVITY_KEY, JSON.stringify(list));
-  } catch (e) {}
+  } catch (e) { }
 }
 function logActivity(type, title, detail) {
   const now = new Date();
@@ -2186,7 +1394,8 @@ function logActivity(type, title, detail) {
     id: "e_" + now.getTime() + "_" + Math.random().toString(36).slice(2, 6),
     type, title, detail: detail || "",
     session: getSessionId(),
-    timestamp: pkt.full, ts: now.getTime(),
+    timestamp: pkt.full,
+    ts: now.getTime(),
     scrollY: Math.round(window.scrollY || 0),
     path: location.pathname
   };
@@ -2202,7 +1411,9 @@ function logActivity(type, title, detail) {
    ============================================================ */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('✅ SW registered:', reg.scope))
+      .catch(err => console.warn('SW registration failed:', err));
   });
 }
 let deferredPrompt = null;
@@ -2217,7 +1428,7 @@ installBtn?.addEventListener('click', async () => {
   if (!deferredPrompt) return;
   installBanner.classList.remove('show');
   deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
+  const { outcome } = await deferredPrompt.userChoice;
   deferredPrompt = null;
 });
 closeBanner?.addEventListener('click', () => {
@@ -2240,57 +1451,24 @@ const SHEET1_OPEN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_
 const SHEET2_OPEN = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/edit#gid=1452200885";
 const SHEET_DAILY_OPEN = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/edit#gid=1810247989";
 
-const PARTNER_SHARE = 0.5;
 const MONTHLY_SALARY = 29000;
+const DAILY_EXPENSE = 300;
 
-/* Expense row detection — separate from salary */
-const SALARY_ROW_NAMES = [
-  "salary", "salaries",
-  "expenses+salary", "expense+salary",
-  "expenses + salary", "expense + salary",
-  "expenses and salary", "expense and salary",
-  "salary+expenses", "salary + expenses",
-  "expensessalary", "expensesalary"
-];
-const EXPENSE_ONLY_ROW_NAMES = [
-  "expenses", "expense", "other expenses", "other expense"
-];
-
-function normalizeRowName(name) {
-  if (!name) return "";
-  return name.toLowerCase().trim().replace(/\s+/g, " ");
-}
-function noSpaceName(name) {
-  return normalizeRowName(name).replace(/[\s\+_\-&]+/g, "");
-}
-function isSalaryRow(name) {
-  const c = normalizeRowName(name);
-  const ns = noSpaceName(name);
-  for (const n of SALARY_ROW_NAMES) {
-    if (c === n) return true;
-    if (ns === n.replace(/[\s\+_\-&]+/g, "")) return true;
-  }
-  return false;
-}
-function isExpenseOnlyRow(name) {
-  const c = normalizeRowName(name);
-  const ns = noSpaceName(name);
-  for (const n of EXPENSE_ONLY_ROW_NAMES) {
-    if (c === n) return true;
-    if (ns === n.replace(/[\s\+_\-&]+/g, "")) return true;
-  }
-  return false;
-}
-function isAnyExpenseRow(name) {
-  return isSalaryRow(name) || isExpenseOnlyRow(name);
-}
-
+/* Column name patterns */
 const COL = {
   name: ["name/item", "name", "item", "person", "party"],
   amount: ["amount", "amt", "value"],
   month: ["month", "mnth"],
   year: ["year", "yr"]
 };
+
+/* NEW: Expenses+Salary column patterns */
+const EXPENSE_SALARY_COL_PATTERNS = [
+  "expenses+salary", "expenses + salary", "expense+salary", "expense + salary",
+  "expenses&salary", "expenses & salary", "salary+expenses", "salary + expenses",
+  "expenses salary", "salary expenses"
+];
+
 const DAILY_COL = {
   startDate: ["start date", "startdate", "from", "from date"],
   endDate: ["end date", "enddate", "to", "to date"],
@@ -2328,8 +1506,25 @@ function findCol(headers, names) {
   }
   return -1;
 }
+
+/**
+ * Detect if a row is an "Expenses+Salary" deduction row.
+ * Checks the name column for keywords.
+ */
+function isExpenseSalaryRow(name) {
+  if (!name) return false;
+  const n = name.toLowerCase().replace(/\s+/g, " ").trim();
+  return EXPENSE_SALARY_COL_PATTERNS.some(p => n.includes(p));
+}
+
+/**
+ * Normalize monthly records.
+ * Returns { persons: [...], deductions: [...] }
+ * - persons: normal entries (counted, grouped, compared)
+ * - deductions: Expenses+Salary rows (subtracted from monthly total, not counted)
+ */
 function normalizeRecords(rows) {
-  if (!rows.length) return [];
+  if (!rows.length) return { persons: [], deductions: [] };
   const headers = rows[0];
   const idx = {
     name: findCol(headers, COL.name),
@@ -2337,21 +1532,38 @@ function normalizeRecords(rows) {
     month: findCol(headers, COL.month),
     year: findCol(headers, COL.year)
   };
-  if (idx.name < 0 || idx.amount < 0) return [];
-  const out = [];
+  if (idx.name < 0 || idx.amount < 0) return { persons: [], deductions: [] };
+
+  const persons = [];
+  const deductions = [];
+
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
     const name = (r[idx.name] || "").trim();
     if (!name) continue;
     const amtRaw = (r[idx.amount] || "0").toString().replace(/[^0-9.\-]/g, "");
-    out.push({
-      name, amount: parseFloat(amtRaw) || 0,
+    const amount = parseFloat(amtRaw) || 0;
+    const record = {
+      name,
+      amount,
       month: idx.month >= 0 ? (r[idx.month] || "").trim() : "",
       year: idx.year >= 0 ? (r[idx.year] || "").trim() : ""
-    });
+    };
+
+    if (isExpenseSalaryRow(name)) {
+      // This is a deduction row - store absolute value for display, keep sign info
+      record.rawAmount = amount;  // original (may be negative)
+      record.amount = Math.abs(amount); // absolute for deduct calc
+      deductions.push(record);
+    } else {
+      persons.push(record);
+    }
   }
-  return out;
+
+  console.log(`📋 Parsed ${persons.length} persons, ${deductions.length} deductions`);
+  return { persons, deductions };
 }
+
 function normalizeDaily(rows) {
   if (!rows.length) return [];
   const headers = rows[0];
@@ -2401,18 +1613,8 @@ function groupByName(recs) {
   const m = new Map();
   recs.forEach(r => {
     const k = nameKey(r.name);
-    if (!m.has(k)) {
-      m.set(k, {
-        name: r.name,
-        amount: 0,
-        isSalary: isSalaryRow(r.name),
-        isExpense: isExpenseOnlyRow(r.name)
-      });
-    }
-    const g = m.get(k);
-    g.amount += r.amount;
-    if (isSalaryRow(r.name)) g.isSalary = true;
-    if (isExpenseOnlyRow(r.name)) g.isExpense = true;
+    if (!m.has(k)) m.set(k, { name: r.name, amount: 0 });
+    m.get(k).amount += r.amount;
   });
   return m;
 }
@@ -2460,73 +1662,154 @@ function monthsBetween(startP, endP) {
   return months > 0 ? months : 0;
 }
 
-/* ---- Split group into regular/salary/expense ---- */
-function splitGroupTotals(map) {
-  let regularTotal = 0, salaryTotal = 0, expenseOnlyTotal = 0;
-  let regularCount = 0;
-  map.forEach(v => {
-    if (v.isSalary) salaryTotal += v.amount;
-    else if (v.isExpense) expenseOnlyTotal += v.amount;
-    else { regularTotal += v.amount; regularCount++; }
-  });
-  const totalExpenses = salaryTotal + expenseOnlyTotal;
-  return {
-    regularTotal, salaryTotal, expenseOnlyTotal, totalExpenses,
-    regularCount,
-    before: regularTotal,
-    after: regularTotal - totalExpenses
+/* ============================================================
+   COMPARE CARD (uses persons only — no deductions)
+   ============================================================ */
+function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
+  const mapPrev = groupByName(prevRecs);
+  const mapCurr = groupByName(currRecs);
+  const cntPrev = mapPrev.size, cntCurr = mapCurr.size;
+  const matchedKeys = [], onlyPrevKeys = [], onlyCurrKeys = [];
+  const seen = new Set();
+  mapPrev.forEach((v, k) => { if (seen.has(k)) return; seen.add(k); if (mapCurr.has(k)) matchedKeys.push(k); else onlyPrevKeys.push(k); });
+  mapCurr.forEach((v, k) => { if (seen.has(k)) return; seen.add(k); onlyCurrKeys.push(k); });
+  let subPrev = 0, subCurr = 0, sr = 0;
+  const card = document.createElement("div");
+  card.className = "cmp-card";
+  card.innerHTML = `
+    <div class="cmp-head"><h1>Monthly Comparison</h1><p>${esc(prevLabel)} vs ${esc(currLabel)}</p></div>
+    <div class="cmp-counts">
+      <div><div class="num c1">${cntPrev}</div><div class="lbl">${esc(prevLabel)}</div></div>
+      <div><div class="num c2">${cntCurr}</div><div class="lbl">${esc(currLabel)}</div></div>
+    </div>
+    <div class="cmp-cols"><div class="sr-h">#</div><div class="m1">${esc(prevLabel)}</div><div class="m2">${esc(currLabel)}</div></div>
+  `;
+  const body = document.createElement("div");
+  const buildRow = (p, c, srNum, showDiff) => {
+    const left = p ? `<div class="m1-cell"><div class="cmp-name"><span class="nm">${esc(p.name)}</span></div><div class="cmp-amt">${fmtInt(p.amount)}</div></div>` : `<div class="m1-cell"><div class="cmp-missing">—</div></div>`;
+    let rightName = "";
+    if (c) {
+      let badge = "";
+      if (showDiff && p) {
+        const d = c.amount - p.amount;
+        if (Math.abs(d) < 0.5) badge = `<span class="cmp-badge same">same</span>`;
+        else if (d > 0) badge = `<span class="cmp-badge up">▲${fmtInt(d)}</span>`;
+        else badge = `<span class="cmp-badge down">▼${fmtInt(Math.abs(d))}</span>`;
+      }
+      rightName = `<div class="cmp-name"><span class="nm">${esc(c.name)}</span>${badge}</div>`;
+    }
+    const right = c ? `<div class="m2-cell">${rightName}<div class="cmp-amt">${fmtInt(c.amount)}</div></div>` : `<div class="m2-cell"><div class="cmp-missing">—</div></div>`;
+    const row = document.createElement("div");
+    row.className = "cmp-row";
+    row.innerHTML = `<div class="cmp-sr">${srNum}</div>${left}${right}`;
+    return row;
   };
+  if (matchedKeys.length) {
+    const sec = document.createElement("div"); sec.className = "cmp-sec ok";
+    sec.textContent = `✓ Matched (${matchedKeys.length})`; body.appendChild(sec);
+    matchedKeys.forEach(k => { const p = mapPrev.get(k), c = mapCurr.get(k); subPrev += p.amount; subCurr += c.amount; body.appendChild(buildRow(p, c, ++sr, true)); });
+  }
+  if (onlyPrevKeys.length || onlyCurrKeys.length) {
+    const sec = document.createElement("div"); sec.className = "cmp-sec warn";
+    sec.textContent = `⚠ Unmatched (${onlyPrevKeys.length + onlyCurrKeys.length})`; body.appendChild(sec);
+    const maxLen = Math.max(onlyPrevKeys.length, onlyCurrKeys.length);
+    for (let i = 0; i < maxLen; i++) {
+      const p = onlyPrevKeys[i] ? mapPrev.get(onlyPrevKeys[i]) : null;
+      const c = onlyCurrKeys[i] ? mapCurr.get(onlyCurrKeys[i]) : null;
+      if (p) subPrev += p.amount;
+      if (c) subCurr += c.amount;
+      body.appendChild(buildRow(p, c, ++sr, false));
+    }
+  }
+  const totals = document.createElement("div");
+  totals.className = "cmp-subtotal";
+  totals.innerHTML = `<div class="sr-blank"></div>
+    <div><div class="mname v1">${esc(prevLabel)}</div><div class="val v1">${fmtInt(subPrev)}</div><div class="cnt">${cntPrev} ppl</div></div>
+    <div><div class="mname v2">${esc(currLabel)}</div><div class="val v2">${fmtInt(subCurr)}</div><div class="cnt">${cntCurr} ppl</div></div>`;
+  body.appendChild(totals);
+  const grand = document.createElement("div");
+  grand.className = "cmp-grand";
+  grand.innerHTML = `<div class="lbl">Grand Total</div><div class="val">${fmtInt(subPrev + subCurr)}</div><div class="cnt">Matched: ${matchedKeys.length} • Only ${esc(prevLabel)}: ${onlyPrevKeys.length} • Only ${esc(currLabel)}: ${onlyCurrKeys.length}</div>`;
+  body.appendChild(grand);
+  const diff = subCurr - subPrev;
+  const diffEl = document.createElement("div");
+  diffEl.className = "cmp-diff " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
+  const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "=";
+  const sign = diff > 0 ? "+" : "";
+  diffEl.innerHTML = `<span>Difference</span><span>${arrow} ${sign}${fmtInt(diff)}</span>`;
+  body.appendChild(diffEl);
+  card.appendChild(body);
+  return card;
 }
 
 /* ============================================================
-   FILTER STATE
+   ALL MONTHS TABLE (persons only)
    ============================================================ */
-let currentFilter = "all";   // "all" or month key (e.g., "202601")
-let allMonthOptions = [];    // for the dropdown
-
-function populateFilter(monthInfos) {
-  const sel = document.getElementById("monthFilter");
-  if (!sel) return;
-  const currentVal = sel.value;
-  sel.innerHTML = `<option value="all">All Months</option>`;
-  monthInfos.forEach((info, i) => {
-    const key = String(info.y * 100 + info.m);
-    const label = `${MONTH_LONG[info.m - 1]} ${info.y}`;
-    const opt = document.createElement("option");
-    opt.value = key;
-    opt.textContent = label;
-    sel.appendChild(opt);
+function buildAllMonthsTable(monthList) {
+  const table = document.getElementById("mtable");
+  table.innerHTML = "";
+  let grandTotal = 0, grandPersons = 0, totalMonthsWithData = 0;
+  monthList.forEach(m => {
+    const map = groupByName(m.persons);
+    const label = m.label;
+    const col = document.createElement("div");
+    col.className = "mcol";
+    const head = document.createElement("div");
+    head.className = "mcol-head";
+    head.innerHTML = `<div class="mname">${esc(label)}</div><div class="mcount">${map.size} person${map.size === 1 ? "" : "s"}</div>`;
+    col.appendChild(head);
+    const bodyEl = document.createElement("div");
+    bodyEl.className = "mcol-body";
+    let sr = 0, total = 0;
+    map.forEach(v => {
+      sr++; total += v.amount;
+      const row = document.createElement("div");
+      row.className = "mrow";
+      row.innerHTML = `<div class="top"><span class="srn">${sr}</span><span class="nm">${esc(v.name)}</span></div><div class="amt">${fmtInt(v.amount)}</div>`;
+      bodyEl.appendChild(row);
+    });
+    col.appendChild(bodyEl);
+    const tot = document.createElement("div");
+    tot.className = "mcol-total";
+    tot.innerHTML = `<div class="lbl">${esc(label)}</div><div class="val">${fmtInt(total)}</div><div class="cnt">${map.size} ppl</div>`;
+    col.appendChild(tot);
+    table.appendChild(col);
+    grandTotal += total;
+    grandPersons += map.size;
+    if (map.size) totalMonthsWithData++;
   });
-  sel.value = currentVal && sel.querySelector(`option[value="${currentVal}"]`) ? currentVal : "all";
-  currentFilter = sel.value;
+  const avgPerMonth = totalMonthsWithData ? grandTotal / totalMonthsWithData : 0;
+  const grandCol = document.createElement("div");
+  grandCol.className = "mcol-grand";
+  grandCol.innerHTML = `
+    <div class="mcol-head"><div class="mname">GRAND</div><div class="mcount">${monthList.length} mo</div></div>
+    <div class="mcol-body">
+      <div class="big-lbl">Combined</div>
+      <div class="big-val">${fmtInt(grandTotal)}</div>
+      <div class="sub">${grandPersons} entries</div>
+      <div class="divider"></div>
+      <div class="avg-lbl">Avg / Month</div>
+      <div class="avg-val">${fmtInt(avgPerMonth)}</div>
+    </div>
+    <div class="mcol-total"><div class="lbl">GRAND</div><div class="val">${fmtInt(grandTotal)}</div><div class="cnt">${monthList.length} mo</div></div>
+  `;
+  table.appendChild(grandCol);
 }
 
 /* ============================================================
-   OVERALL SUMMARY CARD — with filter applied
+   OVERALL SUMMARY CARD
+   Now handles: grossPersons (from persons only), deductions (Expenses+Salary)
    ============================================================ */
-function buildOverallSummaryCard(totals, filterMonthKey) {
-  const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal, lastMonthTotal,
-    salaryTotalOverall, expenseOnlyTotalOverall,
-    lastMonthSalary, lastMonthExpenseOnly } = totals;
+function buildOverallSummaryCard(totals) {
+  const { gross, exp, net, days, minStart, maxEnd, totalMonthly, totalDeductions, lastMonthTotal, lastMonthDeductions } = totals;
   const avgNet = days ? net / days : 0;
+  const numMonths = monthsBetween(minStart, maxEnd);
+  const salaryTotal = MONTHLY_SALARY * numMonths;
+  const dailyExpenseTotal = DAILY_EXPENSE * days;
 
-  const beforeTotal = monthlySheetTotal;
-  const totalExpenses = salaryTotalOverall + expenseOnlyTotalOverall;
-  const afterTotal = beforeTotal - totalExpenses;
-  const yourHalfMonthly = afterTotal * PARTNER_SHARE;
-
-  const lastBefore = lastMonthTotal;
-  const lastTotalExp = (lastMonthSalary || 0) + (lastMonthExpenseOnly || 0);
-  const lastAfter = lastBefore - lastTotalExp;
-  const lastYourHalf = lastAfter * PARTNER_SHARE;
-
-  const filterLabel = filterMonthKey === "all"
-    ? "All Months Combined"
-    : (() => {
-        const m = Math.round(filterMonthKey) % 100;
-        const y = Math.floor(Math.round(filterMonthKey) / 100);
-        return `${MONTH_LONG[m - 1]} ${y}`;
-      })();
+  /* Net total = monthly persons total - deductions */
+  const netMonthly = totalMonthly - totalDeductions;
+  const netLastMonth = lastMonthTotal - lastMonthDeductions;
 
   const el = document.createElement("div");
   el.className = "overall-card";
@@ -2540,87 +1823,54 @@ function buildOverallSummaryCard(totals, filterMonthKey) {
       </div>
     </div>
     <div class="oc-body">
-
-      <div class="row-list">
-        <div class="info-row">
-          <span class="k">View</span>
-          <span class="v">${esc(filterLabel)}</span>
-        </div>
-        <div class="info-row">
-          <span class="k">Start Date</span>
-          <span class="v">${esc(fmtDateLong(minStart))}</span>
-        </div>
-        <div class="info-row">
-          <span class="k">End Date</span>
-          <span class="v">${esc(fmtDateLong(maxEnd))}</span>
-        </div>
-        <div class="info-row">
-          <span class="k">Total Days</span>
-          <span class="v">${days} day${days === 1 ? "" : "s"}</span>
-        </div>
+      <div class="oc-row"><span class="k">Start Date</span><span class="v">${esc(fmtDateLong(minStart))}</span></div>
+      <div class="oc-row"><span class="k">End Date</span><span class="v">${esc(fmtDateLong(maxEnd))}</span></div>
+      <div class="oc-row"><span class="k">Total Days</span><span class="v">${days} day${days === 1 ? "" : "s"}</span></div>
+      <div class="oc-row primary"><span class="k">Total Gross</span><span class="v">${fmtInt(gross)} PKR</span></div>
+      <div class="oc-row"><span class="k">Total Expenses</span><span class="v">${fmtInt(exp)} PKR</span></div>
+      <div class="oc-row"><span class="k">Total Net Credited</span><span class="v">${fmtInt(net)} PKR</span></div>
+      <div class="oc-row highlight">
+        <span class="k">Avg Daily Earning</span>
+        <span class="v">${fmtDec2(avgNet)}<span class="unit">PKR/day</span></span>
       </div>
-
-      <div class="metrics-grid">
-        <div class="metric-tile gross">
-          <div class="mt-lbl">Total Gross</div>
-          <div class="mt-val">${fmtInt(gross)}<span class="mt-unit">PKR</span></div>
-        </div>
-        <div class="metric-tile net">
-          <div class="mt-lbl">Net Credited</div>
-          <div class="mt-val">${fmtInt(net)}<span class="mt-unit">PKR</span></div>
-        </div>
-        <div class="metric-tile exp">
-          <div class="mt-lbl">Total Expenses</div>
-          <div class="mt-val">${fmtInt(exp)}<span class="mt-unit">PKR</span></div>
-        </div>
-        <div class="metric-tile avg">
-          <div class="mt-lbl">Avg / Day</div>
-          <div class="mt-val">${fmtDec2(avgNet)}<span class="mt-unit">PKR</span></div>
-        </div>
-      </div>
-
-      <!-- ============ MONTHLY EARNINGS ============ -->
-      <div class="earnings-card">
-        <div class="ec-title">📅 Monthly Breakdown</div>
-
-        <div class="ba-grid">
-          <div class="ba-box before">
-            <div class="ba-lbl">Before Expenses</div>
-            <div class="ba-val">${fmtInt(beforeTotal)}<span class="ba-unit">PKR</span></div>
+      <div class="oc-row combined">
+        <div class="combined-values">
+          <div class="cv-item total">
+            <div class="cv-lbl">Total Monthly</div>
+            <div class="cv-val">${fmtInt(totalMonthly)}<span class="cv-unit">PKR</span></div>
           </div>
-          <div class="ba-box after">
-            <div class="ba-lbl">After Expenses</div>
-            <div class="ba-val">${fmtInt(afterTotal)}<span class="ba-unit">PKR</span></div>
+          <div class="cv-item last">
+            <div class="cv-lbl">Last Month Total</div>
+            <div class="cv-val">${fmtInt(lastMonthTotal)}<span class="cv-unit">PKR</span></div>
           </div>
         </div>
-
-        <div class="your-earning">
-          <div class="ye-lbl"><span>💰</span> Your Earning (50%)</div>
-          <div class="ye-val">${fmtInt(yourHalfMonthly)}<span class="ye-unit">PKR</span></div>
-          <div class="ye-sub">50% of After Expenses</div>
+        <div class="combined-details">
+          ${totalDeductions > 0 ? `
+          <div class="item deduction">
+            <span class="dot" style="background:#ffb3b3;"></span>
+            <span class="label">Expenses+Salary (from sheet, always deducted)</span>
+            <span class="value neg">−${fmtInt(totalDeductions)}</span>
+          </div>` : ''}
+          ${lastMonthDeductions > 0 ? `
+          <div class="item deduction">
+            <span class="dot" style="background:#ffb3b3;"></span>
+            <span class="label">Last Month Expenses+Salary</span>
+            <span class="value neg">−${fmtInt(lastMonthDeductions)}</span>
+          </div>` : ''}
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">You can minus salary (${numMonths} month${numMonths === 1 ? "" : "s"} × ${fmtInt(MONTHLY_SALARY)})</span>
+            <span class="value">${fmtInt(salaryTotal)}</span>
+          </div>
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">Daily expense (300 × ${days})</span>
+            <span class="value">${fmtInt(dailyExpenseTotal)}</span>
+          </div>
         </div>
-
-        <div class="expense-list">
-          <div class="ee-row">
-            <span class="ee-dot"></span>
-            <span class="ee-label">Salaries (${monthsBetween(minStart, maxEnd)} × 29,000)</span>
-            <span class="ee-value deduct">−${fmtInt(salaryTotalOverall)}</span>
-          </div>
-          <div class="ee-row">
-            <span class="ee-dot"></span>
-            <span class="ee-label">Other Expenses</span>
-            <span class="ee-value deduct">−${fmtInt(expenseOnlyTotalOverall)}</span>
-          </div>
-          <div class="ee-row">
-            <span class="ee-dot"></span>
-            <span class="ee-label">Total Expenses</span>
-            <span class="ee-value">${fmtInt(totalExpenses)}</span>
-          </div>
-          <div class="ee-row">
-            <span class="ee-dot"></span>
-            <span class="ee-label">Last Month · Your Half</span>
-            <span class="ee-value">${fmtInt(lastYourHalf)}</span>
-          </div>
+        <div class="net-total-row">
+          <div class="ntr-lbl">Net Monthly Total<br><span style="font-size:9.5px; opacity:0.8; text-transform:none; letter-spacing:0;">after Expenses+Salary</span></div>
+          <div class="ntr-val">${fmtInt(netMonthly)}<span class="ntr-unit">PKR</span></div>
         </div>
       </div>
     </div>
@@ -2628,9 +1878,6 @@ function buildOverallSummaryCard(totals, filterMonthKey) {
   return el;
 }
 
-/* ============================================================
-   MONTH SPLIT & TOTALS
-   ============================================================ */
 function computeMonthlySplit(rows) {
   const buckets = new Map();
   const ensure = (y, m) => {
@@ -2689,103 +1936,103 @@ function computeMonthlySplit(rows) {
   return result;
 }
 
-function computeMonthlyTotals(records) {
+/**
+ * Compute monthly totals from persons and deductions separately.
+ */
+function computeMonthlySheetTotals(parsedData) {
+  const { persons, deductions } = parsedData;
   const totals = new Map();
-  records.forEach(r => {
+  persons.forEach(r => {
     const k = monthKey(r);
     if (!k) return;
-    if (!totals.has(k)) totals.set(k, {
-      regularAmount: 0, regularCount: 0,
-      salaryAmount: 0, salaryCount: 0,
-      expenseOnlyAmount: 0, expenseOnlyCount: 0
-    });
+    if (!totals.has(k)) totals.set(k, { amount: 0, count: 0, deductions: 0, deductionCount: 0 });
     const t = totals.get(k);
-    if (isSalaryRow(r.name)) { t.salaryAmount += r.amount; t.salaryCount++; }
-    else if (isExpenseOnlyRow(r.name)) { t.expenseOnlyAmount += r.amount; t.expenseOnlyCount++; }
-    else { t.regularAmount += r.amount; t.regularCount++; }
+    t.amount += r.amount;
+    t.count++;
+  });
+  deductions.forEach(r => {
+    const k = monthKey(r);
+    if (!k) return;
+    if (!totals.has(k)) totals.set(k, { amount: 0, count: 0, deductions: 0, deductionCount: 0 });
+    const t = totals.get(k);
+    // Always subtract: use absolute value, ignore sign
+    t.deductions += Math.abs(r.amount);
+    t.deductionCount++;
   });
   return totals;
 }
-function sumMonthlySheetTotals(records) {
-  let sum = 0;
-  records.forEach(r => { if (!isAnyExpenseRow(r.name)) sum += r.amount; });
-  return sum;
-}
-function sumMonthlySalaryTotals(records) {
-  let sum = 0;
-  records.forEach(r => { if (isSalaryRow(r.name)) sum += r.amount; });
-  return sum;
-}
-function sumMonthlyExpenseOnlyTotals(records) {
-  let sum = 0;
-  records.forEach(r => { if (isExpenseOnlyRow(r.name)) sum += r.amount; });
-  return sum;
-}
-function getLastMonthTotals(records) {
-  const totals = computeMonthlyTotals(records);
-  const keys = [...totals.keys()].sort((a, b) => b - a);
-  if (!keys.length) return { regularAmount: 0, salaryAmount: 0, expenseOnlyAmount: 0 };
-  return totals.get(keys[0]);
+
+function sumMonthlySheetTotals(parsedData) {
+  let personsTotal = 0, deductionsTotal = 0;
+  parsedData.persons.forEach(r => { personsTotal += r.amount; });
+  parsedData.deductions.forEach(r => { deductionsTotal += Math.abs(r.amount); });
+  return { personsTotal, deductionsTotal };
 }
 
-/* ============================================================
-   MONTH ROW — with filtered variant
-   ============================================================ */
-function buildMonthRow(info, srNo, sheetTotal, lastMonthAmount, lastMonthSalary, lastMonthExpenseOnly) {
+function getLastMonthTotals(parsedData) {
+  const totals = computeMonthlySheetTotals(parsedData);
+  const keys = [...totals.keys()].sort((a, b) => b - a);
+  if (!keys.length) return { amount: 0, deductions: 0 };
+  const t = totals.get(keys[0]);
+  return { amount: t.amount, deductions: t.deductions };
+}
+
+function buildMonthRow(info, srNo, sheetTotal, lastMonthAmount, lastMonthDeductions) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
-  let earningsHtml = "";
+  let sheetStrip = "", combinedStrip = "";
   if (sheetTotal) {
-    const beforeAmt = sheetTotal.regularAmount;
-    const salaryAmt = sheetTotal.salaryAmount;
-    const expenseOnlyAmt = sheetTotal.expenseOnlyAmount;
-    const totalExp = salaryAmt + expenseOnlyAmt;
-    const afterAmt = beforeAmt - totalExp;
-    const yourHalf = afterAmt * PARTNER_SHARE;
+    const personsAmt = sheetTotal.amount;
+    const deductionsAmt = sheetTotal.deductions || 0;
+    const netMonthly = personsAmt - deductionsAmt;
+    const salaryTotal = MONTHLY_SALARY;
+    const dailyExpenseTotal = DAILY_EXPENSE * daysCount;
+    const lastTotal = (lastMonthAmount != null) ? lastMonthAmount : personsAmt;
+    const lastDeduct = (lastMonthDeductions != null) ? lastMonthDeductions : deductionsAmt;
+    const netLast = lastTotal - lastDeduct;
 
-    const lastBefore = (lastMonthAmount != null) ? lastMonthAmount : beforeAmt;
-    const lastSal = (lastMonthSalary != null) ? lastMonthSalary : salaryAmt;
-    const lastExpOnly = (lastMonthExpenseOnly != null) ? lastMonthExpenseOnly : expenseOnlyAmt;
-    const lastAfter = lastBefore - lastSal - lastExpOnly;
-    const lastYourHalf = lastAfter * PARTNER_SHARE;
+    sheetStrip = `
+      <div class="mr-sheet-strip">
+        <div class="lbl-block">
+          <div class="sheet-lbl">Monthly Sheet Total</div>
+          <div class="sheet-sub">${sheetTotal.count} person${sheetTotal.count === 1 ? "" : "s"}${sheetTotal.deductionCount ? ` · ${sheetTotal.deductionCount} deduction${sheetTotal.deductionCount === 1 ? "" : "s"}` : ""}</div>
+        </div>
+        <div class="val-block"><div class="sheet-val">${fmtInt(personsAmt)}<span class="unit">PKR</span></div></div>
+      </div>`;
 
-    earningsHtml = `
-      <div class="mr-earnings">
-        <div class="ec-title">📅 Monthly Breakdown</div>
-        <div class="ba-grid">
-          <div class="ba-box before">
-            <div class="ba-lbl">Before Expenses</div>
-            <div class="ba-val">${fmtInt(beforeAmt)}<span class="ba-unit">PKR</span></div>
+    combinedStrip = `
+      <div class="mr-combined-strip">
+        <div class="combined-values">
+          <div class="cv-item total">
+            <div class="cv-lbl">Total Monthly</div>
+            <div class="cv-val">${fmtInt(personsAmt)}<span class="cv-unit">PKR</span></div>
           </div>
-          <div class="ba-box after">
-            <div class="ba-lbl">After Expenses</div>
-            <div class="ba-val">${fmtInt(afterAmt)}<span class="ba-unit">PKR</span></div>
-          </div>
-        </div>
-        <div class="your-earning">
-          <div class="ye-lbl"><span>💰</span> Your Earning (50%)</div>
-          <div class="ye-val">${fmtInt(yourHalf)}<span class="ye-unit">PKR</span></div>
-          <div class="ye-sub">50% of After Expenses</div>
-        </div>
-        <div class="expense-list">
-          <div class="ee-row">
-            <span class="ee-dot"></span>
-            <span class="ee-label">Salaries</span>
-            <span class="ee-value deduct">−${fmtInt(salaryAmt)}</span>
-          </div>
-          <div class="ee-row">
-            <span class="ee-dot"></span>
-            <span class="ee-label">Other Expenses</span>
-            <span class="ee-value deduct">−${fmtInt(expenseOnlyAmt)}</span>
-          </div>
-          <div class="ee-row">
-            <span class="ee-dot"></span>
-            <span class="ee-label">Last Month · Your Half</span>
-            <span class="ee-value">${fmtInt(lastYourHalf)}</span>
+          <div class="cv-item last">
+            <div class="cv-lbl">Last Month Total</div>
+            <div class="cv-val">${fmtInt(lastTotal)}<span class="cv-unit">PKR</span></div>
           </div>
         </div>
-      </div>
-    `;
+        <div class="breakdown">
+          ${deductionsAmt > 0 ? `
+          <div class="item deduction">
+            <span class="dot"></span>
+            <span class="label">Expenses+Salary (from sheet, always deducted)</span>
+            <span class="value">−${fmtInt(deductionsAmt)}</span>
+          </div>` : ''}
+          ${lastDeduct > 0 && lastDeduct !== deductionsAmt ? `
+          <div class="item deduction">
+            <span class="dot"></span>
+            <span class="label">Last Month Expenses+Salary</span>
+            <span class="value">−${fmtInt(lastDeduct)}</span>
+          </div>` : ''}
+          <div class="item"><span class="dot"></span><span class="label">You can minus salary (1 month × ${fmtInt(MONTHLY_SALARY)})</span><span class="value">${fmtInt(salaryTotal)}</span></div>
+          <div class="item"><span class="dot"></span><span class="label">Daily expense (300 × ${daysCount})</span><span class="value">${fmtInt(dailyExpenseTotal)}</span></div>
+        </div>
+        <div class="net-total-row">
+          <div class="ntr-lbl">Net Total<br><span style="font-size:9.5px; opacity:0.8; text-transform:none; letter-spacing:0;">after Expenses+Salary</span></div>
+          <div class="ntr-val">${fmtInt(netMonthly)}<span class="ntr-unit">PKR</span></div>
+        </div>
+      </div>`;
   }
   const row = document.createElement("div");
   row.className = "month-row" + (isCurrentMonth ? " current" : "");
@@ -2805,7 +2052,7 @@ function buildMonthRow(info, srNo, sheetTotal, lastMonthAmount, lastMonthSalary,
         <div class="mr-metric gross"><div class="lbl">Gross</div><div class="val">${fmtInt(gross)}</div></div>
         <div class="mr-metric avg"><div class="lbl">Avg/Day</div><div class="val">${fmtInt(avgNet)}</div></div>
       </div>
-      ${earningsHtml}
+      ${sheetStrip}${combinedStrip}
     </div>
   `;
   return row;
@@ -2837,52 +2084,16 @@ function buildPeriodRow(period, srNo) {
   return row;
 }
 
-/* ============================================================
-   RENDER REPORT
-   ============================================================ */
-let globalDailyRows = [];
-let globalMonthlyRecords = [];
-
-function renderReport(rows, monthlyRecords) {
-  globalDailyRows = rows;
-  globalMonthlyRecords = monthlyRecords;
-
+function renderReport(rows, parsedData) {
   const statusEl = document.getElementById("dailyStatus");
   const contentEl = document.getElementById("reportContent");
   if (!rows.length) {
     statusEl.className = "status error";
-    statusEl.innerHTML = "⚠️ No daily data loaded<br><small>Check that the Daily sheet is <b>published to web</b>.</small>";
+    statusEl.innerHTML = "⚠️ No daily data loaded<br><small>Check that the Daily sheet is <b>published to web</b>.<br><br>Open browser console (F12) for details.</small>";
     return;
   }
-
-  const monthInfosAll = computeMonthlySplit(rows);
-
-  // Populate dropdown (once)
-  populateFilter(monthInfosAll);
-
-  // Filter daily rows if a month is selected
-  let filteredDailyRows = rows;
-  let filteredMonthlyRecords = monthlyRecords;
-  if (currentFilter !== "all") {
-    const filterKey = parseInt(currentFilter);
-    const fY = Math.floor(filterKey / 100);
-    const fM = filterKey % 100;
-
-    filteredDailyRows = rows.filter(r => {
-      const sp = parseDateParts(r.startDate);
-      const ep = parseDateParts(r.endDate) || sp;
-      if (!sp) return false;
-      // Include if any part of the range overlaps the selected month
-      const mStart = { y: fY, m: fM, d: 1 };
-      const mEnd = { y: fY, m: fM, d: daysInMonth(fY, fM) };
-      return dateCmp(ep, mStart) >= 0 && dateCmp(sp, mEnd) <= 0;
-    });
-    filteredMonthlyRecords = monthlyRecords.filter(r => monthKey(r) === filterKey);
-  }
-
-  // Totals from daily rows
   let minStart = null, maxEnd = null, totalGross = 0, totalExp = 0, totalNet = 0;
-  filteredDailyRows.forEach(r => {
+  rows.forEach(r => {
     totalGross += r.gross; totalExp += r.expenses; totalNet += r.net;
     const sp = parseDateParts(r.startDate);
     const ep = parseDateParts(r.endDate) || sp;
@@ -2891,52 +2102,42 @@ function renderReport(rows, monthlyRecords) {
   });
   const totalDays = (minStart && maxEnd) ? daysBetween(minStart, maxEnd) : 0;
 
-  const monthlyRegularTotal = sumMonthlySheetTotals(filteredMonthlyRecords);
-  const monthlySalaryTotal = sumMonthlySalaryTotals(filteredMonthlyRecords);
-  const monthlyExpenseOnlyTotal = sumMonthlyExpenseOnlyTotals(filteredMonthlyRecords);
-  const lastTotals = getLastMonthTotals(filteredMonthlyRecords);
+  /* Compute persons total and deductions from parsed data */
+  const sums = sumMonthlySheetTotals(parsedData);
+  const totalMonthly = sums.personsTotal;
+  const totalDeductions = sums.deductionsTotal;
+
+  const last = getLastMonthTotals(parsedData);
 
   const overallEl = document.getElementById("overallCard");
   overallEl.innerHTML = "";
   overallEl.appendChild(buildOverallSummaryCard({
     gross: totalGross, exp: totalExp, net: totalNet, days: totalDays,
     minStart, maxEnd,
-    monthlySheetTotal: monthlyRegularTotal,
-    lastMonthTotal: lastTotals.regularAmount,
-    salaryTotalOverall: monthlySalaryTotal,
-    expenseOnlyTotalOverall: monthlyExpenseOnlyTotal,
-    lastMonthSalary: lastTotals.salaryAmount,
-    lastMonthExpenseOnly: lastTotals.expenseOnlyAmount
-  }, currentFilter));
+    totalMonthly, totalDeductions,
+    lastMonthTotal: last.amount, lastMonthDeductions: last.deductions
+  }));
 
   if (lastRefreshTs) {
     const ageMs = Date.now() - lastRefreshTs;
     updateRefreshIndicator(ageMs > 24 * 60 * 60 * 1000 ? 'stale' : 'fresh');
   }
 
-  // Months to display
-  let monthInfos = monthInfosAll;
-  if (currentFilter !== "all") {
-    const filterKey = parseInt(currentFilter);
-    monthInfos = monthInfosAll.filter(info => info.y * 100 + info.m === filterKey);
-  }
-
-  const sheetTotals = computeMonthlyTotals(filteredMonthlyRecords);
+  const sheetTotals = computeMonthlySheetTotals(parsedData);
+  const monthInfos = computeMonthlySplit(rows);
   const monthEl = document.getElementById("monthList");
   monthEl.innerHTML = "";
   monthInfos.forEach((info, i) => {
     const k = info.y * 100 + info.m;
     const sheetTotal = sheetTotals.get(k) || null;
-    const lastForRow = (i === 0) ? (sheetTotal ? sheetTotal.regularAmount : 0) : lastTotals.regularAmount;
-    const lastSalForRow = (i === 0) ? (sheetTotal ? sheetTotal.salaryAmount : 0) : lastTotals.salaryAmount;
-    const lastExpOnlyForRow = (i === 0) ? (sheetTotal ? sheetTotal.expenseOnlyAmount : 0) : lastTotals.expenseOnlyAmount;
-    monthEl.appendChild(buildMonthRow(info, i + 1, sheetTotal, lastForRow, lastSalForRow, lastExpOnlyForRow));
+    const lastForRow = (i === 0) ? (sheetTotal ? sheetTotal.amount : 0) : last.amount;
+    const lastDeductForRow = (i === 0) ? (sheetTotal ? sheetTotal.deductions : 0) : last.deductions;
+    monthEl.appendChild(buildMonthRow(info, i + 1, sheetTotal, lastForRow, lastDeductForRow));
   });
   document.getElementById("monthCount").textContent = `${monthInfos.length} month${monthInfos.length === 1 ? "" : "s"}`;
-
   const periodEl = document.getElementById("periodList");
   periodEl.innerHTML = "";
-  const sortedRows = [...filteredDailyRows].sort((a, b) => {
+  const sortedRows = [...rows].sort((a, b) => {
     const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
     if (da && db) return dateCmp(db, da);
     return (b.startDate || "").localeCompare(a.startDate || "");
@@ -2947,9 +2148,7 @@ function renderReport(rows, monthlyRecords) {
     periodEl.appendChild(buildPeriodRow({ startStr: r.startDate, endStr: r.endDate, startP, endP, gross: r.gross, exp: r.expenses, net: r.net }, i + 1));
   });
   document.getElementById("periodCount").textContent = `${sortedRows.length} period${sortedRows.length === 1 ? "" : "s"}`;
-
   renderDailyTable(sortedRows);
-
   statusEl.style.display = "none";
   contentEl.style.display = "block";
 }
@@ -2980,19 +2179,27 @@ async function fetchCSV(url) {
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const txt = await res.text();
-    if (txt.trim().startsWith("<")) return null;
+    if (txt.trim().startsWith("<")) { console.warn("⚠️ Got HTML instead of CSV:", url); return null; }
     return txt;
-  } catch (e) { return null; }
+  } catch (e) { console.error("❌ Fetch failed:", url, e); return null; }
 }
+
+/**
+ * Load monthly data → returns { persons: [...], deductions: [...] }
+ */
 async function loadMonthly() {
-  let all = [];
+  let personsAll = [];
+  let deductionsAll = [];
   for (const u of [SHEET1_CSV, SHEET2_CSV]) {
     const txt = await fetchCSV(u);
     if (!txt) continue;
-    all = all.concat(normalizeRecords(parseCSV(txt)));
+    const parsed = normalizeRecords(parseCSV(txt));
+    personsAll = personsAll.concat(parsed.persons);
+    deductionsAll = deductionsAll.concat(parsed.deductions);
   }
-  return all;
+  return { persons: personsAll, deductions: deductionsAll };
 }
+
 async function loadDaily() {
   const txt = await fetchCSV(SHEET_DAILY_CSV);
   if (!txt) return [];
@@ -3005,7 +2212,7 @@ async function loadDaily() {
 let allKeys = [];
 let byMonth = new Map();
 let monthlyLoaded = false;
-let monthlyRecordsCache = [];
+let parsedMonthlyCache = { persons: [], deductions: [] };
 
 function renderLast2() {
   const statusEl = document.getElementById("statusLast2");
@@ -3023,170 +2230,6 @@ function renderLast2() {
   wrap.appendChild(buildCompareCard(prevRecs, currRecs, monthLabel(prevRecs[0]), monthLabel(currRecs[0])));
   statusEl.style.display = "none"; wrap.style.display = "block";
 }
-
-/* ---- Compare card (Last 2) ---- */
-function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
-  const mapPrev = groupByName(prevRecs);
-  const mapCurr = groupByName(currRecs);
-  const regularPrev = new Map(), salaryPrev = new Map(), expPrev = new Map();
-  const regularCurr = new Map(), salaryCurr = new Map(), expCurr = new Map();
-  mapPrev.forEach((v, k) => {
-    if (v.isSalary) salaryPrev.set(k, v);
-    else if (v.isExpense) expPrev.set(k, v);
-    else regularPrev.set(k, v);
-  });
-  mapCurr.forEach((v, k) => {
-    if (v.isSalary) salaryCurr.set(k, v);
-    else if (v.isExpense) expCurr.set(k, v);
-    else regularCurr.set(k, v);
-  });
-
-  const cntPrev = regularPrev.size, cntCurr = regularCurr.size;
-  const matchedKeys = [], onlyPrevKeys = [], onlyCurrKeys = [];
-  const seen = new Set();
-  regularPrev.forEach((v, k) => { if (seen.has(k)) return; seen.add(k); if (regularCurr.has(k)) matchedKeys.push(k); else onlyPrevKeys.push(k); });
-  regularCurr.forEach((v, k) => { if (seen.has(k)) return; seen.add(k); onlyCurrKeys.push(k); });
-
-  let subPrev = 0, subCurr = 0, sr = 0;
-  const card = document.createElement("div");
-  card.className = "cmp-card";
-  card.innerHTML = `
-    <div class="cmp-head"><h1>Monthly Comparison</h1><p>${esc(prevLabel)} vs ${esc(currLabel)}</p></div>
-    <div class="cmp-counts">
-      <div><div class="num c1">${cntPrev}</div><div class="lbl">${esc(prevLabel)}</div></div>
-      <div><div class="num c2">${cntCurr}</div><div class="lbl">${esc(currLabel)}</div></div>
-    </div>
-    <div class="cmp-cols"><div class="sr-h">#</div><div class="m1">${esc(prevLabel)}</div><div class="m2">${esc(currLabel)}</div></div>
-  `;
-  const body = document.createElement("div");
-  const buildRow = (p, c, srNum, showDiff) => {
-    const left = p ? `<div class="m1-cell"><div class="cmp-name"><span class="nm">${esc(p.name)}</span></div><div class="cmp-amt">${fmtInt(p.amount)}</div></div>` : `<div class="m1-cell"><div class="cmp-missing">—</div></div>`;
-    let rightName = "";
-    if (c) {
-      let badge = "";
-      if (showDiff && p) {
-        const d = c.amount - p.amount;
-        if (Math.abs(d) < 0.5) badge = `<span class="cmp-badge same">same</span>`;
-        else if (d > 0) badge = `<span class="cmp-badge up">▲${fmtInt(d)}</span>`;
-        else badge = `<span class="cmp-badge down">▼${fmtInt(Math.abs(d))}</span>`;
-      }
-      rightName = `<div class="cmp-name"><span class="nm">${esc(c.name)}</span>${badge}</div>`;
-    }
-    const right = c ? `<div class="m2-cell">${rightName}<div class="cmp-amt">${fmtInt(c.amount)}</div></div>` : `<div class="m2-cell"><div class="cmp-missing">—</div></div>`;
-    const row = document.createElement("div");
-    row.className = "cmp-row";
-    row.innerHTML = `<div class="cmp-sr">${srNum}</div>${left}${right}`;
-    return row;
-  };
-  if (matchedKeys.length) {
-    const sec = document.createElement("div"); sec.className = "cmp-sec ok";
-    sec.textContent = `✓ Matched (${matchedKeys.length})`; body.appendChild(sec);
-    matchedKeys.forEach(k => { const p = regularPrev.get(k), c = regularCurr.get(k); subPrev += p.amount; subCurr += c.amount; body.appendChild(buildRow(p, c, ++sr, true)); });
-  }
-  if (onlyPrevKeys.length || onlyCurrKeys.length) {
-    const sec = document.createElement("div"); sec.className = "cmp-sec warn";
-    sec.textContent = `⚠ Unmatched (${onlyPrevKeys.length + onlyCurrKeys.length})`; body.appendChild(sec);
-    const maxLen = Math.max(onlyPrevKeys.length, onlyCurrKeys.length);
-    for (let i = 0; i < maxLen; i++) {
-      const p = onlyPrevKeys[i] ? regularPrev.get(onlyPrevKeys[i]) : null;
-      const c = onlyCurrKeys[i] ? regularCurr.get(onlyCurrKeys[i]) : null;
-      if (p) subPrev += p.amount;
-      if (c) subCurr += c.amount;
-      body.appendChild(buildRow(p, c, ++sr, false));
-    }
-  }
-  const totals = document.createElement("div");
-  totals.className = "cmp-subtotal";
-  totals.innerHTML = `<div class="sr-blank"></div>
-    <div><div class="mname v1">${esc(prevLabel)}</div><div class="val v1">${fmtInt(subPrev)}</div><div class="cnt">${cntPrev} ppl</div></div>
-    <div><div class="mname v2">${esc(currLabel)}</div><div class="val v2">${fmtInt(subCurr)}</div><div class="cnt">${cntCurr} ppl</div></div>`;
-  body.appendChild(totals);
-
-  const prevSal = [...salaryPrev.values()].reduce((s, v) => s + v.amount, 0);
-  const currSal = [...salaryCurr.values()].reduce((s, v) => s + v.amount, 0);
-  const prevExp = [...expPrev.values()].reduce((s, v) => s + v.amount, 0);
-  const currExp = [...expCurr.values()].reduce((s, v) => s + v.amount, 0);
-
-  if (prevSal > 0 || currSal > 0 || prevExp > 0 || currExp > 0) {
-    const sec = document.createElement("div"); sec.className = "cmp-sec exp";
-    sec.textContent = `− Expenses`; body.appendChild(sec);
-
-    if (prevSal > 0 || currSal > 0) {
-      const r = document.createElement("div");
-      r.className = "cmp-row";
-      r.innerHTML = `
-        <div class="cmp-sr">💼</div>
-        <div class="m1-cell"><div class="cmp-name"><span class="nm">Salaries</span></div><div class="cmp-amt" style="color:#c0392b">${fmtInt(prevSal)}</div></div>
-        <div class="m2-cell"><div class="cmp-name"><span class="nm">Salaries</span></div><div class="cmp-amt" style="color:#c0392b">${fmtInt(currSal)}</div></div>
-      `;
-      body.appendChild(r);
-    }
-    if (prevExp > 0 || currExp > 0) {
-      const r = document.createElement("div");
-      r.className = "cmp-row";
-      r.innerHTML = `
-        <div class="cmp-sr">💸</div>
-        <div class="m1-cell"><div class="cmp-name"><span class="nm">Other Expenses</span></div><div class="cmp-amt" style="color:#c0392b">${fmtInt(prevExp)}</div></div>
-        <div class="m2-cell"><div class="cmp-name"><span class="nm">Other Expenses</span></div><div class="cmp-amt" style="color:#c0392b">${fmtInt(currExp)}</div></div>
-      `;
-      body.appendChild(r);
-    }
-
-    const prevAfter = subPrev - prevSal - prevExp;
-    const currAfter = subCurr - currSal - currExp;
-
-    const afterRow = document.createElement("div");
-    afterRow.className = "cmp-row";
-    afterRow.style.background = "#f0fdf4";
-    afterRow.innerHTML = `
-      <div class="cmp-sr" style="background:#f0fdf4">✓</div>
-      <div class="m1-cell">
-        <div class="cmp-name" style="color:#0f4b1e"><span class="nm"><b>After Expenses</b></span></div>
-        <div class="cmp-amt" style="color:#0f4b1e;font-size:14px">${fmtInt(prevAfter)}</div>
-      </div>
-      <div class="m2-cell">
-        <div class="cmp-name" style="color:#0f4b1e"><span class="nm"><b>After Expenses</b></span></div>
-        <div class="cmp-amt" style="color:#0f4b1e;font-size:14px">${fmtInt(currAfter)}</div>
-      </div>
-    `;
-    body.appendChild(afterRow);
-
-    const halfRow = document.createElement("div");
-    halfRow.className = "cmp-row";
-    halfRow.style.background = "#fffbeb";
-    halfRow.innerHTML = `
-      <div class="cmp-sr" style="background:#fffbeb">💰</div>
-      <div class="m1-cell">
-        <div class="cmp-name" style="color:#92400e"><span class="nm"><b>Your Half (50%)</b></span></div>
-        <div class="cmp-amt" style="color:#92400e;font-size:14px">${fmtInt(prevAfter * PARTNER_SHARE)}</div>
-      </div>
-      <div class="m2-cell">
-        <div class="cmp-name" style="color:#92400e"><span class="nm"><b>Your Half (50%)</b></span></div>
-        <div class="cmp-amt" style="color:#92400e;font-size:14px">${fmtInt(currAfter * PARTNER_SHARE)}</div>
-      </div>
-    `;
-    body.appendChild(halfRow);
-
-    const grandPrev = prevAfter * PARTNER_SHARE;
-    const grandCurr = currAfter * PARTNER_SHARE;
-    const grand = document.createElement("div");
-    grand.className = "cmp-grand";
-    grand.innerHTML = `<div class="lbl">💰 Your Total Earning</div><div class="val">${fmtInt(grandPrev + grandCurr)}</div><div class="cnt">Matched: ${matchedKeys.length} • Unmatched: ${onlyPrevKeys.length + onlyCurrKeys.length}</div>`;
-    body.appendChild(grand);
-
-    const diff = grandCurr - grandPrev;
-    const diffEl = document.createElement("div");
-    diffEl.className = "cmp-diff " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
-    const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "=";
-    const sign = diff > 0 ? "+" : "";
-    diffEl.innerHTML = `<span>Difference (your half)</span><span>${arrow} ${sign}${fmtInt(diff)}</span>`;
-    body.appendChild(diffEl);
-  }
-
-  card.appendChild(body);
-  return card;
-}
-
 function renderAllMonths() {
   const statusEl = document.getElementById("statusAll");
   const tableWrap = document.getElementById("tableWrap");
@@ -3198,135 +2241,29 @@ function renderAllMonths() {
   }
   const monthList = allKeys.map(k => {
     const recs = byMonth.get(k) || [];
-    return { recs, label: monthLabel(recs[0]) };
-  }).filter(m => m.recs.length);
+    return { persons: recs, label: monthLabel(recs[0]) };
+  }).filter(m => m.persons.length);
   buildAllMonthsTable(monthList);
   statusEl.style.display = "none"; tableWrap.style.display = "block";
   hint.style.display = monthList.length > 1 ? "block" : "none";
 }
-
-function buildAllMonthsTable(monthList) {
-  const table = document.getElementById("mtable");
-  table.innerHTML = "";
-  let gBefore = 0, gSalary = 0, gExpense = 0, gAfter = 0, gYourHalf = 0, gPersons = 0, monthsWithData = 0;
-
-  monthList.forEach(m => {
-    const map = groupByName(m.recs);
-    const label = m.label;
-
-    const col = document.createElement("div");
-    col.className = "mcol";
-
-    let regularCount = 0;
-    map.forEach(v => { if (!v.isSalary && !v.isExpense) regularCount++; });
-
-    const head = document.createElement("div");
-    head.className = "mcol-head";
-    head.innerHTML = `<div class="mname">${esc(label)}</div><div class="mcount">${regularCount} person${regularCount === 1 ? "" : "s"}</div>`;
-    col.appendChild(head);
-
-    const bodyEl = document.createElement("div");
-    bodyEl.className = "mcol-body";
-
-    let sr = 0, regularTotal = 0, salaryTotal = 0, expenseOnlyTotal = 0;
-    map.forEach(v => {
-      sr++;
-      const row = document.createElement("div");
-      row.className = "mrow" + ((v.isSalary || v.isExpense) ? " expense-row" : "");
-      if (v.isSalary) {
-        salaryTotal += v.amount;
-        row.innerHTML = `<div class="top"><span class="srn">💼</span><span class="nm">${esc(v.name)}</span></div><div class="amt">${fmtInt(v.amount)}</div>`;
-      } else if (v.isExpense) {
-        expenseOnlyTotal += v.amount;
-        row.innerHTML = `<div class="top"><span class="srn">💸</span><span class="nm">${esc(v.name)}</span></div><div class="amt">${fmtInt(v.amount)}</div>`;
-      } else {
-        regularTotal += v.amount;
-        row.innerHTML = `<div class="top"><span class="srn">${sr}</span><span class="nm">${esc(v.name)}</span></div><div class="amt">${fmtInt(v.amount)}</div>`;
-      }
-      bodyEl.appendChild(row);
-    });
-    col.appendChild(bodyEl);
-
-    const totalExp = salaryTotal + expenseOnlyTotal;
-    const afterTotal = regularTotal - totalExp;
-    const yourHalf = afterTotal * PARTNER_SHARE;
-
-    const ba = document.createElement("div");
-    ba.className = "mcol-ba";
-    ba.innerHTML = `
-      <div class="ba-box before">
-        <div class="ba-lbl">Before</div>
-        <div class="ba-val">${fmtInt(regularTotal)}</div>
-      </div>
-      <div class="ba-box after">
-        <div class="ba-lbl">After</div>
-        <div class="ba-val">${fmtInt(afterTotal)}</div>
-      </div>
-      <div class="ba-box half">
-        <div class="ba-lbl">💰 Your Half</div>
-        <div class="ba-val">${fmtInt(yourHalf)}</div>
-      </div>
-    `;
-    col.appendChild(ba);
-
-    const tot = document.createElement("div");
-    tot.className = "mcol-total";
-    tot.innerHTML = `<div class="lbl">💰 Your Earning</div><div class="val">${fmtInt(yourHalf)}</div><div class="cnt">${regularCount} ppl</div>`;
-    col.appendChild(tot);
-
-    table.appendChild(col);
-    gBefore += regularTotal;
-    gSalary += salaryTotal;
-    gExpense += expenseOnlyTotal;
-    gAfter += afterTotal;
-    gYourHalf += yourHalf;
-    gPersons += regularCount;
-    if (map.size) monthsWithData++;
-  });
-
-  const avg = monthsWithData ? gYourHalf / monthsWithData : 0;
-
-  const grandCol = document.createElement("div");
-  grandCol.className = "mcol-grand";
-  grandCol.innerHTML = `
-    <div class="mcol-head"><div class="mname">GRAND</div><div class="mcount">${monthList.length} mo</div></div>
-    <div class="mcol-body">
-      <div class="big-lbl">💰 Your Total</div>
-      <div class="big-val">${fmtInt(gYourHalf)}</div>
-      <div class="sub">
-        Before: ${fmtInt(gBefore)}<br>
-        Salaries: −${fmtInt(gSalary)}<br>
-        Expenses: −${fmtInt(gExpense)}<br>
-        After: ${fmtInt(gAfter)}
-      </div>
-      <div class="divider"></div>
-      <div class="avg-lbl">Avg / Month</div>
-      <div class="avg-val">${fmtInt(avg)}</div>
-    </div>
-    <div class="mcol-total">
-      <div class="lbl">💰 YOUR HALF</div>
-      <div class="val">${fmtInt(gYourHalf)}</div>
-      <div class="cnt">${monthList.length} mo · ${gPersons} ppl</div>
-    </div>
-  `;
-  table.appendChild(grandCol);
-}
-
 async function loadMonthlyOnce() {
   if (monthlyLoaded) return;
   monthlyLoaded = true;
-  const records = monthlyRecordsCache.length ? monthlyRecordsCache : await loadMonthly();
-  monthlyRecordsCache = records;
-  if (!records.length) {
+  const parsed = (parsedMonthlyCache.persons.length || parsedMonthlyCache.deductions.length)
+    ? parsedMonthlyCache
+    : await loadMonthly();
+  parsedMonthlyCache = parsed;
+  if (!parsed.persons.length && !parsed.deductions.length) {
     document.getElementById("statusLast2").className = "status error";
     document.getElementById("statusLast2").innerHTML = "⚠️ No monthly data";
     document.getElementById("statusAll").className = "status error";
     document.getElementById("statusAll").innerHTML = "⚠️ No monthly data";
     return;
   }
-  allKeys = [...new Set(records.map(monthKey))].filter(k => k > 0).sort((a, b) => a - b);
+  allKeys = [...new Set(parsed.persons.map(monthKey))].filter(k => k > 0).sort((a, b) => a - b);
   byMonth = new Map();
-  records.forEach(r => {
+  parsed.persons.forEach(r => {
     const k = monthKey(r);
     if (!byMonth.has(k)) byMonth.set(k, []);
     byMonth.get(k).push(r);
@@ -3368,39 +2305,60 @@ function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDai
   document.getElementById(rowStatId).textContent = (rows.length - 1).toLocaleString();
   document.getElementById(colStatId).textContent = headers.length;
   const trh = document.createElement("tr");
-  headers.forEach(h => { const th = document.createElement("th"); th.textContent = h || "—"; trh.appendChild(th); });
+  headers.forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h || "—";
+    trh.appendChild(th);
+  });
   thead.appendChild(trh);
   let amountIdx = -1;
-  if (isDaily) amountIdx = findCol(headers, ["total net amount credited (pkr)", "total net amount credited", "net amount credited", "net amount", "net"]);
-  else amountIdx = findCol(headers, COL.amount);
+  if (isDaily) {
+    amountIdx = findCol(headers, ["total net amount credited (pkr)", "total net amount credited", "net amount credited", "net amount", "net"]);
+  } else {
+    amountIdx = findCol(headers, COL.amount);
+  }
+  // Find the name column index for deduction detection
+  const nameIdx = findCol(headers, COL.name);
+
   const maxRows = Math.min(rows.length - 1, 100);
   let total = 0;
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
     if (i - 1 < maxRows) {
       const tr = document.createElement("tr");
-      const nameVal = r[0] || "";
-      if (!isDaily && isAnyExpenseRow(nameVal)) tr.style.background = "#fef2f2";
+      // Check if this is a deduction row
+      if (!isDaily && nameIdx >= 0 && isExpenseSalaryRow(r[nameIdx])) {
+        tr.className = "deduction-row";
+      }
       headers.forEach((h, ci) => {
         const td = document.createElement("td");
         const val = r[ci] || "";
         const hLower = (h || "").toLowerCase();
         const isNumeric = /amount|amt|value|total|gross|expenses|net|pkr/i.test(hLower);
-        if (isNumeric && amountIdx >= 0 && ci === amountIdx) { td.className = "num"; td.textContent = fmtInt(parseNum(val)); }
-        else if (ci === 0) { td.className = "name"; td.textContent = val; }
-        else { td.textContent = val; }
+        if (isNumeric && amountIdx >= 0 && ci === amountIdx) {
+          td.className = "num"; td.textContent = fmtInt(parseNum(val));
+        } else if (ci === 0) {
+          td.className = "name"; td.textContent = val;
+        } else { td.textContent = val; }
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
     }
-    if (amountIdx >= 0) total += parseNum(r[amountIdx]);
+    if (amountIdx >= 0) {
+      // For deductions, subtract absolute value; for persons, add
+      if (!isDaily && nameIdx >= 0 && isExpenseSalaryRow(r[nameIdx])) {
+        total -= Math.abs(parseNum(r[amountIdx]));
+      } else {
+        total += parseNum(r[amountIdx]);
+      }
+    }
   }
   if (rows.length - 1 > maxRows) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
     td.colSpan = headers.length;
     td.style.textAlign = "center";
-    td.style.color = "#7a8ba0";
+    td.style.color = "#5a6f88";
     td.style.fontStyle = "italic";
     td.style.padding = "10px";
     td.textContent = `… ${(rows.length - 1 - maxRows).toLocaleString()} more rows`;
@@ -3424,7 +2382,10 @@ function renderActivity() {
   document.getElementById("statSessions").textContent = sessions;
   document.getElementById("statTabViews").textContent = tabViews;
   document.getElementById("statTotalEvents").textContent = list.length;
-  if (!list.length) { container.innerHTML = `<div class="raw-empty">No activity yet.</div>`; return; }
+  if (!list.length) {
+    container.innerHTML = `<div class="raw-empty">No activity yet.</div>`;
+    return;
+  }
   const recent = [...list].reverse().slice(0, 100);
   const icons = { view: "👁", click: "👆", scroll: "📜", session: "🚀" };
   const labels = { view: "Viewed", click: "Clicked", scroll: "Scrolled", session: "Session started" };
@@ -3449,7 +2410,10 @@ function renderActivity() {
     `;
   }).join("");
 }
-document.getElementById("refreshActivityBtn")?.addEventListener("click", () => { renderActivity(); logActivity("click", "Refresh Activity Log", ""); });
+document.getElementById("refreshActivityBtn")?.addEventListener("click", () => {
+  renderActivity();
+  logActivity("click", "Refresh Activity Log", "");
+});
 document.getElementById("clearActivityBtn")?.addEventListener("click", () => {
   if (!confirm("Clear all local activity log?")) return;
   localStorage.removeItem(ACTIVITY_KEY);
@@ -3459,12 +2423,17 @@ document.getElementById("copyActivityBtn")?.addEventListener("click", async () =
   const list = loadActivity();
   if (!list.length) { alert("No activity to copy."); return; }
   const text = list.map(e => `[${e.timestamp}] ${e.type.toUpperCase()} — ${e.title}${e.detail ? " (" + e.detail + ")" : ""}`).join("\n");
-  try { await navigator.clipboard.writeText(text); alert("✅ Copied!"); }
-  catch (err) {
+  try {
+    await navigator.clipboard.writeText(text);
+    logActivity("click", "Copied Activity Log", `${list.length} events copied`);
+    alert("✅ Activity log copied!");
+  } catch (err) {
     const ta = document.createElement("textarea");
-    ta.value = text; document.body.appendChild(ta); ta.select();
-    document.execCommand("copy"); document.body.removeChild(ta);
-    alert("✅ Copied!");
+    ta.value = text;
+    document.body.appendChild(ta); ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    alert("✅ Activity log copied!");
   }
 });
 
@@ -3490,13 +2459,6 @@ function switchTab(tab) {
 document.querySelectorAll('.tab-bar button').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
 document.querySelectorAll('.bottom-nav button').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
 
-/* Filter dropdown change */
-document.getElementById("monthFilter")?.addEventListener("change", (e) => {
-  currentFilter = e.target.value;
-  logActivity("click", "Filter changed", `Now showing: ${e.target.options[e.target.selectedIndex].text}`);
-  renderReport(globalDailyRows, globalMonthlyRecords);
-});
-
 document.addEventListener("click", (e) => {
   const link = e.target.closest("a[href]");
   if (link && link.id) logActivity("click", "Opened sheet link", `Link: ${link.id}`);
@@ -3506,7 +2468,8 @@ document.addEventListener("click", (e) => {
   }
 });
 
-let lastScrollLog = 0, maxScrollDepth = 0;
+let lastScrollLog = 0;
+let maxScrollDepth = 0;
 window.addEventListener("scroll", () => {
   const now = Date.now();
   const depth = Math.round((window.scrollY + window.innerHeight) / document.body.scrollHeight * 100);
@@ -3517,8 +2480,16 @@ window.addEventListener("scroll", () => {
   }
 });
 
-window.addEventListener('online', () => { updateRefreshIndicator('refreshing'); refreshDataFromNetwork(); });
-window.addEventListener('offline', () => { updateRefreshIndicator('offline'); });
+/* ============================================================
+   ONLINE / OFFLINE
+   ============================================================ */
+window.addEventListener('online', () => {
+  updateRefreshIndicator('refreshing');
+  refreshDataFromNetwork();
+});
+window.addEventListener('offline', () => {
+  updateRefreshIndicator('offline');
+});
 
 /* ============================================================
    BOOT
@@ -3532,21 +2503,27 @@ document.getElementById("openDaily").href = SHEET_DAILY_OPEN;
 
 async function refreshDataFromNetwork() {
   try {
-    const [dailyRows, monthlyRecords] = await Promise.all([loadDaily(), loadMonthly()]);
-    if (dailyRows.length > 0 || monthlyRecords.length > 0) {
-      saveDataCache(dailyRows, monthlyRecords);
-      monthlyRecordsCache = monthlyRecords;
+    const [dailyRows, parsedData] = await Promise.all([loadDaily(), loadMonthly()]);
+    console.log("📊 Network → Daily:", dailyRows.length, "| Persons:", parsedData.persons.length, "| Deductions:", parsedData.deductions.length);
+
+    if (dailyRows.length > 0 || parsedData.persons.length > 0 || parsedData.deductions.length > 0) {
+      saveDataCache(dailyRows, parsedData);
+      parsedMonthlyCache = parsedData;
       lastRefreshTs = Date.now();
-      renderReport(dailyRows, monthlyRecords);
+      renderReport(dailyRows, parsedData);
       monthlyLoaded = false;
       allKeys = [];
       byMonth = new Map();
-      if (document.getElementById("contentData").classList.contains("active")) populateDataTab();
+      if (document.getElementById("contentData").classList.contains("active")) {
+        populateDataTab();
+      }
       updateRefreshIndicator('fresh');
       return true;
+    } else {
+      throw new Error("Empty data");
     }
-    throw new Error("Empty");
   } catch (err) {
+    console.warn("❌ Network refresh failed:", err);
     updateRefreshIndicator(navigator.onLine ? 'stale' : 'offline');
     return false;
   }
@@ -3555,8 +2532,9 @@ async function refreshDataFromNetwork() {
 async function boot() {
   const cached = loadDataCache();
   if (cached) {
+    console.log("💾 Loaded from cache");
     lastRefreshTs = cached.ts;
-    monthlyRecordsCache = cached.monthly;
+    parsedMonthlyCache = cached.monthly;
     if (cached.daily.length > 0) {
       renderReport(cached.daily, cached.monthly);
       const ageHrs = (Date.now() - cached.ts) / (1000 * 60 * 60);
@@ -3570,7 +2548,7 @@ async function boot() {
     if (!cached) {
       const statusEl = document.getElementById("dailyStatus");
       statusEl.className = "status error";
-      statusEl.innerHTML = "📴 Offline & no cached data<br><small>Connect and refresh once.</small>";
+      statusEl.innerHTML = "📴 You're offline and no cached data available.<br><small>Connect to internet and refresh once.</small>";
     } else {
       updateRefreshIndicator('offline');
     }
