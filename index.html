@@ -153,13 +153,19 @@
   .oc-title { font-size: 23px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2; }
 
   .oc-refreshed {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 11px; font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
     color: rgba(255,255,255,0.92);
     background: rgba(255,255,255,0.14);
-    padding: 5px 11px; border-radius: 20px;
+    padding: 5px 11px;
+    border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.18);
-    letter-spacing: 0.1px; line-height: 1; margin-top: 2px;
+    letter-spacing: 0.1px;
+    line-height: 1;
+    margin-top: 2px;
     transition: all 0.3s ease;
   }
   .oc-refreshed .dot-refresh {
@@ -178,8 +184,13 @@
   }
   .oc-refreshed .text { white-space: nowrap; }
   .oc-refreshed .text strong { font-weight: 800; }
-  .oc-refreshed.refreshing .dot-refresh { animation: pulse 1.2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .oc-refreshed.refreshing .dot-refresh {
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
 
   .oc-body { padding: 6px 20px 18px; }
   .oc-row {
@@ -201,7 +212,7 @@
   .oc-row.highlight .v { font-size: 19px; font-weight: 800; color: #0a4a8c; letter-spacing: -0.3px; }
   .oc-row.highlight .v .unit { font-size: 11.5px; font-weight: 600; opacity: 0.7; margin-left: 4px; }
 
-  /* Green combined row */
+  /* ---------- Green card: BEFORE & AFTER ---------- */
   .oc-row.combined {
     background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
     margin: 10px -20px -18px; padding: 18px 20px; border-bottom: none;
@@ -209,90 +220,83 @@
     display: flex; flex-direction: column; gap: 12px;
   }
 
-  .combined-values {
+  /* BEFORE / AFTER grid */
+  .ba-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    padding-bottom: 4px;
   }
-  .combined-values .cv-item {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
+  .ba-item {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.18);
     border-radius: 12px;
     padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
   }
-  .combined-values .cv-lbl {
+  .ba-item .ba-lbl {
     font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
     font-weight: 800;
     opacity: 0.9;
-    margin-bottom: 5px;
     line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .combined-values .cv-val {
-    font-size: 17px;
+  .ba-item .ba-val {
+    font-size: 16px;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.4px;
+    letter-spacing: -0.3px;
     line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .combined-values .cv-val .cv-unit {
+  .ba-item .ba-val .ba-unit {
     font-size: 10px;
     font-weight: 600;
     opacity: 0.75;
     margin-left: 3px;
   }
-  .combined-values .cv-item.before {
-    background: rgba(255, 217, 102, 0.22);
-    border-color: rgba(255, 217, 102, 0.5);
-  }
-  .combined-values .cv-item.before .cv-val { color: #ffe9a8; }
-  .combined-values .cv-item.after {
-    background: rgba(144, 238, 144, 0.22);
-    border-color: rgba(144, 238, 144, 0.5);
-  }
-  .combined-values .cv-item.after .cv-val { color: #b9f6ca; }
 
-  /* Row for expenses+salary deduction line */
-  .combined-expenses {
-    background: rgba(0,0,0,0.15);
-    border-radius: 12px;
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    border-left: 4px solid #ffb3b3;
+  /* AFTER = highlighted, bigger, gold */
+  .ba-item.after {
+    background: linear-gradient(135deg, rgba(255, 217, 102, 0.28) 0%, rgba(255, 200, 60, 0.20) 100%);
+    border: 1.5px solid rgba(255, 217, 102, 0.6);
+    box-shadow: 0 4px 12px rgba(255, 200, 60, 0.18);
   }
-  .combined-expenses .ce-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
+  .ba-item.after .ba-lbl {
+    color: #ffe9a8;
+    opacity: 1;
   }
-  .combined-expenses .ce-lbl {
-    font-size: 11.5px;
-    font-weight: 700;
-    opacity: 0.9;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
+  .ba-item.after .ba-val {
+    color: #fff8e1;
+    font-size: 19px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
   }
-  .combined-expenses .ce-sub {
-    font-size: 10px;
+  .ba-item.after .ba-val .ba-unit {
+    opacity: 0.85;
+    color: #ffe9a8;
+  }
+  .ba-item.before {
+    background: rgba(255,255,255,0.08);
+  }
+  .ba-item.before .ba-val {
+    opacity: 0.85;
+    text-decoration: line-through;
+    text-decoration-color: rgba(255,255,255,0.35);
+    text-decoration-thickness: 1.5px;
+  }
+  .ba-item.before .ba-lbl {
     opacity: 0.7;
-    margin-top: 2px;
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-  .combined-expenses .ce-val {
-    font-size: 15px;
-    font-weight: 800;
-    color: #ffb3b3;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
   }
 
+  /* breakdown below */
   .combined-details {
     display: flex; flex-direction: column; gap: 7px;
     padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 12.5px;
@@ -304,6 +308,8 @@
     font-weight: 800; color: #ffd966;
     font-variant-numeric: tabular-nums; white-space: nowrap;
   }
+  .combined-details .item.expense .dot { background: #f87171; }
+  .combined-details .item.expense .value { color: #fecaca; }
 
   .section-head {
     display: flex; align-items: center; justify-content: space-between;
@@ -419,64 +425,29 @@
     font-size: 10.5px; font-weight: 600; opacity: 0.65; margin-left: 3px;
   }
 
+  /* Month combined strip — BEFORE/AFTER */
   .mr-combined-strip {
     margin-top: 10px; padding: 14px 16px;
     background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
     border-radius: 14px; display: flex; flex-direction: column; gap: 10px;
     color: #fff; box-shadow: 0 4px 12px rgba(15,75,30,0.2);
   }
-  .mr-combined-strip .combined-values {
+  .mr-combined-strip .ba-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    padding-bottom: 4px;
   }
-  .mr-combined-strip .combined-values .cv-item {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 10px;
-    padding: 8px 10px;
+  .mr-combined-strip .ba-item {
+    padding: 9px 11px;
   }
-  .mr-combined-strip .combined-values .cv-lbl {
-    font-size: 9.5px; text-transform: uppercase;
-    letter-spacing: 0.4px; font-weight: 800;
-    opacity: 0.9; margin-bottom: 4px; line-height: 1.2;
+  .mr-combined-strip .ba-item .ba-lbl {
+    font-size: 9.5px;
   }
-  .mr-combined-strip .combined-values .cv-val {
-    font-size: 15px; font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.3px; line-height: 1.15;
+  .mr-combined-strip .ba-item .ba-val {
+    font-size: 14px;
   }
-  .mr-combined-strip .combined-values .cv-val .cv-unit {
-    font-size: 9.5px; font-weight: 600;
-    opacity: 0.75; margin-left: 2px;
-  }
-  .mr-combined-strip .combined-values .cv-item.before {
-    background: rgba(255, 217, 102, 0.22);
-    border-color: rgba(255, 217, 102, 0.5);
-  }
-  .mr-combined-strip .combined-values .cv-item.before .cv-val { color: #ffe9a8; }
-  .mr-combined-strip .combined-values .cv-item.after {
-    background: rgba(144, 238, 144, 0.22);
-    border-color: rgba(144, 238, 144, 0.5);
-  }
-  .mr-combined-strip .combined-values .cv-item.after .cv-val { color: #b9f6ca; }
-  .mr-combined-strip .combined-expenses {
-    padding: 10px 12px;
-    background: rgba(0,0,0,0.15);
-    border-radius: 10px;
-    border-left: 3px solid #ffb3b3;
-  }
-  .mr-combined-strip .combined-expenses .ce-row {
-    display: flex; justify-content: space-between; align-items: center; gap: 8px;
-  }
-  .mr-combined-strip .combined-expenses .ce-lbl {
-    font-size: 10.5px; font-weight: 700;
-    opacity: 0.9; text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .mr-combined-strip .combined-expenses .ce-val {
-    font-size: 13px; font-weight: 800;
-    color: #ffb3b3; font-variant-numeric: tabular-nums; white-space: nowrap;
+  .mr-combined-strip .ba-item.after .ba-val {
+    font-size: 17px;
   }
   .mr-combined-strip .breakdown {
     display: flex; flex-direction: column; gap: 6px;
@@ -489,6 +460,7 @@
   .mr-combined-strip .breakdown .dot {
     width: 6px; height: 6px; border-radius: 50%; background: #ffd966; flex-shrink: 0;
   }
+  .mr-combined-strip .breakdown .item.expense .dot { background: #f87171; }
   .mr-combined-strip .breakdown .label {
     font-weight: 600; opacity: 0.9; flex: 1;
   }
@@ -496,6 +468,7 @@
     font-weight: 800; color: #ffd966;
     font-variant-numeric: tabular-nums; white-space: nowrap;
   }
+  .mr-combined-strip .breakdown .item.expense .value { color: #fecaca; }
 
   .daily-section-title {
     font-size: 11.5px; font-weight: 800; color: var(--muted);
@@ -589,11 +562,16 @@
   }
   .cmp-sec.ok { background: #ecfdf5; color: var(--green-dark); }
   .cmp-sec.warn { background: #fff7ed; color: #c2410c; }
+  .cmp-sec.special { background: #fef2f2; color: #b91c1c; }
   .cmp-row {
     display: grid; grid-template-columns: 34px 1fr 1fr;
     border-bottom: 1px solid var(--line); background: var(--card);
   }
   .cmp-row:last-child { border-bottom: none; }
+  .cmp-row.special-row {
+    background: #fff7ed;
+    border-left: 4px solid #f59e0b;
+  }
   .cmp-row > div {
     padding: 10px 8px; min-height: 52px;
     display: flex; flex-direction: column; justify-content: center;
@@ -610,6 +588,13 @@
     white-space: nowrap; overflow: hidden;
   }
   .cmp-name .nm { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .cmp-name .special-tag {
+    background: #fed7aa; color: #9a3412;
+    font-size: 9px; font-weight: 800;
+    padding: 2px 6px; border-radius: 6px;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
   .cmp-amt {
     font-size: 13px; font-weight: 800; margin-top: 4px;
     letter-spacing: -0.3px; font-variant-numeric: tabular-nums;
@@ -617,6 +602,7 @@
   }
   .cmp-row .m1-cell .cmp-amt { color: var(--brand); }
   .cmp-row .m2-cell .cmp-amt { color: var(--green-dark); }
+  .cmp-row.special-row .cmp-amt { color: #b91c1c; }
   .cmp-missing {
     color: #cbd5e1; font-style: italic; font-size: 11.5px;
     display: flex; align-items: center; justify-content: center; font-weight: 500;
@@ -708,6 +694,10 @@
     display: flex; flex-direction: column; padding: 10px 12px;
     border-bottom: 1px solid var(--line); min-height: 56px; justify-content: center;
   }
+  .mrow.special-row {
+    background: #fff7ed;
+    border-left: 3px solid #f59e0b;
+  }
   .mrow .top {
     display: flex; align-items: center; gap: 6px;
     font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden;
@@ -716,19 +706,14 @@
     font-size: 10.5px; color: #8fa0b2; font-weight: 800;
     background: #f1f6fb; padding: 2px 7px; border-radius: 6px; flex-shrink: 0;
   }
+  .mrow.special-row .top .srn { background: #fed7aa; color: #9a3412; }
   .mrow .top .nm { overflow: hidden; text-overflow: ellipsis; }
   .mrow .amt {
     font-size: 13.5px; font-weight: 800; margin-top: 4px; letter-spacing: -0.3px;
   }
   .mcol:nth-child(odd) .mrow .amt { color: var(--brand); }
   .mcol:nth-child(even) .mrow .amt { color: var(--green-dark); }
-  /* Special row for Expenses+Salary */
-  .mrow.special {
-    background: #fef2f2;
-    border-left: 4px solid var(--red);
-  }
-  .mrow.special .top .nm { color: var(--red); }
-  .mrow.special .amt { color: var(--red) !important; }
+  .mrow.special-row .amt { color: #b91c1c; }
   .mcol-total {
     background: #f8fafc; border-top: 2px solid var(--line);
     padding: 14px 10px; text-align: center;
@@ -745,12 +730,6 @@
   .mcol-total .cnt {
     font-size: 10.5px; color: var(--muted); font-weight: 600; margin-top: 3px;
   }
-  .mcol-total.after {
-    background: linear-gradient(180deg, #f0fdf4, #dcfce7);
-    border-top: 3px solid var(--green);
-  }
-  .mcol-total.after .lbl { color: var(--green-dark); }
-  .mcol-total.after .val { color: var(--green-dark); font-size: 17px; }
   .mcol-grand {
     display: flex; flex-direction: column; min-width: 160px; max-width: 160px;
     background: linear-gradient(180deg, #0b1e33, #1f2e3d);
@@ -869,11 +848,8 @@
   }
   .raw-table tbody tr:nth-child(even) { background: #fafbfd; }
   .raw-table tbody tr:hover { background: #e8f0fe; }
-  .raw-table tbody tr.special-row {
-    background: #fef2f2 !important;
-    border-left: 4px solid var(--red);
-  }
-  .raw-table tbody tr.special-row td { color: var(--red); font-weight: 800; }
+  .raw-table tbody tr.special-row { background: #fff7ed; }
+  .raw-table tbody tr.special-row td { color: #b91c1c; font-weight: 700; }
   .raw-table td.num { text-align: right; font-weight: 700; }
   .raw-table td.name { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
   .raw-empty {
@@ -1013,9 +989,11 @@
     .mr-metrics, .pr-metrics { gap: 5px; }
     .mr-metric .val, .pr-metric .val { font-size: 13px; }
     .mr-metric .lbl, .pr-metric .lbl { font-size: 9px; }
-    .combined-values { grid-template-columns: 1fr; }
-    .combined-values .cv-val { font-size: 15px; }
-    .mr-combined-strip .combined-values .cv-val { font-size: 13px; }
+    .combined-details { font-size: 11.5px; gap: 6px; }
+    .ba-item .ba-val { font-size: 14px; }
+    .ba-item.after .ba-val { font-size: 17px; }
+    .mr-combined-strip .ba-item .ba-val { font-size: 12px; }
+    .mr-combined-strip .ba-item.after .ba-val { font-size: 15px; }
     .cmp-row > div { padding: 9px 6px; }
     .cmp-name { font-size: 12px; }
     .cmp-amt { font-size: 12.5px; }
@@ -1278,33 +1256,20 @@ function formatPKT(date) {
 }
 
 /* ============================================================
-   SPECIAL NAME DETECTION: "Expenses+Salary"
-   ============================================================ */
-function isExpensesSalaryRecord(rec) {
-  if (!rec || !rec.name) return false;
-  const norm = rec.name.toLowerCase().replace(/[^a-z0-9]/g, "");
-  // Matches: "expensessalary", "expense+salary", "expenses salary", "expense&salary", "salary+expenses", etc.
-  return norm === "expensessalary" ||
-         norm === "expensesalary" ||
-         norm === "salaryexpense" ||
-         norm === "salaryexpenses" ||
-         norm === "expensessalaries" ||
-         norm === "salariesexpenses" ||
-         (norm.includes("salary") && (norm.includes("expense") || norm.includes("expenses")));
-}
-
-/* ============================================================
    LOCAL DATA CACHE
    ============================================================ */
 const CACHE_KEY = "sangi_parking_data_cache_v1";
-const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 function saveDataCache(dailyRows, monthlyRecords) {
   try {
-    const payload = { ts: Date.now(), daily: dailyRows, monthly: monthlyRecords };
-    localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      ts: Date.now(),
+      daily: dailyRows,
+      monthly: monthlyRecords
+    }));
     console.log("💾 Cached:", dailyRows.length, "daily,", monthlyRecords.length, "monthly");
-  } catch (e) { console.warn("⚠️ Could not cache data:", e); }
+  } catch (e) { console.warn("⚠️ Cache save failed:", e); }
 }
 function loadDataCache() {
   try {
@@ -1327,18 +1292,21 @@ function updateRefreshIndicator(state) {
   const el = document.getElementById("refreshIndicator");
   if (!el) return;
   el.classList.remove('refreshing', 'stale', 'offline');
+  const textEl = el.querySelector('.text');
+  if (!textEl) return;
+
   if (state === 'refreshing') {
     el.classList.add('refreshing');
-    el.querySelector('.text').innerHTML = 'Refreshing…';
+    textEl.innerHTML = 'Refreshing…';
     return;
   }
   if (state === 'offline') {
     el.classList.add('offline');
     if (lastRefreshTs) {
       const t = formatPKT(new Date(lastRefreshTs));
-      el.querySelector('.text').innerHTML = `Offline · <strong>${t.shortFull}</strong>`;
+      textEl.innerHTML = `Offline · <strong>${t.shortFull}</strong>`;
     } else {
-      el.querySelector('.text').innerHTML = `Offline · No cache yet`;
+      textEl.innerHTML = `Offline · No cache`;
     }
     return;
   }
@@ -1346,15 +1314,16 @@ function updateRefreshIndicator(state) {
     el.classList.add('stale');
     if (lastRefreshTs) {
       const t = formatPKT(new Date(lastRefreshTs));
-      el.querySelector('.text').innerHTML = `Last refreshed <strong>${t.shortFull}</strong>`;
+      textEl.innerHTML = `Last refreshed <strong>${t.shortFull}</strong>`;
     }
     return;
   }
+  // fresh
   if (lastRefreshTs) {
     const t = formatPKT(new Date(lastRefreshTs));
-    el.querySelector('.text').innerHTML = `Last refreshed <strong>${t.shortFull}</strong>`;
+    textEl.innerHTML = `Last refreshed <strong>${t.shortFull}</strong>`;
   } else {
-    el.querySelector('.text').innerHTML = 'Just now';
+    textEl.innerHTML = 'Just now';
   }
 }
 
@@ -1362,7 +1331,8 @@ function updateRefreshIndicator(state) {
    ACTIVITY TRACKER
    ============================================================ */
 const ACTIVITY_KEY = "sangi_parking_activity_v1";
-const SESSION_KEY = "sangi_parking_session_id";
+const SESSION_KEY  = "sangi_parking_session_id";
+
 function getSessionId() {
   let sid = sessionStorage.getItem(SESSION_KEY);
   if (!sid) {
@@ -1372,13 +1342,14 @@ function getSessionId() {
   return sid;
 }
 function loadActivity() {
-  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || "[]"); } catch (e) { return []; }
+  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || "[]"); }
+  catch (e) { return []; }
 }
 function saveActivity(list) {
   try {
     if (list.length > 500) list = list.slice(-500);
     localStorage.setItem(ACTIVITY_KEY, JSON.stringify(list));
-  } catch (e) { console.warn("Could not save activity:", e); }
+  } catch (e) { }
 }
 function logActivity(type, title, detail) {
   const now = new Date();
@@ -1387,8 +1358,10 @@ function logActivity(type, title, detail) {
     id: "e_" + now.getTime() + "_" + Math.random().toString(36).slice(2, 6),
     type, title, detail: detail || "",
     session: getSessionId(),
-    timestamp: pkt.full, ts: now.getTime(),
-    scrollY: Math.round(window.scrollY || 0), path: location.pathname
+    timestamp: pkt.full,
+    ts: now.getTime(),
+    scrollY: Math.round(window.scrollY || 0),
+    path: location.pathname
   };
   const list = loadActivity();
   list.push(event);
@@ -1421,6 +1394,7 @@ installBtn?.addEventListener('click', async () => {
   installBanner.classList.remove('show');
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
+  console.log('Install outcome:', outcome);
   deferredPrompt = null;
 });
 closeBanner?.addEventListener('click', () => {
@@ -1442,6 +1416,23 @@ const SHEET_DAILY_CSV = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh
 const SHEET1_OPEN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_NM9xgM_xdNzb1TqpgSTn_dj5bgJT2l7WEgzykoT5zNHTOFxrS7UMN08eb2VOLEnaCLV4/pubhtml";
 const SHEET2_OPEN = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/edit#gid=1452200885";
 const SHEET_DAILY_OPEN = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/edit#gid=1810247989";
+
+/* Special row identifiers: treated as deductions, not persons */
+const EXPENSES_SALARY_KEYS = [
+  "expenses+salary", "expenses + salary", "expenses & salary",
+  "expense+salary", "salary+expenses", "salary + expenses",
+  "expensesand salary", "expenses and salary"
+];
+
+function isExpensesSalary(name) {
+  if (!name) return false;
+  const normalized = name.toLowerCase().replace(/[^a-z+]/g, "").replace(/\+/g, "+");
+  const loose = name.toLowerCase().replace(/[^a-z]/g, "");
+  return EXPENSES_SALARY_KEYS.some(k => {
+    const clean = k.replace(/[^a-z+]/g, "");
+    return normalized === clean || loose === clean.replace(/\+/g, "");
+  }) || /expenses?\+?salary|salary\+?expenses?/i.test(name.replace(/\s/g, ""));
+}
 
 const MONTHLY_SALARY = 29000;
 const DAILY_EXPENSE = 300;
@@ -1505,11 +1496,13 @@ function normalizeRecords(rows) {
     const name = (r[idx.name] || "").trim();
     if (!name) continue;
     const amtRaw = (r[idx.amount] || "0").toString().replace(/[^0-9.\-]/g, "");
+    const amount = parseFloat(amtRaw) || 0;
     out.push({
       name,
-      amount: Math.abs(parseFloat(amtRaw) || 0), // Force positive — it's a deduction value
+      amount: Math.abs(amount),          // always positive
       month: idx.month >= 0 ? (r[idx.month] || "").trim() : "",
-      year: idx.year >= 0 ? (r[idx.year] || "").trim() : ""
+      year: idx.year >= 0 ? (r[idx.year] || "").trim() : "",
+      isDeduction: isExpensesSalary(name) // <-- KEY FLAG
     });
   }
   return out;
@@ -1560,17 +1553,23 @@ function monthKey(rec) {
 function monthLabel(rec) { if (!rec) return "—"; return `${rec.month} ${rec.year}`.trim(); }
 function nameKey(name) { return name.toLowerCase().replace(/[^a-z0-9]/g, ""); }
 
-/* Splits a list into { regular: Map, special: Map } */
-function splitRecords(recs) {
-  const regular = new Map();
-  const special = new Map();
+/* Group ONLY non-deduction rows into persons */
+function groupByName(recs) {
+  const m = new Map();
   recs.forEach(r => {
+    if (r.isDeduction) return; // skip special row
     const k = nameKey(r.name);
-    const target = isExpensesSalaryRecord(r) ? special : regular;
-    if (!target.has(k)) target.set(k, { name: r.name, amount: 0 });
-    target.get(k).amount += r.amount;
+    if (!m.has(k)) m.set(k, { name: r.name, amount: 0 });
+    m.get(k).amount += r.amount;
   });
-  return { regular, special };
+  return m;
+}
+
+/* Sum all deductions (Expenses+Salary row) in a set of records */
+function sumDeductions(recs) {
+  let s = 0;
+  recs.forEach(r => { if (r.isDeduction) s += r.amount; });
+  return s;
 }
 
 function fmtInt(n) { return Math.round(n).toLocaleString(); }
@@ -1611,23 +1610,49 @@ function daysBetween(p1, p2) {
 function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
 function fmtDateLong(p) { if (!p) return "—"; return `${MONTH_LONG[p.m - 1]} ${p.d}, ${p.y}`; }
 function fmtDateShort(p) { if (!p) return "—"; return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]} ${p.y}`; }
+function monthsBetween(startP, endP) {
+  if (!startP || !endP) return 0;
+  let months = (endP.y - startP.y) * 12 + (endP.m - startP.m) + 1;
+  return months > 0 ? months : 0;
+}
 
 /* ============================================================
-   COMPARE CARD — uses split (special excluded from matched rows)
+   BEFORE / AFTER helper
+   ============================================================ */
+/**
+ * For a set of monthly records:
+ *  - before = sum of all non-deduction rows + all deduction rows (full total)
+ *  - after  = before - deductions
+ * The "expenses+salary" row is included in `before` and then subtracted to produce `after`.
+ */
+function computeBeforeAfter(records) {
+  let before = 0, deductions = 0;
+  records.forEach(r => {
+    before += r.amount;
+    if (r.isDeduction) deductions += r.amount;
+  });
+  return { before, deductions, after: before - deductions };
+}
+
+/* ============================================================
+   COMPARE CARD  — special row is shown separately
    ============================================================ */
 function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
-  const prevSplit = splitRecords(prevRecs);
-  const currSplit = splitRecords(currRecs);
-  const mapPrev = prevSplit.regular;
-  const mapCurr = currSplit.regular;
-  const prevSpecial = sumMap(prevSplit.special);
-  const currSpecial = sumMap(currSplit.special);
+  const mapPrev = groupByName(prevRecs);
+  const mapCurr = groupByName(currRecs);
+
+  /* Get special-row totals */
+  const prevSpecial = sumDeductions(prevRecs);
+  const currSpecial = sumDeductions(currRecs);
+
   const cntPrev = mapPrev.size, cntCurr = mapCurr.size;
   const matchedKeys = [], onlyPrevKeys = [], onlyCurrKeys = [];
   const seen = new Set();
   mapPrev.forEach((v, k) => { if (seen.has(k)) return; seen.add(k); if (mapCurr.has(k)) matchedKeys.push(k); else onlyPrevKeys.push(k); });
   mapCurr.forEach((v, k) => { if (seen.has(k)) return; seen.add(k); onlyCurrKeys.push(k); });
+
   let subPrev = 0, subCurr = 0, sr = 0;
+
   const card = document.createElement("div");
   card.className = "cmp-card";
   card.innerHTML = `
@@ -1639,8 +1664,9 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
     <div class="cmp-cols"><div class="sr-h">#</div><div class="m1">${esc(prevLabel)}</div><div class="m2">${esc(currLabel)}</div></div>
   `;
   const body = document.createElement("div");
-  const buildRow = (p, c, srNum, showDiff) => {
-    const left = p ? `<div class="m1-cell"><div class="cmp-name"><span class="nm">${esc(p.name)}</span></div><div class="cmp-amt">${fmtInt(p.amount)}</div></div>` : `<div class="m1-cell"><div class="cmp-missing">—</div></div>`;
+
+  const buildRow = (p, c, srNum, showDiff, special = false) => {
+    const left = p ? `<div class="m1-cell"><div class="cmp-name"><span class="nm">${esc(p.name)}</span>${special ? '<span class="special-tag">DEDUCT</span>' : ''}</div><div class="cmp-amt">${special ? '−' : ''}${fmtInt(p.amount)}</div></div>` : `<div class="m1-cell"><div class="cmp-missing">—</div></div>`;
     let rightName = "";
     if (c) {
       let badge = "";
@@ -1650,18 +1676,23 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
         else if (d > 0) badge = `<span class="cmp-badge up">▲${fmtInt(d)}</span>`;
         else badge = `<span class="cmp-badge down">▼${fmtInt(Math.abs(d))}</span>`;
       }
-      rightName = `<div class="cmp-name"><span class="nm">${esc(c.name)}</span>${badge}</div>`;
+      rightName = `<div class="cmp-name"><span class="nm">${esc(c.name)}</span>${special ? '<span class="special-tag">DEDUCT</span>' : ''}${badge}</div>`;
     }
-    const right = c ? `<div class="m2-cell">${rightName}<div class="cmp-amt">${fmtInt(c.amount)}</div></div>` : `<div class="m2-cell"><div class="cmp-missing">—</div></div>`;
+    const right = c ? `<div class="m2-cell">${rightName}<div class="cmp-amt">${special ? '−' : ''}${fmtInt(c.amount)}</div></div>` : `<div class="m2-cell"><div class="cmp-missing">—</div></div>`;
     const row = document.createElement("div");
-    row.className = "cmp-row";
+    row.className = "cmp-row" + (special ? " special-row" : "");
     row.innerHTML = `<div class="cmp-sr">${srNum}</div>${left}${right}`;
     return row;
   };
+
   if (matchedKeys.length) {
     const sec = document.createElement("div"); sec.className = "cmp-sec ok";
     sec.textContent = `✓ Matched (${matchedKeys.length})`; body.appendChild(sec);
-    matchedKeys.forEach(k => { const p = mapPrev.get(k), c = mapCurr.get(k); subPrev += p.amount; subCurr += c.amount; body.appendChild(buildRow(p, c, ++sr, true)); });
+    matchedKeys.forEach(k => {
+      const p = mapPrev.get(k), c = mapCurr.get(k);
+      subPrev += p.amount; subCurr += c.amount;
+      body.appendChild(buildRow(p, c, ++sr, true, false));
+    });
   }
   if (onlyPrevKeys.length || onlyCurrKeys.length) {
     const sec = document.createElement("div"); sec.className = "cmp-sec warn";
@@ -1672,128 +1703,124 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
       const c = onlyCurrKeys[i] ? mapCurr.get(onlyCurrKeys[i]) : null;
       if (p) subPrev += p.amount;
       if (c) subCurr += c.amount;
-      body.appendChild(buildRow(p, c, ++sr, false));
+      body.appendChild(buildRow(p, c, ++sr, false, false));
     }
   }
+
+  /* SPECIAL ROW: Expenses+Salary */
+  const prevHasSpecial = prevRecs.some(r => r.isDeduction);
+  const currHasSpecial = currRecs.some(r => r.isDeduction);
+  if (prevHasSpecial || currHasSpecial) {
+    const sec = document.createElement("div"); sec.className = "cmp-sec special";
+    sec.textContent = `⚡ Expenses + Salary (deduction)`;
+    body.appendChild(sec);
+    const p = prevHasSpecial ? { name: "Expenses+Salary", amount: prevSpecial } : null;
+    const c = currHasSpecial ? { name: "Expenses+Salary", amount: currSpecial } : null;
+    body.appendChild(buildRow(p, c, ++sr, true, true));
+  }
+
+  /* Subtotal */
   const totals = document.createElement("div");
   totals.className = "cmp-subtotal";
   totals.innerHTML = `<div class="sr-blank"></div>
     <div><div class="mname v1">${esc(prevLabel)}</div><div class="val v1">${fmtInt(subPrev)}</div><div class="cnt">${cntPrev} ppl</div></div>
     <div><div class="mname v2">${esc(currLabel)}</div><div class="val v2">${fmtInt(subCurr)}</div><div class="cnt">${cntCurr} ppl</div></div>`;
   body.appendChild(totals);
+
+  /* Grand + after-deduction values */
   const grand = document.createElement("div");
   grand.className = "cmp-grand";
-  grand.innerHTML = `<div class="lbl">Grand Total</div><div class="val">${fmtInt(subPrev + subCurr)}</div><div class="cnt">Matched: ${matchedKeys.length} • Only ${esc(prevLabel)}: ${onlyPrevKeys.length} • Only ${esc(currLabel)}: ${onlyCurrKeys.length}</div>`;
+  const totalAfter = (subPrev - prevSpecial) + (subCurr - currSpecial);
+  grand.innerHTML = `
+    <div class="lbl">Grand Total (after deductions)</div>
+    <div class="val">${fmtInt(totalAfter)}</div>
+    <div class="cnt">
+      Persons total: ${fmtInt(subPrev + subCurr)} &nbsp;−&nbsp; Deducted: ${fmtInt(prevSpecial + currSpecial)}
+    </div>`;
   body.appendChild(grand);
+
   const diff = subCurr - subPrev;
   const diffEl = document.createElement("div");
   diffEl.className = "cmp-diff " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
   const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "=";
   const sign = diff > 0 ? "+" : "";
-  diffEl.innerHTML = `<span>Difference</span><span>${arrow} ${sign}${fmtInt(diff)}</span>`;
+  diffEl.innerHTML = `<span>Difference (persons)</span><span>${arrow} ${sign}${fmtInt(diff)}</span>`;
   body.appendChild(diffEl);
+
   card.appendChild(body);
   return card;
 }
 
-function sumMap(map) {
-  let s = 0;
-  map.forEach(v => { s += v.amount; });
-  return s;
-}
-
 /* ============================================================
-   ALL MONTHS TABLE — separate Expenses+Salary from regular
+   ALL MONTHS TABLE  — special row styled
    ============================================================ */
 function buildAllMonthsTable(monthList) {
   const table = document.getElementById("mtable");
   table.innerHTML = "";
-  let grandRegular = 0, grandSpecial = 0, grandPersons = 0, totalMonthsWithData = 0;
+  let grandTotal = 0, grandPersons = 0, totalMonthsWithData = 0;
+  let grandDeductions = 0;
 
   monthList.forEach(m => {
-    const { regular, special } = splitRecords(m.recs);
+    const map = groupByName(m.recs);
+    const deduction = sumDeductions(m.recs);
     const label = m.label;
+
     const col = document.createElement("div");
     col.className = "mcol";
     const head = document.createElement("div");
     head.className = "mcol-head";
-    head.innerHTML = `<div class="mname">${esc(label)}</div><div class="mcount">${regular.size} person${regular.size === 1 ? "" : "s"}</div>`;
+    head.innerHTML = `<div class="mname">${esc(label)}</div><div class="mcount">${map.size} person${map.size === 1 ? "" : "s"}</div>`;
     col.appendChild(head);
     const bodyEl = document.createElement("div");
     bodyEl.className = "mcol-body";
-    let sr = 0, regularTotal = 0;
-    regular.forEach(v => {
-      sr++; regularTotal += v.amount;
+    let sr = 0, total = 0;
+    map.forEach(v => {
+      sr++; total += v.amount;
       const row = document.createElement("div");
       row.className = "mrow";
       row.innerHTML = `<div class="top"><span class="srn">${sr}</span><span class="nm">${esc(v.name)}</span></div><div class="amt">${fmtInt(v.amount)}</div>`;
       bodyEl.appendChild(row);
     });
-    // Add special row if exists
-    const specialTotal = sumMap(special);
-    if (specialTotal > 0) {
-      const sRow = document.createElement("div");
-      sRow.className = "mrow special";
-      sRow.innerHTML = `<div class="top"><span class="srn">−</span><span class="nm">Expenses+Salary</span></div><div class="amt">−${fmtInt(specialTotal)}</div>`;
-      bodyEl.appendChild(sRow);
-    }
     col.appendChild(bodyEl);
 
-    // Total (before deduction)
     const tot = document.createElement("div");
     tot.className = "mcol-total";
-    tot.innerHTML = `<div class="lbl">Total Before</div><div class="val">${fmtInt(regularTotal)}</div><div class="cnt">${regular.size} ppl</div>`;
+    tot.innerHTML = `<div class="lbl">${esc(label)}</div><div class="val">${fmtInt(total)}</div><div class="cnt">${map.size} ppl${deduction ? ' · −' + fmtInt(deduction) : ''}</div>`;
     col.appendChild(tot);
-
-    // After deduction if special exists
-    if (specialTotal > 0) {
-      const after = document.createElement("div");
-      after.className = "mcol-total after";
-      const afterVal = regularTotal - specialTotal;
-      after.innerHTML = `<div class="lbl">Total After</div><div class="val">${fmtInt(afterVal)}</div><div class="cnt">after deduction</div>`;
-      col.appendChild(after);
-    }
-
     table.appendChild(col);
-    grandRegular += regularTotal;
-    grandSpecial += specialTotal;
-    grandPersons += regular.size;
-    if (regular.size) totalMonthsWithData++;
+
+    grandTotal += total;
+    grandPersons += map.size;
+    grandDeductions += deduction;
+    if (map.size) totalMonthsWithData++;
   });
 
-  const avgPerMonth = totalMonthsWithData ? grandRegular / totalMonthsWithData : 0;
+  const avgPerMonth = totalMonthsWithData ? grandTotal / totalMonthsWithData : 0;
   const grandCol = document.createElement("div");
   grandCol.className = "mcol-grand";
-  const grandAfter = grandRegular - grandSpecial;
   grandCol.innerHTML = `
     <div class="mcol-head"><div class="mname">GRAND</div><div class="mcount">${monthList.length} mo</div></div>
     <div class="mcol-body">
-      <div class="big-lbl">Total Before</div>
-      <div class="big-val">${fmtInt(grandRegular)}</div>
-      <div class="sub">${grandPersons} entries</div>
-      <div class="divider"></div>
-      <div class="avg-lbl">Total After</div>
-      <div class="avg-val" style="color:#b9f6ca; font-size: 18px;">${fmtInt(grandAfter)}</div>
-      <div class="sub" style="margin-top:4px;">−${fmtInt(grandSpecial)} exp+sal</div>
+      <div class="big-lbl">After Deductions</div>
+      <div class="big-val">${fmtInt(grandTotal - grandDeductions)}</div>
+      <div class="sub">before: ${fmtInt(grandTotal)} · deduct: ${fmtInt(grandDeductions)}</div>
       <div class="divider"></div>
       <div class="avg-lbl">Avg / Month</div>
       <div class="avg-val">${fmtInt(avgPerMonth)}</div>
     </div>
-    <div class="mcol-total"><div class="lbl">GRAND</div><div class="val">${fmtInt(grandRegular)}</div><div class="cnt">${monthList.length} mo</div></div>
+    <div class="mcol-total"><div class="lbl">GRAND (after)</div><div class="val">${fmtInt(grandTotal - grandDeductions)}</div><div class="cnt">${monthList.length} mo</div></div>
   `;
   table.appendChild(grandCol);
 }
 
 /* ============================================================
-   OVERALL SUMMARY CARD
-   - Green row shows: Total Before + Total After
-   - Plus a red row for Expenses+Salary amount
+   OVERALL SUMMARY CARD — BEFORE / AFTER
    ============================================================ */
 function buildOverallSummaryCard(totals) {
-  const { gross, exp, net, days, minStart, maxEnd, regularTotal, specialTotal } = totals;
+  const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal, lastMonthTotal,
+          beforeTotal, afterTotal, deductionsTotal } = totals;
   const avgNet = days ? net / days : 0;
-  const totalBefore = regularTotal;
-  const totalAfter = regularTotal - specialTotal;
+  const numMonths = monthsBetween(minStart, maxEnd);
 
   const el = document.createElement("div");
   el.className = "overall-card";
@@ -1818,37 +1845,36 @@ function buildOverallSummaryCard(totals) {
         <span class="v">${fmtDec2(avgNet)}<span class="unit">PKR/day</span></span>
       </div>
       <div class="oc-row combined">
-        <div class="combined-values">
-          <div class="cv-item before">
-            <div class="cv-lbl">Total Before</div>
-            <div class="cv-val">${fmtInt(totalBefore)}<span class="cv-unit">PKR</span></div>
+        <div class="ba-grid">
+          <div class="ba-item before">
+            <div class="ba-lbl">Total Monthly (Before)</div>
+            <div class="ba-val">${fmtInt(beforeTotal)}<span class="ba-unit">PKR</span></div>
           </div>
-          <div class="cv-item after">
-            <div class="cv-lbl">Total After</div>
-            <div class="cv-val">${fmtInt(totalAfter)}<span class="cv-unit">PKR</span></div>
-          </div>
-        </div>
-        ${specialTotal > 0 ? `
-        <div class="combined-expenses">
-          <div class="ce-row">
-            <div>
-              <div class="ce-lbl">Expenses+Salary</div>
-              <div class="ce-sub">Deducted from Total Before</div>
-            </div>
-            <div class="ce-val">−${fmtInt(specialTotal)} PKR</div>
+          <div class="ba-item after">
+            <div class="ba-lbl">After Expenses+Salary</div>
+            <div class="ba-val">${fmtInt(afterTotal)}<span class="ba-unit">PKR</span></div>
           </div>
         </div>
-        ` : ''}
         <div class="combined-details">
-          <div class="item">
+          <div class="item expense">
             <span class="dot"></span>
-            <span class="label">You can minus salary (${monthsBetween(minStart, maxEnd)} month × ${fmtInt(MONTHLY_SALARY)})</span>
-            <span class="value">${fmtInt(MONTHLY_SALARY * monthsBetween(minStart, maxEnd))}</span>
+            <span class="label">Expenses+Salary deducted (from sheet)</span>
+            <span class="value">−${fmtInt(deductionsTotal)}</span>
           </div>
           <div class="item">
             <span class="dot"></span>
-            <span class="label">Daily expense (300 × ${days})</span>
+            <span class="label">Last Month Total</span>
+            <span class="value">${fmtInt(lastMonthTotal)}</span>
+          </div>
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">Daily expense reference (300 × ${days})</span>
             <span class="value">${fmtInt(DAILY_EXPENSE * days)}</span>
+          </div>
+          <div class="item">
+            <span class="dot"></span>
+            <span class="label">Salary reference (${numMonths} month${numMonths === 1 ? "" : "s"} × ${fmtInt(MONTHLY_SALARY)})</span>
+            <span class="value">${fmtInt(MONTHLY_SALARY * numMonths)}</span>
           </div>
         </div>
       </div>
@@ -1915,83 +1941,73 @@ function computeMonthlySplit(rows) {
   return result;
 }
 
-/* Compute per-month regular + special totals */
 function computeMonthlySheetTotals(records) {
   const totals = new Map();
   records.forEach(r => {
     const k = monthKey(r);
     if (!k) return;
-    if (!totals.has(k)) totals.set(k, { regular: 0, special: 0, count: 0, specialCount: 0 });
+    if (!totals.has(k)) totals.set(k, { amount: 0, count: 0, deduction: 0, personAmount: 0 });
     const t = totals.get(k);
-    if (isExpensesSalaryRecord(r)) {
-      t.special += r.amount;
-      t.specialCount++;
-    } else {
-      t.regular += r.amount;
-      t.count++;
-    }
+    t.amount += r.amount;
+    t.count++;
+    if (r.isDeduction) t.deduction += r.amount;
+    else t.personAmount += r.amount;
   });
   return totals;
 }
-function sumMonthlyRegular(records) {
+function sumMonthlySheetTotals(records) {
   let sum = 0;
-  records.forEach(r => { if (!isExpensesSalaryRecord(r)) sum += r.amount; });
+  records.forEach(r => { sum += r.amount; });
   return sum;
 }
-function sumMonthlySpecial(records) {
-  let sum = 0;
-  records.forEach(r => { if (isExpensesSalaryRecord(r)) sum += r.amount; });
-  return sum;
-}
-function getLastMonthTotals(records) {
+function getLastMonthTotal(records) {
   const totals = computeMonthlySheetTotals(records);
   const keys = [...totals.keys()].sort((a, b) => b - a);
-  if (!keys.length) return { regular: 0, special: 0, after: 0 };
-  const t = totals.get(keys[0]);
-  return { regular: t.regular, special: t.special, after: t.regular - t.special };
+  if (!keys.length) return 0;
+  return totals.get(keys[0]).amount;
 }
 
 /* ============================================================
-   MONTH ROW — shows Total Before + Total After
+   MONTH ROW — BEFORE / AFTER
    ============================================================ */
-function buildMonthRow(info, srNo, monthTotals) {
+function buildMonthRow(info, srNo, sheetTotal, lastMonthAmount, monthlyRecs) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
-  let combinedStrip = "";
-  if (monthTotals) {
-    const regularTotal = monthTotals.regular;
-    const specialTotal = monthTotals.special;
-    const afterTotal = regularTotal - specialTotal;
-    const totalEntries = (monthTotals.count || 0) + (monthTotals.specialCount || 0);
+  let sheetStrip = "", combinedStrip = "";
+
+  if (sheetTotal) {
+    const sheetAmt = sheetTotal.amount;
+    const deduction = sheetTotal.deduction || 0;
+    const before = sheetAmt;
+    const after = before - deduction;
+    const lastTotal = (lastMonthAmount != null) ? lastMonthAmount : sheetAmt;
+
+    sheetStrip = `
+      <div class="mr-sheet-strip">
+        <div class="lbl-block"><div class="sheet-lbl">Monthly Sheet Total</div><div class="sheet-sub">${sheetTotal.count} entr${sheetTotal.count === 1 ? "y" : "ies"}</div></div>
+        <div class="val-block"><div class="sheet-val">${fmtInt(sheetAmt)}<span class="unit">PKR</span></div></div>
+      </div>`;
 
     combinedStrip = `
       <div class="mr-combined-strip">
-        <div class="combined-values">
-          <div class="cv-item before">
-            <div class="cv-lbl">Total Before</div>
-            <div class="cv-val">${fmtInt(regularTotal)}<span class="cv-unit">PKR</span></div>
+        <div class="ba-grid">
+          <div class="ba-item before">
+            <div class="ba-lbl">Before</div>
+            <div class="ba-val">${fmtInt(before)}<span class="ba-unit">PKR</span></div>
           </div>
-          <div class="cv-item after">
-            <div class="cv-lbl">Total After</div>
-            <div class="cv-val">${fmtInt(afterTotal)}<span class="cv-unit">PKR</span></div>
-          </div>
-        </div>
-        ${specialTotal > 0 ? `
-        <div class="combined-expenses">
-          <div class="ce-row">
-            <div>
-              <div class="ce-lbl">Expenses+Salary</div>
-            </div>
-            <div class="ce-val">−${fmtInt(specialTotal)} PKR</div>
+          <div class="ba-item after">
+            <div class="ba-lbl">After Exp+Sal</div>
+            <div class="ba-val">${fmtInt(after)}<span class="ba-unit">PKR</span></div>
           </div>
         </div>
-        ` : ''}
         <div class="breakdown">
-          <div class="item"><span class="dot"></span><span class="label">Monthly Sheet Total</span><span class="value">${fmtInt(regularTotal + specialTotal)}</span></div>
-          <div class="item"><span class="dot"></span><span class="label">Daily expense (300 × ${daysCount})</span><span class="value">${fmtInt(DAILY_EXPENSE * daysCount)}</span></div>
+          <div class="item expense"><span class="dot"></span><span class="label">Expenses+Salary (from sheet)</span><span class="value">−${fmtInt(deduction)}</span></div>
+          <div class="item"><span class="dot"></span><span class="label">Last Month Total</span><span class="value">${fmtInt(lastTotal)}</span></div>
+          <div class="item"><span class="dot"></span><span class="label">Daily expense ref (300 × ${daysCount})</span><span class="value">${fmtInt(DAILY_EXPENSE * daysCount)}</span></div>
         </div>
       </div>`;
   }
+
   const row = document.createElement("div");
   row.className = "month-row" + (isCurrentMonth ? " current" : "");
   row.innerHTML = `
@@ -2010,7 +2026,7 @@ function buildMonthRow(info, srNo, monthTotals) {
         <div class="mr-metric gross"><div class="lbl">Gross</div><div class="val">${fmtInt(gross)}</div></div>
         <div class="mr-metric avg"><div class="lbl">Avg/Day</div><div class="val">${fmtInt(avgNet)}</div></div>
       </div>
-      ${combinedStrip}
+      ${sheetStrip}${combinedStrip}
     </div>
   `;
   return row;
@@ -2042,14 +2058,19 @@ function buildPeriodRow(period, srNo) {
   return row;
 }
 
+/* ============================================================
+   REPORT RENDER — now with robust empty-data handling
+   ============================================================ */
 function renderReport(rows, monthlyRecords) {
   const statusEl = document.getElementById("dailyStatus");
   const contentEl = document.getElementById("reportContent");
-  if (!rows.length) {
+
+  if (!rows.length && !monthlyRecords.length) {
     statusEl.className = "status error";
-    statusEl.innerHTML = "⚠️ No daily data loaded<br><small>Check that the Daily sheet is <b>published to web</b>.<br><br>Open browser console (F12) for details.</small>";
+    statusEl.innerHTML = "⚠️ No data available.<br><small>Check that all Google Sheets are published to web as CSV.<br>Open browser console (F12) for details.</small>";
     return;
   }
+
   let minStart = null, maxEnd = null, totalGross = 0, totalExp = 0, totalNet = 0;
   rows.forEach(r => {
     totalGross += r.gross; totalExp += r.expenses; totalNet += r.net;
@@ -2059,14 +2080,22 @@ function renderReport(rows, monthlyRecords) {
     if (ep && (!maxEnd || dateCmp(ep, maxEnd) > 0)) maxEnd = ep;
   });
   const totalDays = (minStart && maxEnd) ? daysBetween(minStart, maxEnd) : 0;
-  const regularTotal = sumMonthlyRegular(monthlyRecords);
-  const specialTotal = sumMonthlySpecial(monthlyRecords);
+
+  /* BEFORE / AFTER from monthly records */
+  const { before, deductions, after } = computeBeforeAfter(monthlyRecords);
+
+  const lastMonthTotal = getLastMonthTotal(monthlyRecords);
 
   const overallEl = document.getElementById("overallCard");
   overallEl.innerHTML = "";
   overallEl.appendChild(buildOverallSummaryCard({
     gross: totalGross, exp: totalExp, net: totalNet, days: totalDays,
-    minStart, maxEnd, regularTotal, specialTotal
+    minStart, maxEnd,
+    monthlySheetTotal: before,
+    lastMonthTotal,
+    beforeTotal: before,
+    afterTotal: after,
+    deductionsTotal: deductions
   }));
 
   if (lastRefreshTs) {
@@ -2078,26 +2107,44 @@ function renderReport(rows, monthlyRecords) {
   const monthInfos = computeMonthlySplit(rows);
   const monthEl = document.getElementById("monthList");
   monthEl.innerHTML = "";
-  monthInfos.forEach((info, i) => {
-    const k = info.y * 100 + info.m;
-    const monthTotals = sheetTotals.get(k) || null;
-    monthEl.appendChild(buildMonthRow(info, i + 1, monthTotals));
-  });
+
+  if (!monthInfos.length) {
+    monthEl.innerHTML = `<div style="padding:16px;text-align:center;color:#8fa0b2;font-size:13px;">No monthly split available (daily data is empty).</div>`;
+  } else {
+    monthInfos.forEach((info, i) => {
+      const k = info.y * 100 + info.m;
+      const sheetTotal = sheetTotals.get(k) || null;
+      const lastForThisRow = (i === 0) ? (sheetTotal ? sheetTotal.amount : 0) : lastMonthTotal;
+      const recsForMonth = monthlyRecords.filter(r => monthKey(r) === k);
+      monthEl.appendChild(buildMonthRow(info, i + 1, sheetTotal, lastForThisRow, recsForMonth));
+    });
+  }
+
   document.getElementById("monthCount").textContent = `${monthInfos.length} month${monthInfos.length === 1 ? "" : "s"}`;
+
   const periodEl = document.getElementById("periodList");
   periodEl.innerHTML = "";
+
   const sortedRows = [...rows].sort((a, b) => {
     const da = parseDateParts(a.startDate), db = parseDateParts(b.startDate);
     if (da && db) return dateCmp(db, da);
     return (b.startDate || "").localeCompare(a.startDate || "");
   });
-  sortedRows.forEach((r, i) => {
-    const startP = parseDateParts(r.startDate);
-    const endP = parseDateParts(r.endDate) || startP;
-    periodEl.appendChild(buildPeriodRow({ startStr: r.startDate, endStr: r.endDate, startP, endP, gross: r.gross, exp: r.expenses, net: r.net }, i + 1));
-  });
+
+  if (!sortedRows.length) {
+    periodEl.innerHTML = `<div style="padding:16px;text-align:center;color:#8fa0b2;font-size:13px;">No periods available.</div>`;
+  } else {
+    sortedRows.forEach((r, i) => {
+      const startP = parseDateParts(r.startDate);
+      const endP = parseDateParts(r.endDate) || startP;
+      periodEl.appendChild(buildPeriodRow({ startStr: r.startDate, endStr: r.endDate, startP, endP, gross: r.gross, exp: r.expenses, net: r.net }, i + 1));
+    });
+  }
+
   document.getElementById("periodCount").textContent = `${sortedRows.length} period${sortedRows.length === 1 ? "" : "s"}`;
+
   renderDailyTable(sortedRows);
+
   statusEl.style.display = "none";
   contentEl.style.display = "block";
 }
@@ -2108,6 +2155,7 @@ function renderDailyTable(rows) {
   body.innerHTML = ""; foot.innerHTML = "";
   if (!rows.length) {
     body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">No data</td></tr>`;
+    foot.innerHTML = "";
     return;
   }
   let tGross = 0, tExp = 0, tNet = 0;
@@ -2212,7 +2260,7 @@ async function loadMonthlyOnce() {
 }
 
 /* ============================================================
-   DATA TAB — highlights Expenses+Salary row
+   DATA TAB
    ============================================================ */
 async function populateDataTab() {
   const t1 = await fetchCSV(SHEET1_CSV);
@@ -2256,15 +2304,15 @@ function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDai
   } else {
     amountIdx = findCol(headers, COL.amount);
   }
-  let nameIdx = isDaily ? -1 : findCol(headers, COL.name);
+  const nameIdx = isDaily ? 0 : findCol(headers, COL.name);
   const maxRows = Math.min(rows.length - 1, 100);
   let total = 0;
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
-    const isSpecialRow = !isDaily && nameIdx >= 0 && isExpensesSalaryRecord({ name: r[nameIdx] || "" });
     if (i - 1 < maxRows) {
       const tr = document.createElement("tr");
-      if (isSpecialRow) tr.className = "special-row";
+      const rowName = nameIdx >= 0 ? (r[nameIdx] || "").trim() : "";
+      if (!isDaily && isExpensesSalary(rowName)) tr.className = "special-row";
       headers.forEach((h, ci) => {
         const td = document.createElement("td");
         const val = r[ci] || "";
@@ -2279,14 +2327,16 @@ function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDai
       });
       tbody.appendChild(tr);
     }
-    if (amountIdx >= 0) total += Math.abs(parseNum(r[amountIdx]));
+    if (amountIdx >= 0) total += parseNum(r[amountIdx]);
   }
   if (rows.length - 1 > maxRows) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
     td.colSpan = headers.length;
-    td.style.textAlign = "center"; td.style.color = "#5a6f88";
-    td.style.fontStyle = "italic"; td.style.padding = "10px";
+    td.style.textAlign = "center";
+    td.style.color = "#5a6f88";
+    td.style.fontStyle = "italic";
+    td.style.padding = "10px";
     td.textContent = `… ${(rows.length - 1 - maxRows).toLocaleString()} more rows`;
     tr.appendChild(td);
     tbody.appendChild(tr);
@@ -2407,7 +2457,7 @@ window.addEventListener("scroll", () => {
 });
 
 window.addEventListener('online', () => {
-  console.log("🌐 Back online");
+  console.log("🌐 Back online — refreshing");
   updateRefreshIndicator('refreshing');
   refreshDataFromNetwork();
 });
@@ -2417,34 +2467,37 @@ window.addEventListener('offline', () => {
 });
 
 /* ============================================================
-   BOOT
+   REFRESH + BOOT
    ============================================================ */
-console.log("🚀 Sangi Parking starting...");
-logActivity("session", "App opened", `Path: ${location.pathname}`);
-
-document.getElementById("openSheet1").href = SHEET1_OPEN;
-document.getElementById("openSheet2").href = SHEET2_OPEN;
-document.getElementById("openDaily").href = SHEET_DAILY_OPEN;
-
 async function refreshDataFromNetwork() {
   try {
     const [dailyRows, monthlyRecords] = await Promise.all([loadDaily(), loadMonthly()]);
-    console.log("📊 Network → Daily:", dailyRows.length, "| Monthly:", monthlyRecords.length);
+    console.log("📊 Network fetch → Daily:", dailyRows.length, "| Monthly:", monthlyRecords.length);
+
     if (dailyRows.length > 0 || monthlyRecords.length > 0) {
       saveDataCache(dailyRows, monthlyRecords);
       monthlyRecordsCache = monthlyRecords;
       lastRefreshTs = Date.now();
+
       renderReport(dailyRows, monthlyRecords);
-      monthlyLoaded = false; allKeys = []; byMonth = new Map();
-      if (document.getElementById("contentData").classList.contains("active")) populateDataTab();
+
+      // Reset monthly state so tabs re-render fresh
+      monthlyLoaded = false;
+      allKeys = [];
+      byMonth = new Map();
+
+      if (document.getElementById("contentData").classList.contains("active")) {
+        populateDataTab();
+      }
       updateRefreshIndicator('fresh');
       console.log("✅ UI updated with fresh data");
       return true;
     } else {
+      console.warn("⚠️ Network fetch returned empty");
       throw new Error("Empty data");
     }
   } catch (err) {
-    console.warn("❌ Network refresh failed:", err);
+    console.warn("❌ Refresh failed, keeping cached data:", err);
     updateRefreshIndicator(navigator.onLine ? 'stale' : 'offline');
     return false;
   }
@@ -2453,19 +2506,22 @@ async function refreshDataFromNetwork() {
 async function boot() {
   const cached = loadDataCache();
   if (cached) {
-    console.log("💾 Loaded from cache · age:", Math.round((Date.now() - cached.ts) / 60000), "min");
+    console.log("💾 Loaded from cache · cached", Math.round((Date.now() - cached.ts) / 60000), "min ago");
     lastRefreshTs = cached.ts;
     monthlyRecordsCache = cached.monthly;
-    if (cached.daily.length > 0) {
+
+    if (cached.daily.length > 0 || cached.monthly.length > 0) {
       renderReport(cached.daily, cached.monthly);
       const ageHrs = (Date.now() - cached.ts) / (1000 * 60 * 60);
       updateRefreshIndicator(ageHrs > 24 ? 'stale' : 'fresh');
     }
   }
+
   if (navigator.onLine) {
     updateRefreshIndicator('refreshing');
     await refreshDataFromNetwork();
   } else {
+    console.log("📴 Offline — using cached data");
     if (!cached) {
       const statusEl = document.getElementById("dailyStatus");
       statusEl.className = "status error";
@@ -2475,6 +2531,13 @@ async function boot() {
     }
   }
 }
+
+console.log("🚀 Sangi Parking starting...");
+logActivity("session", "App opened", `Path: ${location.pathname}`);
+
+document.getElementById("openSheet1").href = SHEET1_OPEN;
+document.getElementById("openSheet2").href = SHEET2_OPEN;
+document.getElementById("openDaily").href = SHEET_DAILY_OPEN;
 
 boot();
 </script>
