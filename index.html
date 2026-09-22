@@ -200,112 +200,112 @@
   .oc-row.highlight .v { font-size: 19px; font-weight: 800; color: #0a4a8c; letter-spacing: -0.3px; }
   .oc-row.highlight .v .unit { font-size: 11.5px; font-weight: 600; opacity: 0.7; margin-left: 4px; }
 
-  .oc-row.combined {
+  /* ---------- Green Earnings Card ---------- */
+  .earnings-card {
     background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
-    margin: 10px -20px -18px; padding: 18px 20px; border-bottom: none;
-    color: #fff; border-radius: 0 0 var(--radius) var(--radius);
+    margin: 10px -20px -18px;
+    padding: 18px 20px 20px;
+    border-radius: 0 0 var(--radius) var(--radius);
+    color: #fff;
     display: flex; flex-direction: column; gap: 12px;
   }
-  .oc-row.combined .k { color: #fff; font-weight: 800; font-size: 13.5px; opacity: 0.95; }
-  .oc-row.combined .v {
-    font-size: 21px; font-weight: 800; color: #fff;
-    letter-spacing: -0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.15); text-align: left;
-  }
-  .oc-row.combined .v .unit { font-size: 12px; font-weight: 600; opacity: 0.8; margin-left: 4px; }
-
-  .combined-values {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+  .earnings-card .section-title {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 1px; font-weight: 800;
+    opacity: 0.85; text-align: center;
     padding-bottom: 4px;
-  }
-  .combined-values .cv-item {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-    padding: 10px 12px;
-  }
-  .combined-values .cv-lbl {
-    font-size: 10.5px; text-transform: uppercase;
-    letter-spacing: 0.5px; font-weight: 800;
-    opacity: 0.9; margin-bottom: 5px; line-height: 1.2;
-  }
-  .combined-values .cv-val {
-    font-size: 18px; font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.4px; line-height: 1.15;
-  }
-  .combined-values .cv-val .cv-unit {
-    font-size: 10.5px; font-weight: 600;
-    opacity: 0.75; margin-left: 3px;
-  }
-  .combined-values .cv-item.total {
-    background: rgba(255, 217, 102, 0.22);
-    border-color: rgba(255, 217, 102, 0.5);
-  }
-  .combined-values .cv-item.total .cv-val { color: #ffe9a8; }
-  .combined-values .cv-item.last { background: rgba(255,255,255,0.08); }
-
-  .combined-details {
-    display: flex; flex-direction: column; gap: 7px;
-    padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 12.5px;
-  }
-  .combined-details .item { display: flex; align-items: center; gap: 8px; color: #fff; opacity: 0.95; }
-  .combined-details .item .dot { width: 7px; height: 7px; border-radius: 50%; background: #ffd966; flex-shrink: 0; }
-  .combined-details .item .label { font-weight: 600; opacity: 0.9; flex: 1; }
-  .combined-details .item .value {
-    font-weight: 800; color: #ffd966;
-    font-variant-numeric: tabular-nums; white-space: nowrap;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
   }
 
-  /* ---------- NEW: Before / After strip ---------- */
-  .ba-strip {
+  .ba-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    padding-bottom: 4px;
   }
-  .ba-strip .ba-item {
-    background: rgba(255,255,255,0.1);
+  .ba-item {
+    background: rgba(255,255,255,0.12);
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 12px;
-    padding: 10px 12px;
+    padding: 11px 12px;
     text-align: center;
   }
-  .ba-strip .ba-lbl {
+  .ba-item.before { background: rgba(255,255,255,0.1); }
+  .ba-item.after {
+    background: rgba(74, 222, 128, 0.22);
+    border-color: rgba(74, 222, 128, 0.5);
+  }
+  .ba-lbl {
     font-size: 10px; text-transform: uppercase;
     letter-spacing: 0.5px; font-weight: 800;
-    opacity: 0.9; margin-bottom: 5px;
+    opacity: 0.9; margin-bottom: 5px; line-height: 1.2;
   }
-  .ba-strip .ba-val {
+  .ba-val {
     font-size: 16px; font-weight: 800;
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.3px; line-height: 1.15;
   }
-  .ba-strip .ba-item.before {
-    background: rgba(255,255,255,0.08);
+  .ba-val .ba-unit {
+    font-size: 10px; font-weight: 600;
+    opacity: 0.75; margin-left: 2px;
   }
-  .ba-strip .ba-item.after {
-    background: rgba(74, 222, 128, 0.25);
-    border-color: rgba(74, 222, 128, 0.6);
-  }
-  .ba-strip .ba-item.after .ba-val { color: #c6f6d5; }
-  .ba-strip .ba-item.after .ba-lbl { opacity: 1; }
 
-  .ba-strip.overall {
-    padding: 0 0 6px;
+  /* Highlighted YOUR EARNING */
+  .your-earning {
+    background: linear-gradient(135deg, rgba(255, 217, 102, 0.28) 0%, rgba(255, 217, 102, 0.15) 100%);
+    border: 2px solid rgba(255, 217, 102, 0.7);
+    border-radius: 14px;
+    padding: 14px 16px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(255, 217, 102, 0.2);
   }
-  .ba-strip.overall .ba-item {
-    background: rgba(255,255,255,0.14);
-    border: 1px solid rgba(255,255,255,0.25);
-    padding: 12px 14px;
+  .your-earning .ye-lbl {
+    font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.8px; font-weight: 800;
+    color: #fff3c4; opacity: 0.95;
+    margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
   }
-  .ba-strip.overall .ba-val { font-size: 18px; }
-  .ba-strip.overall .ba-item.after {
-    background: rgba(255, 217, 102, 0.24);
-    border-color: rgba(255, 217, 102, 0.55);
+  .your-earning .ye-lbl .emoji { font-size: 13px; }
+  .your-earning .ye-val {
+    font-size: 24px; font-weight: 800;
+    color: #ffe9a8;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    line-height: 1.1;
   }
-  .ba-strip.overall .ba-item.after .ba-val { color: #fff3c4; }
+  .your-earning .ye-val .ye-unit {
+    font-size: 12px; font-weight: 700;
+    opacity: 0.85; margin-left: 3px;
+  }
+  .your-earning .ye-sub {
+    font-size: 10.5px; font-weight: 600;
+    opacity: 0.85; margin-top: 6px;
+    color: #fff3c4;
+  }
+
+  /* Breakdown details */
+  .earn-breakdown {
+    display: flex; flex-direction: column; gap: 7px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 12px;
+  }
+  .earn-breakdown .item {
+    display: flex; align-items: center; gap: 8px;
+    color: #fff; opacity: 0.95;
+  }
+  .earn-breakdown .item .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #ffd966; flex-shrink: 0;
+  }
+  .earn-breakdown .item .label {
+    font-weight: 600; opacity: 0.9; flex: 1;
+  }
+  .earn-breakdown .item .value {
+    font-weight: 800; color: #ffd966;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
 
   .section-head {
     display: flex; align-items: center; justify-content: space-between;
@@ -396,102 +396,15 @@
   }
   .mr-metric.avg .val, .pr-metric.avg .val { color: var(--purple-dark); }
 
-  .mr-sheet-strip {
-    margin-top: 12px; padding: 11px 14px;
-    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
-    border-radius: 14px; display: flex; align-items: center;
-    justify-content: space-between; gap: 12px;
-    border: 1px solid #e9d5ff; border-left: 4px solid var(--purple);
-  }
-  .mr-sheet-strip .lbl-block { min-width: 0; flex: 1; }
-  .mr-sheet-strip .sheet-lbl {
-    font-size: 10.5px; color: var(--purple-dark);
-    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 800;
-  }
-  .mr-sheet-strip .sheet-sub {
-    font-size: 10.5px; color: var(--purple);
-    font-weight: 600; margin-top: 2px; opacity: 0.85;
-  }
-  .mr-sheet-strip .val-block { text-align: right; flex-shrink: 0; }
-  .mr-sheet-strip .sheet-val {
-    font-size: 16px; font-weight: 800; color: var(--purple-dark);
-    font-variant-numeric: tabular-nums; letter-spacing: -0.3px; white-space: nowrap;
-  }
-  .mr-sheet-strip .sheet-val .unit {
-    font-size: 10.5px; font-weight: 600; opacity: 0.65; margin-left: 3px;
-  }
-
-  .mr-combined-strip {
-    margin-top: 10px; padding: 14px 16px;
+  /* Monthly green card */
+  .mr-earnings {
+    margin-top: 10px;
+    padding: 14px 16px;
     background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
-    border-radius: 14px; display: flex; flex-direction: column; gap: 10px;
-    color: #fff; box-shadow: 0 4px 12px rgba(15,75,30,0.2);
-  }
-  .mr-combined-strip .top-row {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  }
-  .mr-combined-strip .lbl-block { min-width: 0; flex: 1; }
-  .mr-combined-strip .c-lbl {
-    font-size: 10.5px; text-transform: uppercase;
-    letter-spacing: 0.7px; font-weight: 800; opacity: 0.95;
-  }
-  .mr-combined-strip .c-sub {
-    font-size: 10.5px; font-weight: 600; margin-top: 3px;
-    opacity: 0.85; letter-spacing: 0.05px;
-  }
-  .mr-combined-strip .c-val {
-    font-size: 18px; font-weight: 800;
-    font-variant-numeric: tabular-nums; letter-spacing: -0.3px;
-    white-space: nowrap; flex-shrink: 0;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
-  }
-  .mr-combined-strip .c-val .unit {
-    font-size: 11px; font-weight: 600; opacity: 0.8; margin-left: 4px;
-  }
-  .mr-combined-strip .combined-values {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 4px;
-  }
-  .mr-combined-strip .combined-values .cv-item {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 10px; padding: 8px 10px;
-  }
-  .mr-combined-strip .combined-values .cv-lbl {
-    font-size: 9.5px; text-transform: uppercase;
-    letter-spacing: 0.4px; font-weight: 800;
-    opacity: 0.9; margin-bottom: 4px; line-height: 1.2;
-  }
-  .mr-combined-strip .combined-values .cv-val {
-    font-size: 15px; font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.3px; line-height: 1.15;
-  }
-  .mr-combined-strip .combined-values .cv-val .cv-unit {
-    font-size: 9.5px; font-weight: 600; opacity: 0.75; margin-left: 2px;
-  }
-  .mr-combined-strip .combined-values .cv-item.total {
-    background: rgba(255, 217, 102, 0.22);
-    border-color: rgba(255, 217, 102, 0.5);
-  }
-  .mr-combined-strip .combined-values .cv-item.total .cv-val { color: #ffe9a8; }
-  .mr-combined-strip .combined-values .cv-item.last { background: rgba(255,255,255,0.08); }
-  .mr-combined-strip .breakdown {
-    display: flex; flex-direction: column; gap: 6px;
-    padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2);
-    font-size: 11.5px;
-  }
-  .mr-combined-strip .breakdown .item {
-    display: flex; align-items: center; gap: 8px; opacity: 0.95;
-  }
-  .mr-combined-strip .breakdown .dot {
-    width: 6px; height: 6px; border-radius: 50%; background: #ffd966; flex-shrink: 0;
-  }
-  .mr-combined-strip .breakdown .label {
-    font-weight: 600; opacity: 0.9; flex: 1;
-  }
-  .mr-combined-strip .breakdown .value {
-    font-weight: 800; color: #ffd966;
-    font-variant-numeric: tabular-nums; white-space: nowrap;
+    border-radius: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(15,75,30,0.2);
   }
 
   .daily-section-title {
@@ -505,6 +418,77 @@
   }
   .table-scroll::-webkit-scrollbar { height: 5px; }
   .table-scroll::-webkit-scrollbar-thumb { background: #c8d4e0; border-radius: 3px; }
+
+  /* Daily summary card */
+  .daily-summary {
+    background: linear-gradient(135deg, #0b3d6b 0%, #0a66c2 100%);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin-bottom: 14px;
+    color: #fff;
+    box-shadow: var(--shadow-md);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .daily-summary .ds-title {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 1px; font-weight: 800;
+    opacity: 0.85; text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .daily-summary .ds-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .daily-summary .ds-item {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 11px 12px;
+    text-align: center;
+  }
+  .daily-summary .ds-lbl {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 800;
+    opacity: 0.9; margin-bottom: 5px;
+  }
+  .daily-summary .ds-val {
+    font-size: 16px; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.3px;
+  }
+  .daily-summary .your-half {
+    background: linear-gradient(135deg, rgba(255, 217, 102, 0.28) 0%, rgba(255, 217, 102, 0.15) 100%);
+    border: 2px solid rgba(255, 217, 102, 0.7);
+    border-radius: 14px;
+    padding: 14px 16px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(255, 217, 102, 0.2);
+  }
+  .daily-summary .your-half .yh-lbl {
+    font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.8px; font-weight: 800;
+    color: #fff3c4; opacity: 0.95;
+    margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .daily-summary .your-half .yh-val {
+    font-size: 24px; font-weight: 800;
+    color: #ffe9a8;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+  .daily-summary .your-half .yh-val .yh-unit {
+    font-size: 12px; font-weight: 700;
+    opacity: 0.85; margin-left: 3px;
+  }
+  .daily-summary .your-half .yh-sub {
+    font-size: 10.5px; font-weight: 600;
+    opacity: 0.85; margin-top: 6px;
+    color: #fff3c4;
+  }
 
   .data-table { width: 100%; min-width: 620px; border-collapse: collapse; font-size: 13.5px; }
   .data-table thead th {
@@ -686,7 +670,7 @@
   .mcol {
     display: flex; flex-direction: column;
     border-right: 1px solid var(--line);
-    min-width: 160px; max-width: 160px;
+    min-width: 170px; max-width: 170px;
   }
   .mcol:last-child { border-right: none; }
   .mcol-head {
@@ -739,16 +723,16 @@
   .mcol-total .cnt {
     font-size: 10.5px; color: var(--muted); font-weight: 600; margin-top: 3px;
   }
-  /* Before/After in month column */
+  /* Before/After/Your Half in month column */
   .mcol-ba {
     background: #f8fafc;
     border-top: 1px solid var(--line);
-    padding: 10px;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    padding: 8px;
+    display: flex; flex-direction: column; gap: 6px;
   }
   .mcol-ba .ba-box {
     background: var(--card); border-radius: 8px;
-    padding: 6px 6px; text-align: center;
+    padding: 7px 8px; text-align: center;
     border: 1px solid var(--line);
   }
   .mcol-ba .ba-box.before { background: #f8fafc; }
@@ -756,20 +740,27 @@
     background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
     border-color: #86efac;
   }
+  .mcol-ba .ba-box.half {
+    background: linear-gradient(135deg, #fff9e6 0%, #fef3c7 100%);
+    border-color: #fbbf24;
+    border-width: 2px;
+  }
   .mcol-ba .ba-lbl {
     font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.4px;
     font-weight: 800; color: var(--muted); margin-bottom: 3px;
   }
   .mcol-ba .ba-box.after .ba-lbl { color: var(--green-dark); }
+  .mcol-ba .ba-box.half .ba-lbl { color: #92400e; }
   .mcol-ba .ba-val {
-    font-size: 12px; font-weight: 800; letter-spacing: -0.3px;
+    font-size: 12.5px; font-weight: 800; letter-spacing: -0.3px;
     font-variant-numeric: tabular-nums;
   }
   .mcol-ba .ba-box.before .ba-val { color: #475569; }
   .mcol-ba .ba-box.after .ba-val { color: var(--green-dark); }
+  .mcol-ba .ba-box.half .ba-val { color: #92400e; font-size: 14px; }
 
   .mcol-grand {
-    display: flex; flex-direction: column; min-width: 170px; max-width: 170px;
+    display: flex; flex-direction: column; min-width: 180px; max-width: 180px;
     background: linear-gradient(180deg, #0b1e33, #1f2e3d);
     color: #fff; border-left: 4px solid var(--amber);
   }
@@ -783,11 +774,11 @@
     letter-spacing: 0.8px; font-weight: 800;
   }
   .mcol-grand .big-val {
-    font-size: 24px; font-weight: 800; margin-top: 8px;
+    font-size: 22px; font-weight: 800; margin-top: 6px;
     color: #ffd966; letter-spacing: -0.5px;
   }
-  .mcol-grand .sub { font-size: 10.5px; opacity: 0.8; margin-top: 10px; }
-  .mcol-grand .divider { height: 1px; background: rgba(255,255,255,0.18); margin: 14px 0; }
+  .mcol-grand .sub { font-size: 10.5px; opacity: 0.8; margin-top: 8px; line-height: 1.4; }
+  .mcol-grand .divider { height: 1px; background: rgba(255,255,255,0.18); margin: 12px 0; }
   .mcol-grand .avg-lbl {
     font-size: 9.5px; opacity: 0.7; text-transform: uppercase;
     letter-spacing: 0.6px; font-weight: 700;
@@ -1025,11 +1016,10 @@
     .mr-metrics, .pr-metrics { gap: 5px; }
     .mr-metric .val, .pr-metric .val { font-size: 13px; }
     .mr-metric .lbl, .pr-metric .lbl { font-size: 9px; }
-    .combined-details { font-size: 11.5px; gap: 6px; }
-    .combined-values .cv-val { font-size: 15px; }
-    .mr-combined-strip .combined-values .cv-val { font-size: 13px; }
-    .ba-strip .ba-val { font-size: 14px; }
-    .ba-strip.overall .ba-val { font-size: 15px; }
+    .ba-val { font-size: 14px; }
+    .your-earning .ye-val { font-size: 20px; }
+    .daily-summary .your-half .yh-val { font-size: 20px; }
+    .earn-breakdown { font-size: 11.5px; gap: 6px; }
     .cmp-row > div { padding: 9px 6px; }
     .cmp-name { font-size: 12px; }
     .cmp-amt { font-size: 12.5px; }
@@ -1133,6 +1123,7 @@
       </div>
       <div class="period-list" id="periodList"></div>
       <div class="daily-section-title">Daily Data</div>
+      <div id="dailySummaryWrap"></div>
       <div class="table-scroll">
         <table class="data-table" id="dailyTable">
           <thead>
@@ -1301,7 +1292,7 @@ function saveDataCache(dailyRows, monthlyRecords) {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), daily: dailyRows, monthly: monthlyRecords }));
     console.log("💾 Data cached locally");
-  } catch (e) { console.warn("⚠️ Could not cache:", e); }
+  } catch (e) { console.warn("⚠️ Cache save failed:", e); }
 }
 function loadDataCache() {
   try {
@@ -1319,7 +1310,6 @@ function loadDataCache() {
 }
 
 let lastRefreshTs = null;
-
 function updateRefreshIndicator(state) {
   const el = document.getElementById("refreshIndicator");
   if (!el) return;
@@ -1436,10 +1426,10 @@ const SHEET1_OPEN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREo2Dzmu7_
 const SHEET2_OPEN = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/edit#gid=1452200885";
 const SHEET_DAILY_OPEN = "https://docs.google.com/spreadsheets/d/1B4lO7kO8DXxhyuh2tEfs3RQB0SJwXOikVirlIURo00k/edit#gid=1810247989";
 
-const MONTHLY_SALARY = 29000;
-const DAILY_EXPENSE = 300;
+/* ---- Partner share: 1 = 100%, 0.5 = half ---- */
+const PARTNER_SHARE = 0.5;
 
-/* ---- Expense/Expenses+Salary detection ---- */
+/* ---- Expense row detection ---- */
 const EXPENSE_ROW_NAMES = [
   "expenses+salary", "expense+salary",
   "expenses + salary", "expense + salary",
@@ -1447,11 +1437,9 @@ const EXPENSE_ROW_NAMES = [
   "expensessalary", "expensesalary",
   "expenses", "expense"
 ];
-
 function isExpenseRow(name) {
   if (!name) return false;
   const cleaned = name.toLowerCase().trim().replace(/\s+/g, " ");
-  // Check exact or normalized
   const noSpace = cleaned.replace(/[\s\+_\-&]+/g, "");
   for (const n of EXPENSE_ROW_NAMES) {
     if (cleaned === n) return true;
@@ -1579,7 +1567,6 @@ function groupByName(recs) {
     const k = nameKey(r.name);
     if (!m.has(k)) m.set(k, { name: r.name, amount: 0, isExpense: isExpenseRow(r.name) });
     m.get(k).amount += r.amount;
-    // If any record was flagged as expense, mark the group
     if (isExpenseRow(r.name)) m.get(k).isExpense = true;
   });
   return m;
@@ -1587,29 +1574,6 @@ function groupByName(recs) {
 function fmtInt(n) { return Math.round(n).toLocaleString(); }
 function fmtDec2(n) { return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
-
-/* ---- Split group into regular total + expense total ---- */
-function splitGroupTotals(map) {
-  let regularTotal = 0;
-  let expenseTotal = 0;
-  let regularCount = 0;
-  let expenseCount = 0;
-  map.forEach(v => {
-    if (v.isExpense) {
-      expenseTotal += v.amount;
-      expenseCount++;
-    } else {
-      regularTotal += v.amount;
-      regularCount++;
-    }
-  });
-  return {
-    regularTotal, expenseTotal, regularCount, expenseCount,
-    before: regularTotal,
-    after: regularTotal - expenseTotal,
-    grand: regularTotal + expenseTotal
-  };
-}
 
 function parseDateParts(s) {
   if (!s) return null;
@@ -1652,39 +1616,23 @@ function monthsBetween(startP, endP) {
 }
 
 /* ============================================================
-   COMPARE CARD — handles expense row
+   COMPARE CARD
    ============================================================ */
 function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
   const mapPrev = groupByName(prevRecs);
   const mapCurr = groupByName(currRecs);
-
-  // Split into regular vs expense
   const regularPrev = new Map();
   const expensePrev = new Map();
   const regularCurr = new Map();
   const expenseCurr = new Map();
-  mapPrev.forEach((v, k) => {
-    if (v.isExpense) expensePrev.set(k, v);
-    else regularPrev.set(k, v);
-  });
-  mapCurr.forEach((v, k) => {
-    if (v.isExpense) expenseCurr.set(k, v);
-    else regularCurr.set(k, v);
-  });
+  mapPrev.forEach((v, k) => { if (v.isExpense) expensePrev.set(k, v); else regularPrev.set(k, v); });
+  mapCurr.forEach((v, k) => { if (v.isExpense) expenseCurr.set(k, v); else regularCurr.set(k, v); });
 
-  const cntPrev = regularPrev.size;
-  const cntCurr = regularCurr.size;
-
+  const cntPrev = regularPrev.size, cntCurr = regularCurr.size;
   const matchedKeys = [], onlyPrevKeys = [], onlyCurrKeys = [];
   const seen = new Set();
-  regularPrev.forEach((v, k) => {
-    if (seen.has(k)) return; seen.add(k);
-    if (regularCurr.has(k)) matchedKeys.push(k); else onlyPrevKeys.push(k);
-  });
-  regularCurr.forEach((v, k) => {
-    if (seen.has(k)) return; seen.add(k);
-    onlyCurrKeys.push(k);
-  });
+  regularPrev.forEach((v, k) => { if (seen.has(k)) return; seen.add(k); if (regularCurr.has(k)) matchedKeys.push(k); else onlyPrevKeys.push(k); });
+  regularCurr.forEach((v, k) => { if (seen.has(k)) return; seen.add(k); onlyCurrKeys.push(k); });
 
   let subPrev = 0, subCurr = 0, sr = 0;
   const card = document.createElement("div");
@@ -1735,7 +1683,6 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
     }
   }
 
-  // Subtotal
   const totals = document.createElement("div");
   totals.className = "cmp-subtotal";
   totals.innerHTML = `<div class="sr-blank"></div>
@@ -1743,7 +1690,6 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
     <div><div class="mname v2">${esc(currLabel)}</div><div class="val v2">${fmtInt(subCurr)}</div><div class="cnt">${cntCurr} ppl</div></div>`;
   body.appendChild(totals);
 
-  // Expense rows (if any)
   const prevExpTotal = [...expensePrev.values()].reduce((s, v) => s + v.amount, 0);
   const currExpTotal = [...expenseCurr.values()].reduce((s, v) => s + v.amount, 0);
   if (prevExpTotal > 0 || currExpTotal > 0) {
@@ -1758,7 +1704,6 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
     `;
     body.appendChild(expRow);
 
-    // After row
     const afterRow = document.createElement("div");
     afterRow.className = "cmp-row";
     afterRow.style.background = "#f0fdf4";
@@ -1774,14 +1719,30 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
       </div>
     `;
     body.appendChild(afterRow);
+
+    /* NEW: Your half row */
+    const halfRow = document.createElement("div");
+    halfRow.className = "cmp-row";
+    halfRow.style.background = "#fffbeb";
+    halfRow.innerHTML = `
+      <div class="cmp-sr" style="background:#fffbeb">💰</div>
+      <div class="m1-cell">
+        <div class="cmp-name" style="color:#92400e"><span class="nm"><b>Your Half (50%)</b></span></div>
+        <div class="cmp-amt" style="color:#92400e;font-size:14px">${fmtInt((subPrev - prevExpTotal) * PARTNER_SHARE)}</div>
+      </div>
+      <div class="m2-cell">
+        <div class="cmp-name" style="color:#92400e"><span class="nm"><b>Your Half (50%)</b></span></div>
+        <div class="cmp-amt" style="color:#92400e;font-size:14px">${fmtInt((subCurr - currExpTotal) * PARTNER_SHARE)}</div>
+      </div>
+    `;
+    body.appendChild(halfRow);
   }
 
-  // Grand total shows AFTER
-  const grandPrev = subPrev - prevExpTotal;
-  const grandCurr = subCurr - currExpTotal;
+  const grandPrev = (subPrev - prevExpTotal) * PARTNER_SHARE;
+  const grandCurr = (subCurr - currExpTotal) * PARTNER_SHARE;
   const grand = document.createElement("div");
   grand.className = "cmp-grand";
-  grand.innerHTML = `<div class="lbl">Grand Total (After Expenses+Salary)</div><div class="val">${fmtInt(grandPrev + grandCurr)}</div><div class="cnt">Matched: ${matchedKeys.length} • Unmatched: ${onlyPrevKeys.length + onlyCurrKeys.length}</div>`;
+  grand.innerHTML = `<div class="lbl">💰 Your Total Earning (50%)</div><div class="val">${fmtInt(grandPrev + grandCurr)}</div><div class="cnt">Matched: ${matchedKeys.length} • Unmatched: ${onlyPrevKeys.length + onlyCurrKeys.length}</div>`;
   body.appendChild(grand);
 
   const diff = grandCurr - grandPrev;
@@ -1789,7 +1750,7 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
   diffEl.className = "cmp-diff " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
   const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "=";
   const sign = diff > 0 ? "+" : "";
-  diffEl.innerHTML = `<span>Difference (after)</span><span>${arrow} ${sign}${fmtInt(diff)}</span>`;
+  diffEl.innerHTML = `<span>Difference (your half)</span><span>${arrow} ${sign}${fmtInt(diff)}</span>`;
   body.appendChild(diffEl);
 
   card.appendChild(body);
@@ -1797,12 +1758,12 @@ function buildCompareCard(prevRecs, currRecs, prevLabel, currLabel) {
 }
 
 /* ============================================================
-   ALL MONTHS TABLE — handles expense row
+   ALL MONTHS TABLE
    ============================================================ */
 function buildAllMonthsTable(monthList) {
   const table = document.getElementById("mtable");
   table.innerHTML = "";
-  let grandRegular = 0, grandExpense = 0, grandPersons = 0, totalMonthsWithData = 0;
+  let grandBefore = 0, grandAfter = 0, grandYourHalf = 0, grandExpense = 0, grandPersons = 0, totalMonthsWithData = 0;
 
   monthList.forEach(m => {
     const map = groupByName(m.recs);
@@ -1811,7 +1772,6 @@ function buildAllMonthsTable(monthList) {
     const col = document.createElement("div");
     col.className = "mcol";
 
-    // Count regular people (non-expense)
     let regularCount = 0;
     map.forEach(v => { if (!v.isExpense) regularCount++; });
 
@@ -1839,7 +1799,9 @@ function buildAllMonthsTable(monthList) {
     });
     col.appendChild(bodyEl);
 
-    // Before / After boxes
+    const afterTotal = regularTotal - expenseTotal;
+    const yourHalf = afterTotal * PARTNER_SHARE;
+
     const ba = document.createElement("div");
     ba.className = "mcol-ba";
     ba.innerHTML = `
@@ -1849,42 +1811,50 @@ function buildAllMonthsTable(monthList) {
       </div>
       <div class="ba-box after">
         <div class="ba-lbl">After</div>
-        <div class="ba-val">${fmtInt(regularTotal - expenseTotal)}</div>
+        <div class="ba-val">${fmtInt(afterTotal)}</div>
+      </div>
+      <div class="ba-box half">
+        <div class="ba-lbl">💰 Your Half</div>
+        <div class="ba-val">${fmtInt(yourHalf)}</div>
       </div>
     `;
     col.appendChild(ba);
 
-    // Total
     const tot = document.createElement("div");
     tot.className = "mcol-total";
-    tot.innerHTML = `<div class="lbl">${esc(label)} · After</div><div class="val">${fmtInt(regularTotal - expenseTotal)}</div><div class="cnt">${regularCount} ppl</div>`;
+    tot.innerHTML = `<div class="lbl">💰 Your Earning</div><div class="val">${fmtInt(yourHalf)}</div><div class="cnt">${regularCount} ppl</div>`;
     col.appendChild(tot);
 
     table.appendChild(col);
-    grandRegular += regularTotal;
+    grandBefore += regularTotal;
     grandExpense += expenseTotal;
+    grandAfter += afterTotal;
+    grandYourHalf += yourHalf;
     grandPersons += regularCount;
     if (map.size) totalMonthsWithData++;
   });
 
-  const grandAfter = grandRegular - grandExpense;
-  const avgPerMonth = totalMonthsWithData ? grandAfter / totalMonthsWithData : 0;
+  const avgPerMonth = totalMonthsWithData ? grandYourHalf / totalMonthsWithData : 0;
 
   const grandCol = document.createElement("div");
   grandCol.className = "mcol-grand";
   grandCol.innerHTML = `
     <div class="mcol-head"><div class="mname">GRAND</div><div class="mcount">${monthList.length} mo</div></div>
     <div class="mcol-body">
-      <div class="big-lbl">After Expenses+Salary</div>
-      <div class="big-val">${fmtInt(grandAfter)}</div>
-      <div class="sub">Before: ${fmtInt(grandRegular)}<br>Expense: −${fmtInt(grandExpense)}</div>
+      <div class="big-lbl">💰 Your Total (50%)</div>
+      <div class="big-val">${fmtInt(grandYourHalf)}</div>
+      <div class="sub">
+        Before: ${fmtInt(grandBefore)}<br>
+        Expense: −${fmtInt(grandExpense)}<br>
+        After: ${fmtInt(grandAfter)}
+      </div>
       <div class="divider"></div>
-      <div class="avg-lbl">Avg / Month (After)</div>
+      <div class="avg-lbl">Avg / Month (Your Half)</div>
       <div class="avg-val">${fmtInt(avgPerMonth)}</div>
     </div>
     <div class="mcol-total">
-      <div class="lbl">GRAND · AFTER</div>
-      <div class="val">${fmtInt(grandAfter)}</div>
+      <div class="lbl">💰 YOUR HALF</div>
+      <div class="val">${fmtInt(grandYourHalf)}</div>
       <div class="cnt">${monthList.length} mo · ${grandPersons} ppl</div>
     </div>
   `;
@@ -1892,25 +1862,28 @@ function buildAllMonthsTable(monthList) {
 }
 
 /* ============================================================
-   OVERALL SUMMARY CARD — with before/after
+   OVERALL SUMMARY CARD
    ============================================================ */
 function buildOverallSummaryCard(totals) {
-  const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal, lastMonthTotal, expenseTotalOverall, lastMonthExpense } = totals;
+  const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal, lastMonthTotal, expenseTotalOverall, lastMonthExpense, dailyNetTotal } = totals;
   const avgNet = days ? net / days : 0;
 
-  /* ---- Total Monthly = BEFORE (regular records only) ---- */
-  const beforeTotal = monthlySheetTotal;   // already excludes expense rows
+  /* Monthly calculations */
+  const beforeTotal = monthlySheetTotal;
   const expenseDeduction = expenseTotalOverall || 0;
   const afterTotal = beforeTotal - expenseDeduction;
+  const yourHalfMonthly = afterTotal * PARTNER_SHARE;
 
-  /* Last month Before / After */
+  /* Last month */
   const lastBefore = lastMonthTotal;
-  const lastExpense = lastMonthExpense || 0;
-  const lastAfter = lastBefore - lastExpense;
+  const lastExp = lastMonthExpense || 0;
+  const lastAfter = lastBefore - lastExp;
+  const lastYourHalf = lastAfter * PARTNER_SHARE;
+
+  /* Daily calculations */
+  const dailyYourHalf = (dailyNetTotal || 0) * PARTNER_SHARE;
 
   const numMonths = monthsBetween(minStart, maxEnd);
-  const salaryTotal = MONTHLY_SALARY * numMonths;
-  const dailyExpenseTotal = DAILY_EXPENSE * days;
 
   const el = document.createElement("div");
   el.className = "overall-card";
@@ -1934,28 +1907,29 @@ function buildOverallSummaryCard(totals) {
         <span class="k">Avg Daily Earning</span>
         <span class="v">${fmtDec2(avgNet)}<span class="unit">PKR/day</span></span>
       </div>
-      <div class="oc-row combined">
-        <div class="ba-strip overall">
+
+      <!-- ============ MONTHLY EARNINGS ============ -->
+      <div class="earnings-card">
+        <div class="section-title">📅 Monthly Breakdown</div>
+
+        <div class="ba-row">
           <div class="ba-item before">
-            <div class="ba-lbl">Total Monthly · Before</div>
-            <div class="ba-val">${fmtInt(beforeTotal)}<span style="font-size:10px;font-weight:600;opacity:0.7;margin-left:3px">PKR</span></div>
+            <div class="ba-lbl">Before Expenses</div>
+            <div class="ba-val">${fmtInt(beforeTotal)}<span class="ba-unit">PKR</span></div>
           </div>
           <div class="ba-item after">
-            <div class="ba-lbl">After Expenses+Salary</div>
-            <div class="ba-val">${fmtInt(afterTotal)}<span style="font-size:10px;font-weight:600;opacity:0.7;margin-left:3px">PKR</span></div>
+            <div class="ba-lbl">After Expenses</div>
+            <div class="ba-val">${fmtInt(afterTotal)}<span class="ba-unit">PKR</span></div>
           </div>
         </div>
-        <div class="combined-values">
-          <div class="cv-item total">
-            <div class="cv-lbl">Total Monthly (Before)</div>
-            <div class="cv-val">${fmtInt(beforeTotal)}<span class="cv-unit">PKR</span></div>
-          </div>
-          <div class="cv-item last">
-            <div class="cv-lbl">Last Month · After</div>
-            <div class="cv-val">${fmtInt(lastAfter)}<span class="cv-unit">PKR</span></div>
-          </div>
+
+        <div class="your-earning">
+          <div class="ye-lbl"><span class="emoji">💰</span> Your Half (Single Partner Earning)</div>
+          <div class="ye-val">${fmtInt(yourHalfMonthly)}<span class="ye-unit">PKR</span></div>
+          <div class="ye-sub">50% of After Expenses</div>
         </div>
-        <div class="combined-details">
+
+        <div class="earn-breakdown">
           <div class="item">
             <span class="dot"></span>
             <span class="label">− Expenses+Salary (from sheet)</span>
@@ -1963,14 +1937,31 @@ function buildOverallSummaryCard(totals) {
           </div>
           <div class="item">
             <span class="dot"></span>
-            <span class="label">You can minus salary (${numMonths} month${numMonths === 1 ? "" : "s"} × ${fmtInt(MONTHLY_SALARY)})</span>
-            <span class="value">${fmtInt(salaryTotal)}</span>
+            <span class="label">Last Month · Your Half (${numMonths} mo total)</span>
+            <span class="value">${fmtInt(lastYourHalf)}</span>
           </div>
-          <div class="item">
-            <span class="dot"></span>
-            <span class="label">Daily expense (300 × ${days})</span>
-            <span class="value">${fmtInt(dailyExpenseTotal)}</span>
+        </div>
+      </div>
+
+      <!-- ============ DAILY EARNINGS ============ -->
+      <div class="earnings-card" style="margin-top:14px;background:linear-gradient(135deg,#0b3d6b 0%,#0a66c2 100%);">
+        <div class="section-title">📆 Daily Breakdown</div>
+
+        <div class="ba-row">
+          <div class="ba-item before">
+            <div class="ba-lbl">Total Daily Net</div>
+            <div class="ba-val">${fmtInt(dailyNetTotal || 0)}<span class="ba-unit">PKR</span></div>
           </div>
+          <div class="ba-item after">
+            <div class="ba-lbl">Over ${days} Days</div>
+            <div class="ba-val">${fmtInt((dailyNetTotal || 0) / (days || 1))}<span class="ba-unit">/day</span></div>
+          </div>
+        </div>
+
+        <div class="your-earning">
+          <div class="ye-lbl"><span class="emoji">💰</span> Your Half (Single Partner Earning)</div>
+          <div class="ye-val">${fmtInt(dailyYourHalf)}<span class="ye-unit">PKR</span></div>
+          <div class="ye-sub">50% of Daily Net Total</div>
         </div>
       </div>
     </div>
@@ -1978,6 +1969,9 @@ function buildOverallSummaryCard(totals) {
   return el;
 }
 
+/* ============================================================
+   MONTH SPLIT
+   ============================================================ */
 function computeMonthlySplit(rows) {
   const buckets = new Map();
   const ensure = (y, m) => {
@@ -2036,9 +2030,8 @@ function computeMonthlySplit(rows) {
   return result;
 }
 
-/* ---- Compute totals from monthly records, splitting expense rows ---- */
 function computeMonthlyTotals(records) {
-  const totals = new Map();   // key → { regularAmount, regularCount, expenseAmount, expenseCount }
+  const totals = new Map();
   records.forEach(r => {
     const k = monthKey(r);
     if (!k) return;
@@ -2055,13 +2048,11 @@ function computeMonthlyTotals(records) {
   return totals;
 }
 function sumMonthlySheetTotals(records) {
-  // Sum of REGULAR (non-expense) records
   let sum = 0;
   records.forEach(r => { if (!isExpenseRow(r.name)) sum += r.amount; });
   return sum;
 }
 function sumMonthlyExpenseTotals(records) {
-  // Sum of EXPENSE rows only
   let sum = 0;
   records.forEach(r => { if (isExpenseRow(r.name)) sum += r.amount; });
   return sum;
@@ -2074,55 +2065,45 @@ function getLastMonthTotals(records) {
 }
 
 /* ============================================================
-   MONTH ROW — Before/After
+   MONTH ROW
    ============================================================ */
 function buildMonthRow(info, srNo, sheetTotal, lastMonthAmount, lastMonthExpense) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
-  let sheetStrip = "", combinedStrip = "";
+  let earningsHtml = "";
   if (sheetTotal) {
     const beforeAmt = sheetTotal.regularAmount;
     const expenseAmt = sheetTotal.expenseAmount;
     const afterAmt = beforeAmt - expenseAmt;
-    const salaryTotal = MONTHLY_SALARY;
-    const dailyExpenseTotal = DAILY_EXPENSE * daysCount;
+    const yourHalf = afterAmt * PARTNER_SHARE;
     const lastBefore = (lastMonthAmount != null) ? lastMonthAmount : beforeAmt;
     const lastExp = (lastMonthExpense != null) ? lastMonthExpense : expenseAmt;
-    const lastAfter = lastBefore - lastExp;
+    const lastYourHalf = (lastBefore - lastExp) * PARTNER_SHARE;
 
-    sheetStrip = `
-      <div class="mr-sheet-strip">
-        <div class="lbl-block"><div class="sheet-lbl">Monthly Sheet Total (Before)</div><div class="sheet-sub">${sheetTotal.regularCount} regular entr${sheetTotal.regularCount === 1 ? "y" : "ies"}${sheetTotal.expenseCount ? ' · ' + sheetTotal.expenseCount + ' expense' : ''}</div></div>
-        <div class="val-block"><div class="sheet-val">${fmtInt(beforeAmt)}<span class="unit">PKR</span></div></div>
-      </div>`;
-    combinedStrip = `
-      <div class="mr-combined-strip">
-        <div class="ba-strip">
+    earningsHtml = `
+      <div class="mr-earnings">
+        <div class="section-title" style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;font-weight:800;opacity:0.85;text-align:center;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.15);">📅 Monthly Breakdown</div>
+        <div class="ba-row">
           <div class="ba-item before">
-            <div class="ba-lbl">Before</div>
-            <div class="ba-val">${fmtInt(beforeAmt)}<span style="font-size:9px;font-weight:600;opacity:0.75;margin-left:2px">PKR</span></div>
+            <div class="ba-lbl">Before Expenses</div>
+            <div class="ba-val">${fmtInt(beforeAmt)}<span class="ba-unit">PKR</span></div>
           </div>
           <div class="ba-item after">
-            <div class="ba-lbl">After</div>
-            <div class="ba-val">${fmtInt(afterAmt)}<span style="font-size:9px;font-weight:600;opacity:0.75;margin-left:2px">PKR</span></div>
+            <div class="ba-lbl">After Expenses</div>
+            <div class="ba-val">${fmtInt(afterAmt)}<span class="ba-unit">PKR</span></div>
           </div>
         </div>
-        <div class="combined-values">
-          <div class="cv-item total">
-            <div class="cv-lbl">Before</div>
-            <div class="cv-val">${fmtInt(beforeAmt)}<span class="cv-unit">PKR</span></div>
-          </div>
-          <div class="cv-item last">
-            <div class="cv-lbl">Last Month · After</div>
-            <div class="cv-val">${fmtInt(lastAfter)}<span class="cv-unit">PKR</span></div>
-          </div>
+        <div class="your-earning">
+          <div class="ye-lbl"><span class="emoji">💰</span> Your Half (Single Partner)</div>
+          <div class="ye-val">${fmtInt(yourHalf)}<span class="ye-unit">PKR</span></div>
+          <div class="ye-sub">50% of After Expenses</div>
         </div>
-        <div class="breakdown">
-          <div class="item"><span class="dot"></span><span class="label">− Expenses+Salary (sheet)</span><span class="value">${fmtInt(expenseAmt)}</span></div>
-          <div class="item"><span class="dot"></span><span class="label">You can minus salary (1 mo × ${fmtInt(MONTHLY_SALARY)})</span><span class="value">${fmtInt(salaryTotal)}</span></div>
-          <div class="item"><span class="dot"></span><span class="label">Daily expense (300 × ${daysCount})</span><span class="value">${fmtInt(dailyExpenseTotal)}</span></div>
+        <div class="earn-breakdown">
+          <div class="item"><span class="dot"></span><span class="label">− Expenses+Salary</span><span class="value">${fmtInt(expenseAmt)}</span></div>
+          <div class="item"><span class="dot"></span><span class="label">Last Month · Your Half</span><span class="value">${fmtInt(lastYourHalf)}</span></div>
         </div>
-      </div>`;
+      </div>
+    `;
   }
   const row = document.createElement("div");
   row.className = "month-row" + (isCurrentMonth ? " current" : "");
@@ -2142,7 +2123,7 @@ function buildMonthRow(info, srNo, sheetTotal, lastMonthAmount, lastMonthExpense
         <div class="mr-metric gross"><div class="lbl">Gross</div><div class="val">${fmtInt(gross)}</div></div>
         <div class="mr-metric avg"><div class="lbl">Avg/Day</div><div class="val">${fmtInt(avgNet)}</div></div>
       </div>
-      ${sheetStrip}${combinedStrip}
+      ${earningsHtml}
     </div>
   `;
   return row;
@@ -2174,6 +2155,58 @@ function buildPeriodRow(period, srNo) {
   return row;
 }
 
+/* ============================================================
+   DAILY SUMMARY CARD
+   ============================================================ */
+function renderDailySummary(dailyRows) {
+  const wrap = document.getElementById("dailySummaryWrap");
+  if (!wrap) return;
+  if (!dailyRows.length) { wrap.innerHTML = ""; return; }
+
+  let totalNet = 0, totalGross = 0, totalExp = 0;
+  dailyRows.forEach(r => {
+    totalNet += r.net;
+    totalGross += r.gross;
+    totalExp += r.expenses;
+  });
+  const yourHalf = totalNet * PARTNER_SHARE;
+  const days = dailyRows.length;
+
+  wrap.innerHTML = `
+    <div class="daily-summary">
+      <div class="ds-title">📆 Daily Sheet Summary</div>
+      <div class="ds-row">
+        <div class="ds-item">
+          <div class="ds-lbl">Total Gross</div>
+          <div class="ds-val">${fmtInt(totalGross)}</div>
+        </div>
+        <div class="ds-item">
+          <div class="ds-lbl">Total Expenses</div>
+          <div class="ds-val">${fmtInt(totalExp)}</div>
+        </div>
+      </div>
+      <div class="ds-row">
+        <div class="ds-item">
+          <div class="ds-lbl">Total Net (${days} days)</div>
+          <div class="ds-val">${fmtInt(totalNet)}</div>
+        </div>
+        <div class="ds-item">
+          <div class="ds-lbl">Avg / Day</div>
+          <div class="ds-val">${fmtInt(totalNet / (days || 1))}</div>
+        </div>
+      </div>
+      <div class="your-half">
+        <div class="yh-lbl"><span>💰</span> Your Half (Single Partner)</div>
+        <div class="yh-val">${fmtInt(yourHalf)}<span class="yh-unit">PKR</span></div>
+        <div class="yh-sub">50% of Total Daily Net</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   RENDER REPORT
+   ============================================================ */
 function renderReport(rows, monthlyRecords) {
   const statusEl = document.getElementById("dailyStatus");
   const contentEl = document.getElementById("reportContent");
@@ -2204,7 +2237,8 @@ function renderReport(rows, monthlyRecords) {
     monthlySheetTotal: monthlyRegularTotal,
     lastMonthTotal: lastTotals.regularAmount,
     expenseTotalOverall: monthlyExpenseTotal,
-    lastMonthExpense: lastTotals.expenseAmount
+    lastMonthExpense: lastTotals.expenseAmount,
+    dailyNetTotal: totalNet
   }));
 
   if (lastRefreshTs) {
@@ -2238,7 +2272,10 @@ function renderReport(rows, monthlyRecords) {
     periodEl.appendChild(buildPeriodRow({ startStr: r.startDate, endStr: r.endDate, startP, endP, gross: r.gross, exp: r.expenses, net: r.net }, i + 1));
   });
   document.getElementById("periodCount").textContent = `${sortedRows.length} period${sortedRows.length === 1 ? "" : "s"}`;
+
+  renderDailySummary(sortedRows);
   renderDailyTable(sortedRows);
+
   statusEl.style.display = "none";
   contentEl.style.display = "block";
 }
@@ -2269,9 +2306,9 @@ async function fetchCSV(url) {
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const txt = await res.text();
-    if (txt.trim().startsWith("<")) { console.warn("⚠️ Got HTML:", url); return null; }
+    if (txt.trim().startsWith("<")) return null;
     return txt;
-  } catch (e) { console.error("❌ Fetch failed:", url, e); return null; }
+  } catch (e) { return null; }
 }
 async function loadMonthly() {
   let all = [];
@@ -2403,7 +2440,6 @@ function fillRawTable(tableId, csvText, rowStatId, colStatId, totalStatId, isDai
     const r = rows[i];
     if (i - 1 < maxRows) {
       const tr = document.createElement("tr");
-      // Highlight expense rows
       const nameVal = r[0] || "";
       if (!isDaily && isExpenseRow(nameVal)) tr.style.background = "#fef2f2";
       headers.forEach((h, ci) => {
@@ -2479,10 +2515,7 @@ function renderActivity() {
     `;
   }).join("");
 }
-document.getElementById("refreshActivityBtn")?.addEventListener("click", () => {
-  renderActivity();
-  logActivity("click", "Refresh Activity Log", "");
-});
+document.getElementById("refreshActivityBtn")?.addEventListener("click", () => { renderActivity(); logActivity("click", "Refresh Activity Log", ""); });
 document.getElementById("clearActivityBtn")?.addEventListener("click", () => {
   if (!confirm("Clear all local activity log?")) return;
   localStorage.removeItem(ACTIVITY_KEY);
@@ -2492,16 +2525,11 @@ document.getElementById("copyActivityBtn")?.addEventListener("click", async () =
   const list = loadActivity();
   if (!list.length) { alert("No activity to copy."); return; }
   const text = list.map(e => `[${e.timestamp}] ${e.type.toUpperCase()} — ${e.title}${e.detail ? " (" + e.detail + ")" : ""}`).join("\n");
-  try {
-    await navigator.clipboard.writeText(text);
-    logActivity("click", "Copied Activity Log", `${list.length} events copied`);
-    alert("✅ Activity log copied!");
-  } catch (err) {
+  try { await navigator.clipboard.writeText(text); alert("✅ Activity log copied!"); }
+  catch (err) {
     const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta); ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
     alert("✅ Activity log copied!");
   }
 });
@@ -2537,8 +2565,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-let lastScrollLog = 0;
-let maxScrollDepth = 0;
+let lastScrollLog = 0, maxScrollDepth = 0;
 window.addEventListener("scroll", () => {
   const now = Date.now();
   const depth = Math.round((window.scrollY + window.innerHeight) / document.body.scrollHeight * 100);
@@ -2549,15 +2576,8 @@ window.addEventListener("scroll", () => {
   }
 });
 
-window.addEventListener('online', () => {
-  console.log("🌐 Back online");
-  updateRefreshIndicator('refreshing');
-  refreshDataFromNetwork();
-});
-window.addEventListener('offline', () => {
-  console.log("📴 Offline");
-  updateRefreshIndicator('offline');
-});
+window.addEventListener('online', () => { updateRefreshIndicator('refreshing'); refreshDataFromNetwork(); });
+window.addEventListener('offline', () => { updateRefreshIndicator('offline'); });
 
 /* ============================================================
    BOOT
@@ -2572,7 +2592,6 @@ document.getElementById("openDaily").href = SHEET_DAILY_OPEN;
 async function refreshDataFromNetwork() {
   try {
     const [dailyRows, monthlyRecords] = await Promise.all([loadDaily(), loadMonthly()]);
-    console.log("📊 Network → Daily:", dailyRows.length, "| Monthly:", monthlyRecords.length);
     if (dailyRows.length > 0 || monthlyRecords.length > 0) {
       saveDataCache(dailyRows, monthlyRecords);
       monthlyRecordsCache = monthlyRecords;
@@ -2583,12 +2602,10 @@ async function refreshDataFromNetwork() {
       byMonth = new Map();
       if (document.getElementById("contentData").classList.contains("active")) populateDataTab();
       updateRefreshIndicator('fresh');
-      console.log("✅ Updated with fresh data");
       return true;
     }
     throw new Error("Empty");
   } catch (err) {
-    console.warn("❌ Refresh failed:", err);
     updateRefreshIndicator(navigator.onLine ? 'stale' : 'offline');
     return false;
   }
@@ -2597,7 +2614,6 @@ async function refreshDataFromNetwork() {
 async function boot() {
   const cached = loadDataCache();
   if (cached) {
-    console.log("💾 Cached data loaded");
     lastRefreshTs = cached.ts;
     monthlyRecordsCache = cached.monthly;
     if (cached.daily.length > 0) {
@@ -2606,7 +2622,6 @@ async function boot() {
       updateRefreshIndicator(ageHrs > 24 ? 'stale' : 'fresh');
     }
   }
-
   if (navigator.onLine) {
     updateRefreshIndicator('refreshing');
     await refreshDataFromNetwork();
