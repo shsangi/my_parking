@@ -139,7 +139,7 @@
     background: linear-gradient(135deg, #0b3d6b 0%, #0a66c2 50%, #1e88e5 100%);
     color: #fff; padding: 24px 20px 20px; text-align: center;
     position: relative; display: flex; flex-direction: column;
-    align-items: center; gap: 12px;
+    align-items: center; gap: 10px;
   }
   .oc-head::after {
     content: ''; position: absolute; bottom: 0; left: 0; right: 0;
@@ -151,6 +151,48 @@
     border: 2px solid rgba(255,255,255,0.9); background: #fff;
   }
   .oc-title { font-size: 23px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2; }
+
+  /* ---- Last refreshed indicator ---- */
+  .oc-refreshed {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.92);
+    background: rgba(255,255,255,0.14);
+    padding: 5px 11px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.18);
+    letter-spacing: 0.1px;
+    line-height: 1;
+    margin-top: 2px;
+    transition: all 0.3s ease;
+  }
+  .oc-refreshed .dot-refresh {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.3);
+    flex-shrink: 0;
+  }
+  .oc-refreshed.stale .dot-refresh {
+    background: #fbbf24;
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.3);
+  }
+  .oc-refreshed.offline .dot-refresh {
+    background: #f87171;
+    box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.3);
+  }
+  .oc-refreshed .text { white-space: nowrap; }
+  .oc-refreshed .text strong { font-weight: 800; }
+  .oc-refreshed.refreshing .dot-refresh {
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
   .oc-body { padding: 6px 20px 18px; }
   .oc-row {
     display: flex; justify-content: space-between; align-items: baseline;
@@ -171,7 +213,6 @@
   .oc-row.highlight .v { font-size: 19px; font-weight: 800; color: #0a4a8c; letter-spacing: -0.3px; }
   .oc-row.highlight .v .unit { font-size: 11.5px; font-weight: 600; opacity: 0.7; margin-left: 4px; }
 
-  /* ---------- Green combined row (UPDATED) ---------- */
   .oc-row.combined {
     background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
     margin: 10px -20px -18px; padding: 18px 20px; border-bottom: none;
@@ -185,7 +226,6 @@
   }
   .oc-row.combined .v .unit { font-size: 12px; font-weight: 600; opacity: 0.8; margin-left: 4px; }
 
-  /* Two value rows side-by-side */
   .combined-values {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -224,12 +264,8 @@
     background: rgba(255, 217, 102, 0.22);
     border-color: rgba(255, 217, 102, 0.5);
   }
-  .combined-values .cv-item.total .cv-val {
-    color: #ffe9a8;
-  }
-  .combined-values .cv-item.last {
-    background: rgba(255,255,255,0.08);
-  }
+  .combined-values .cv-item.total .cv-val { color: #ffe9a8; }
+  .combined-values .cv-item.last { background: rgba(255,255,255,0.08); }
 
   .combined-details {
     display: flex; flex-direction: column; gap: 7px;
@@ -357,7 +393,6 @@
     font-size: 10.5px; font-weight: 600; opacity: 0.65; margin-left: 3px;
   }
 
-  /* ---------- Month combined strip (UPDATED with 2 values) ---------- */
   .mr-combined-strip {
     margin-top: 10px; padding: 14px 16px;
     background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
@@ -423,12 +458,8 @@
     background: rgba(255, 217, 102, 0.22);
     border-color: rgba(255, 217, 102, 0.5);
   }
-  .mr-combined-strip .combined-values .cv-item.total .cv-val {
-    color: #ffe9a8;
-  }
-  .mr-combined-strip .combined-values .cv-item.last {
-    background: rgba(255,255,255,0.08);
-  }
+  .mr-combined-strip .combined-values .cv-item.total .cv-val { color: #ffe9a8; }
+  .mr-combined-strip .combined-values .cv-item.last { background: rgba(255,255,255,0.08); }
   .mr-combined-strip .breakdown {
     display: flex; flex-direction: column; gap: 6px;
     padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2);
@@ -942,6 +973,7 @@
   @media (max-width: 400px) {
     .oc-title { font-size: 21px; }
     .oc-logo { width: 56px; height: 56px; }
+    .oc-refreshed { font-size: 10px; padding: 4px 9px; }
     .mr-metrics, .pr-metrics { gap: 5px; }
     .mr-metric .val, .pr-metric .val { font-size: 13px; }
     .mr-metric .lbl, .pr-metric .lbl { font-size: 9px; }
@@ -1204,8 +1236,96 @@ function formatPKT(date) {
     date: `${d} ${m} ${y}`,
     time: `${h}:${min}:${sec} ${ampm}`,
     full: `${d} ${m} ${y}, ${h}:${min}:${sec} ${ampm} PKT`,
+    shortFull: `${d} ${m}, ${h}:${min} ${ampm} PKT`,
     iso: pkt.toISOString()
   };
+}
+
+/* ============================================================
+   LOCAL DATA CACHE  (offline-first)
+   ============================================================ */
+const CACHE_KEY = "sangi_parking_data_cache_v1";
+const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+function saveDataCache(dailyRows, monthlyRecords) {
+  try {
+    const payload = {
+      ts: Date.now(),
+      daily: dailyRows,
+      monthly: monthlyRecords
+    };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+    console.log("💾 Data cached locally:", dailyRows.length, "daily,", monthlyRecords.length, "monthly");
+  } catch (e) {
+    console.warn("⚠️ Could not cache data (storage full?):", e);
+  }
+}
+
+function loadDataCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const payload = JSON.parse(raw);
+    if (!payload || typeof payload.ts !== "number") return null;
+    if (Date.now() - payload.ts > CACHE_MAX_AGE_MS) {
+      console.warn("⏰ Cache too old, ignoring");
+      return null;
+    }
+    return {
+      ts: payload.ts,
+      daily: Array.isArray(payload.daily) ? payload.daily : [],
+      monthly: Array.isArray(payload.monthly) ? payload.monthly : []
+    };
+  } catch (e) {
+    console.warn("⚠️ Could not read cache:", e);
+    return null;
+  }
+}
+
+/* Global state for refresh time */
+let lastRefreshTs = null;
+
+/* Update the "Last refreshed" indicator */
+function updateRefreshIndicator(state) {
+  const el = document.getElementById("refreshIndicator");
+  if (!el) return;
+
+  // state: 'refreshing' | 'fresh' | 'stale' | 'offline'
+  el.classList.remove('refreshing', 'stale', 'offline');
+
+  if (state === 'refreshing') {
+    el.classList.add('refreshing');
+    el.querySelector('.text').innerHTML = 'Refreshing…';
+    return;
+  }
+
+  if (state === 'offline') {
+    el.classList.add('offline');
+    if (lastRefreshTs) {
+      const t = formatPKT(new Date(lastRefreshTs));
+      el.querySelector('.text').innerHTML = `Offline · <strong>${t.shortFull}</strong>`;
+    } else {
+      el.querySelector('.text').innerHTML = `Offline · No cache yet`;
+    }
+    return;
+  }
+
+  if (state === 'stale') {
+    el.classList.add('stale');
+    if (lastRefreshTs) {
+      const t = formatPKT(new Date(lastRefreshTs));
+      el.querySelector('.text').innerHTML = `Last refreshed <strong>${t.shortFull}</strong>`;
+    }
+    return;
+  }
+
+  // fresh
+  if (lastRefreshTs) {
+    const t = formatPKT(new Date(lastRefreshTs));
+    el.querySelector('.text').innerHTML = `Last refreshed <strong>${t.shortFull}</strong>`;
+  } else {
+    el.querySelector('.text').innerHTML = 'Just now';
+  }
 }
 
 /* ============================================================
@@ -1460,7 +1580,6 @@ function daysBetween(p1, p2) {
 function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
 function fmtDateLong(p) { if (!p) return "—"; return `${MONTH_LONG[p.m - 1]} ${p.d}, ${p.y}`; }
 function fmtDateShort(p) { if (!p) return "—"; return `${String(p.d).padStart(2, "0")} ${MONTH_SHORT[p.m - 1]} ${p.y}`; }
-
 function monthsBetween(startP, endP) {
   if (!startP || !endP) return 0;
   let months = (endP.y - startP.y) * 12 + (endP.m - startP.m) + 1;
@@ -1602,13 +1721,11 @@ function buildAllMonthsTable(monthList) {
 }
 
 /* ============================================================
-   OVERALL SUMMARY CARD — UPDATED
-   Green row now shows: Total Monthly + Last Month Total side-by-side
+   OVERALL SUMMARY CARD — with refreshed indicator
    ============================================================ */
 function buildOverallSummaryCard(totals) {
   const { gross, exp, net, days, minStart, maxEnd, monthlySheetTotal, lastMonthTotal } = totals;
   const avgNet = days ? net / days : 0;
-
   const totalMonthly = monthlySheetTotal;
   const numMonths = monthsBetween(minStart, maxEnd);
   const salaryTotal = MONTHLY_SALARY * numMonths;
@@ -1620,6 +1737,10 @@ function buildOverallSummaryCard(totals) {
     <div class="oc-head">
       <img src="parkinglogo.jpg" alt="Sangi Parking" class="oc-logo" onerror="this.style.display='none'">
       <div class="oc-title">Sangi Parking</div>
+      <div class="oc-refreshed" id="refreshIndicator">
+        <span class="dot-refresh"></span>
+        <span class="text">Loading…</span>
+      </div>
     </div>
     <div class="oc-body">
       <div class="oc-row"><span class="k">Start Date</span><span class="v">${esc(fmtDateLong(minStart))}</span></div>
@@ -1736,7 +1857,6 @@ function sumMonthlySheetTotals(records) {
   records.forEach(r => { sum += r.amount; });
   return sum;
 }
-/* Last month total = the most recent month's sheet total */
 function getLastMonthTotal(records) {
   const totals = computeMonthlySheetTotals(records);
   const keys = [...totals.keys()].sort((a, b) => b - a);
@@ -1744,10 +1864,6 @@ function getLastMonthTotal(records) {
   return totals.get(keys[0]).amount;
 }
 
-/* ============================================================
-   MONTH ROW — UPDATED
-   Green strip shows Total Monthly + Last Month Total
-   ============================================================ */
 function buildMonthRow(info, srNo, sheetTotal, lastMonthAmount) {
   const { y, m, startP, endP, daysCount, isCurrentMonth, gross, exp, net } = info;
   const avgNet = daysCount ? net / daysCount : 0;
@@ -1756,7 +1872,6 @@ function buildMonthRow(info, srNo, sheetTotal, lastMonthAmount) {
     const sheetAmt = sheetTotal.amount;
     const salaryTotal = MONTHLY_SALARY;
     const dailyExpenseTotal = DAILY_EXPENSE * daysCount;
-    /* If this row IS the last month, use same amount; else use passed value */
     const lastTotal = (lastMonthAmount != null) ? lastMonthAmount : sheetAmt;
 
     sheetStrip = `
@@ -1859,6 +1974,12 @@ function renderReport(rows, monthlyRecords) {
     minStart, maxEnd, monthlySheetTotal, lastMonthTotal
   }));
 
+  // Set refresh indicator after building card
+  if (lastRefreshTs) {
+    const ageMs = Date.now() - lastRefreshTs;
+    updateRefreshIndicator(ageMs > 24 * 60 * 60 * 1000 ? 'stale' : 'fresh');
+  }
+
   const sheetTotals = computeMonthlySheetTotals(monthlyRecords);
   const monthInfos = computeMonthlySplit(rows);
   const monthEl = document.getElementById("monthList");
@@ -1866,7 +1987,6 @@ function renderReport(rows, monthlyRecords) {
   monthInfos.forEach((info, i) => {
     const k = info.y * 100 + info.m;
     const sheetTotal = sheetTotals.get(k) || null;
-    /* For the newest month, lastTotal = itself; for older months, use the last month's total */
     const lastForThisRow = (i === 0) ? (sheetTotal ? sheetTotal.amount : 0) : lastMonthTotal;
     monthEl.appendChild(buildMonthRow(info, i + 1, sheetTotal, lastForThisRow));
   });
@@ -2192,6 +2312,22 @@ window.addEventListener("scroll", () => {
   }
 });
 
+/* ============================================================
+   ONLINE / OFFLINE LISTENERS
+   ============================================================ */
+window.addEventListener('online', () => {
+  console.log("🌐 Back online — refreshing");
+  updateRefreshIndicator('refreshing');
+  refreshDataFromNetwork();
+});
+window.addEventListener('offline', () => {
+  console.log("📴 Went offline");
+  updateRefreshIndicator('offline');
+});
+
+/* ============================================================
+   BOOT — Offline-first strategy
+   ============================================================ */
 console.log("🚀 Sangi Parking starting...");
 logActivity("session", "App opened", `Path: ${location.pathname}`);
 
@@ -2199,18 +2335,85 @@ document.getElementById("openSheet1").href = SHEET1_OPEN;
 document.getElementById("openSheet2").href = SHEET2_OPEN;
 document.getElementById("openDaily").href = SHEET_DAILY_OPEN;
 
-Promise.all([loadDaily(), loadMonthly()])
-  .then(([dailyRows, monthlyRecords]) => {
-    console.log("📊 Daily rows:", dailyRows.length, "| Monthly records:", monthlyRecords.length);
-    monthlyRecordsCache = monthlyRecords;
-    renderReport(dailyRows, monthlyRecords);
-  })
-  .catch(e => {
-    console.error("❌ Boot error:", e);
-    const statusEl = document.getElementById("dailyStatus");
-    statusEl.className = "status error";
-    statusEl.innerHTML = "❌ Error: " + e.message;
-  });
+/**
+ * Core refresh function:
+ * - Always tries network first
+ * - Saves to local cache on success
+ * - Falls back to cache on failure
+ */
+async function refreshDataFromNetwork() {
+  try {
+    const [dailyRows, monthlyRecords] = await Promise.all([loadDaily(), loadMonthly()]);
+    console.log("📊 Network fetch → Daily:", dailyRows.length, "| Monthly:", monthlyRecords.length);
+
+    if (dailyRows.length > 0 || monthlyRecords.length > 0) {
+      // Save to local cache
+      saveDataCache(dailyRows, monthlyRecords);
+      monthlyRecordsCache = monthlyRecords;
+      lastRefreshTs = Date.now();
+
+      // Re-render everything with fresh data
+      renderReport(dailyRows, monthlyRecords);
+      // Reset monthly state so tabs re-render
+      monthlyLoaded = false;
+      allKeys = [];
+      byMonth = new Map();
+      // If data tab is active, refresh it too
+      if (document.getElementById("contentData").classList.contains("active")) {
+        populateDataTab();
+      }
+      updateRefreshIndicator('fresh');
+      console.log("✅ UI updated with fresh data");
+      return true;
+    } else {
+      console.warn("⚠️ Network fetch returned empty");
+      throw new Error("Empty data");
+    }
+  } catch (err) {
+    console.warn("❌ Network refresh failed, keeping cached data:", err);
+    updateRefreshIndicator(navigator.onLine ? 'stale' : 'offline');
+    return false;
+  }
+}
+
+/**
+ * Initial load:
+ * 1. Show cached data INSTANTLY if available
+ * 2. Then try to refresh from network
+ */
+async function boot() {
+  // Step 1: Load from cache first (instant!)
+  const cached = loadDataCache();
+  if (cached) {
+    console.log("💾 Loaded from cache · cached", Math.round((Date.now() - cached.ts) / 60000), "min ago");
+    lastRefreshTs = cached.ts;
+    monthlyRecordsCache = cached.monthly;
+
+    if (cached.daily.length > 0) {
+      renderReport(cached.daily, cached.monthly);
+      // Show "stale" or "fresh" based on age
+      const ageHrs = (Date.now() - cached.ts) / (1000 * 60 * 60);
+      updateRefreshIndicator(ageHrs > 24 ? 'stale' : 'fresh');
+    }
+  }
+
+  // Step 2: If online, refresh from network
+  if (navigator.onLine) {
+    updateRefreshIndicator('refreshing');
+    await refreshDataFromNetwork();
+  } else {
+    console.log("📴 Offline — using cached data");
+    if (!cached) {
+      const statusEl = document.getElementById("dailyStatus");
+      statusEl.className = "status error";
+      statusEl.innerHTML = "📴 You're offline and no cached data available.<br><small>Connect to internet and refresh once.</small>";
+    } else {
+      updateRefreshIndicator('offline');
+    }
+  }
+}
+
+boot();
 </script>
 </body>
 </html>
